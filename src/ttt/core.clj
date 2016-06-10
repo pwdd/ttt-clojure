@@ -1,23 +1,15 @@
 (ns ttt.core
-  (:require [ttt.board :refer :all]))
+  (:require [ttt.board :refer :all]
+            [ttt.messenger :refer [board-representation]]))
 
-(def first-player "X")
-(def second-player "O")
-
-(defn board-representation []
-  (println " 1 | 2 | 3 ")
-  (println "---|---|---")
-  (println " 4 | 5 | 6 ")
-  (println "---|---|---")
-  (println " 7 | 8 | 9 \n"))
-
-(defn instructions []
-  (println "First player will be playing with 'X'.\n")
-  (println "The board is represented bellow:\n")
-  (board-representation))
+(def first-player :x)
+(def second-player :o)
 
 (defn -main []
-  (instructions)
-  )
+  (println "message")
+  (println (board-representation (board)))
+  (move (board) :x 1)
+  (println (board-representation (board)))
+)
 
 
