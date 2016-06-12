@@ -2,31 +2,17 @@
   (:require [speclj.core :refer :all]
             [ttt.helpers :refer :all]))
 
-(describe "spot-to-string"
-  (it "returns ' 1 ' if integer is 0"
-    (should= " 1 " (spot-to-string 0))
-  )
-  (it "converts integer into its string representation on board"
-    (should= " 2 " (spot-to-string 1))
-  )
-)
-
-(describe "keyword-to-string"
+; test pass even with "x"
+(describe "translate-keyword"
   (it "returns ' x '"
-    (should= " x " (keyword-to-string :x))
-  )
+    (should= " x " (translate-keyword :x)))
   (it "returns ' o '"
-    (should= " o " (keyword-to-string :o))
-  )
-)
+    (should= " o " (translate-keyword :o)))
+  (it "returns an empty space for :_"
+    (should= "   " (translate-keyword :_))))
 
-(describe "to-string"
-  (it "uses keyword-to-string if element is string"
-    (should= " x " (to-string :x))
-  )
-  (it "uses spot-to-string if element is integer"
-    (should= " 1 " (to-string 0))
-  )
-)
-
-
+; (describe "input-to-number"
+;   (it "returns 0 when input is '1'"
+;     (should= 0 (input-to-number "1"))
+;   )
+; )
