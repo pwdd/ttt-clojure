@@ -10,10 +10,6 @@
   (it "has the default value of squared board-size"
     (should= 9 board-length)))
 
-(describe "winning-positions"
-  (it "holds a vector with all winning positions"
-    (should= 8 (count winning-positions))))
-
 (describe "new-board"
   (it "is a vector of (range 9)"
     (should= [:_ :_ :_ :_ :_ :_ :_ :_ :_]
@@ -70,3 +66,116 @@
     (should (is-valid-move? [:x :_ :o :_ :_ :_ :_ :_ :_] 3)))
   (it "returns false if move is not valid"
     (should-not (is-valid-move? [:_ :x :o :_ :_ :_ :_ :_ :_] 1))))
+
+(describe "get-rows"
+  (it "gets all rows from board if board is empty"
+    (should= [[:_ :_ :_] [:_ :_ :_] [:_ :_ :_]]
+             (get-rows [:_ :_ :_
+                        :_ :_ :_
+                        :_ :_ :_])))
+  (it "gets rows if spots are taken"
+    (should= [[:x :o :_] [:_ :x :x] [:_ :o :o]]
+             (get-rows [:x :o :_
+                        :_ :x :x
+                        :_ :o :o]))))
+
+(describe "get-cols"
+  (it "gets columns from empty board"
+    (should= [[:_ :_ :_] [:_ :_ :_] [:_ :_ :_]]
+             (get-cols [:_ :_ :_
+                        :_ :_ :_
+                        :_ :_ :_])))
+  (it "gets columns if spots are taken"
+    (should= [[:x :o :x] [:o :x :x] [:o :x :x]]
+             (get-cols [:x :o :o
+                        :o :x :x
+                        :x :x :x]))))
+
+(describe "get-diagonals"
+  (it "gets diagonals from empty board"
+    (should= [[:_ :_ :_] [:_ :_ :_]]
+             (get-diagonals [:_ :_ :_ :_ :_ :_ :_ :_ :_])))
+  (it "gets diagonals on board with spots taken"
+    (should= [[:x :x :x] [:o :x :x]]
+             (get-diagonals [:x :o :o
+                             :o :x :x
+                             :x :x :x]))))
+
+(describe "get-combos"
+  (it "get cols, rows and diagonals from empty board"
+    (should= [[:_ :_ :_] [:_ :_ :_] [:_ :_ :_]
+              [:_ :_ :_] [:_ :_ :_] [:_ :_ :_]
+              [:_ :_ :_] [:_ :_ :_]]
+              (get-combos [:_ :_ :_ :_ :_ :_ :_ :_ :_])))
+  (it "get cols, rows and diagonals from empty board"
+    (should= [[:x :o :o] [:o :x :x] [:x :x :x]
+              [:x :o :x] [:o :x :x] [:o :x :x]
+              [:x :x :x] [:o :x :x]]
+              (get-combos [:x :o :o
+                           :o :x :x
+                           :x :x :x]))))
+
+(describe "winner"
+  (it "returns nil if board is empty"
+    (should (nil? (winner [:_ :_ :_ :_ :_ :_ :_ :_ :_]))))
+  (it "returns nil if there is no winner"
+    (should (nil? (winner [:x :o :x
+                           :o :x :o
+                           :o :x :o]))))
+  (it "returns the winner if there is one on rows"
+    (should= :x (winner [:x :x :x
+                         :_ :_ :o
+                         :o :o :_])))
+  (it "returns the winner if there is one in second row"
+    (should= :x (winner [:_ :_ :o
+                         :x :x :x
+                         :o :o :_])))
+  (it "returns the winner if there is one in column"
+    (should= :x (winner [:x :_ :_
+                         :x :o :o
+                         :x :_ :_])))
+  (it "returns the winner if there is one in the second row"
+    (should= :x (winner [:_ :x :_
+                         :o :x :o
+                         :o :x :_])))
+  (it "returns the winner if there is one in a diagonal"
+    (should= :o (winner [:o :x :x
+                         :x :o :_
+                         :_ :_ :o])))
+  (it "returns the winner if there is one in the other diagonal"
+    (should= :x (winner [:x :_ :x
+                         :o :x :o
+                         :x :o :_]))))
+
+
+; (describe "winner-two"
+;   (it "returns nil if board is empty"
+;     (should (nil? (winner-two [:_ :_ :_ :_ :_ :_ :_ :_ :_]))))
+;   (it "returns nil if there is no winner"
+;     (should (nil? (winner-two [:x :o :x
+;                                :o :x :o
+;                                :o :x :o]))))
+;   (it "returns the winner if there is one on rows"
+;     (should= :x (winner-two [:x :x :x
+;                              :_ :_ :o
+;                              :o :o :_])))
+;   (it "returns the winner if there is one in second row"
+;     (should= :x (winner-two [:_ :_ :o
+;                              :x :x :x
+;                              :o :o :_])))
+;   (it "returns the winner if there is one in column"
+;     (should= :x (winner-two [:x :_ :_
+;                              :x :o :o
+;                              :x :_ :_])))
+;   (it "returns the winner if there is one in the second row"
+;     (should= :x (winner-two [:_ :x :_
+;                              :o :x :o
+;                              :o :x :_])))
+;   (it "returns the winner if there is one in a diagonal"
+;     (should= :o (winner-two [:o :x :x
+;                              :x :o :_
+;                              :_ :_ :o])))
+;   (it "returns the winner if there is one in the other diagonal"
+;     (should= :x (winner-two [:x :_ :x
+;                              :o :x :o
+;                              :x :o :_]))))
