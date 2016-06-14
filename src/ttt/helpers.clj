@@ -1,4 +1,5 @@
-(ns ttt.helpers)
+(ns ttt.helpers
+  (:require [ttt.board :as board]))
 
 (defn translate-keyword
   [k]
@@ -16,4 +17,4 @@
 
 (defn input-to-number
   [user-input]
-  (- (Integer/parseInt user-input) 1))
+  (dec (Integer/parseInt user-input)))

@@ -3,28 +3,25 @@
 (def board-size 3)
 (def board-length (* board-size board-size))
 (def empty-spot :_)
+(def first-player :x)
+(def second-player :o)
 
-(def winning-positions
-  [
-  [0 1 2]
-  [3 4 5]
-  [6 7 8]
+(def winning-combos [
+                     [0 1 2]
+                     [3 4 5]
+                     [6 7 8]
 
-  [0 3 6]
-  [1 4 7]
-  [2 5 8]
+                     [0 3 6]
+                     [1 4 7]
+                     [2 5 8]
 
-  [0 4 8]
-  [2 4 6]
-  ])
+                     [0 4 8]
+                     [2 4 6]
+                    ])
 
 (defn new-board
   []
   (vec (repeat board-length empty-spot)))
-
-(defn is-empty-spot?
-  [marker]
-  (= marker empty-spot))
 
 (defn move
   [board marker spot]
@@ -32,17 +29,11 @@
 
 (defn is-available?
   [board spot]
-  (= empty-spot (get board spot)))
+  (= empty-spot (board spot)))
 
 (defn is-full?
   [board]
-  (not (some is-empty-spot? board)))
-
-(defn available-spots
-  [board]
-  (map first
-    (filter #(= (second %) empty-spot)
-            (map-indexed vector board))))
+  (every? #{first-player second-player} board))
 
 (defn in-range?
   [number]
@@ -52,49 +43,29 @@
   [board spot]
   (and (in-range? spot) (is-available? board spot)))
 
-(defn get-rows
+(defn winning-combo
   [board]
-  (vec (partition board-size board)))
-
-(defn get-cols
-  [board]
-  (vector
-    (take-nth 3 board)
-    (take-nth 3 (drop 1 board))
-    (take-nth 3 (drop 2 board))))
-
-(defn get-diagonals
-  [board]
-  (vector
-    (take-nth 4 board)
-    (take-nth 2 (drop-last 2 (drop 2 board)))))
-
-(defn get-combos
-  [board]
-  (into [] (concat (get-rows board)
-                   (get-cols board)
-                   (get-diagonals board))))
+  (first
+    (filter #(not (nil? %))
+      (for [combo winning-combos]
+        (if (and (= (board (combo 0))
+                    (board (combo 1))
+                    (board (combo 2)))
+                  (not (= (board (combo 0)) empty-spot)))
+          combo)))))
 
 (defn winner
   [board]
-  (let [combos (get-combos board)]
-    (let [preds
-         (for [combo combos]
-           (apply = combo))
-         ]
-         (if (>= (.indexOf preds true) 0)
-           (let [marker
-                 (nth (get combos (.indexOf preds true)) 0)
-                ]
-             (if (not (= marker empty-spot))
-               marker))))))
+  (if (winning-combo board)
+    (let [combo (winning-combo board)]
+       (board (combo 0)))))
 
-; (defn winner-two
-;   [board]
-;   (loop [combo winning-positions]
-;     (if (and (= (get board (get combo 0))
-;                 (get board (get combo 1))
-;                 (get board (get combo 2)))
-;              (not (= (get board (get combo 0)) empty-spot)))
-;       (combo 0))
-;   ))
+(defn draw?
+  [board]
+  (and (is-full? board)
+       (not (winner board))))
+
+(defn game-over?
+  [board]
+  (or (draw? board)
+      (not (nil? (winner board)))))

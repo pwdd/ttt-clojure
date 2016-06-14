@@ -2,7 +2,6 @@
   (:require [speclj.core :refer :all]
             [ttt.helpers :refer :all]))
 
-; test pass even with "x"
 (describe "translate-keyword"
   (it "returns ' x '"
     (should= " x " (translate-keyword :x)))
@@ -16,8 +15,14 @@
     (should (is-int? "0")))
   (it "returns true if string is 5"
     (should (is-int? "5")))
+  (it "returns true if string is '  1 '"
+    (should (is-int? "  1 ")))
   (it "returns false if string is 'a'"
-    (should-not (is-int? "a"))))
+    (should-not (is-int? "a")))
+  (it "returns false if string is '   a '"
+    (should-not (is-int? "a")))
+  (it "returns false if string is 'parakeet'"
+    (should-not (is-int? "parakeet"))))
 
 (describe "input-to-number"
   (it "returns 0 when input is '1'"
