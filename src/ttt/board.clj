@@ -1,4 +1,5 @@
-(ns ttt.board)
+(ns ttt.board
+  (:require [ttt.helpers :as helpers]))
 
 (def board-size 3)
 (def board-length (* board-size board-size))
@@ -35,13 +36,9 @@
   [board]
   (every? #{first-player second-player} board))
 
-(defn in-range?
-  [number]
-  (and (>= number 0) (<= number board-length)))
-
 (defn is-valid-move?
   [board spot]
-  (and (in-range? spot) (is-available? board spot)))
+  (and (helpers/in-range? spot board-length) (is-available? board spot)))
 
 (defn winning-combo
   [board]

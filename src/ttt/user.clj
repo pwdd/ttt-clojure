@@ -1,19 +1,19 @@
 (ns ttt.user
-  (:require [ttt.helpers :refer [is-int? input-to-number]]
-            [ttt.board :refer [is-valid-move?]]
-            [ttt.messenger :refer [choose-a-number]]))
+  (:require [ttt.helpers :as helpers]
+            [ttt.board :as board]
+            [ttt.messenger :as messenger]))
 
 (defn get-spot
   []
   (let [input (read-line)]
-    (if (is-int? input)
-      (input-to-number input))))
+    (if (helpers/is-int? input)
+      (helpers/input-to-number input))))
 
 ; TODO test
 (defn get-valid-input
   [board]
-  (println choose-a-number)
+  (println messenger/choose-a-number)
   (let [input (get-spot)]
-    (if (is-valid-move? board input)
+    (if (board/is-valid-move? board input)
       input
       (recur board))))

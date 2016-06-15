@@ -35,16 +35,6 @@
   (it "returns false if there is any spot available"
     (should-not (is-full? [:x :x :x :x :x :x :x :x :_]))))
 
-(describe "in-range?"
-  (it "returns true if number is in range"
-    (should (in-range? 2)))
-  (it "returns false if number is not in range"
-    (should-not (in-range? 10)))
-  (it "returns true if 0"
-      (should (in-range? 0)))
-  (it "returns true if 9"
-      (should (in-range? 9))))
-
 (describe "is-valid-move?"
   (it "returns true if input is valid move"
     (should (is-valid-move? [:_ :_ :_ :_ :_ :_ :_ :_ :_] 0)))

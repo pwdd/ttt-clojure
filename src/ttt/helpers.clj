@@ -1,5 +1,4 @@
-(ns ttt.helpers
-  (:require [ttt.board :as board]))
+(ns ttt.helpers)
 
 (defn translate-keyword
   [k]
@@ -18,3 +17,7 @@
 (defn input-to-number
   [user-input]
   (dec (Integer/parseInt user-input)))
+
+(defn in-range?
+  [idx limit]
+  (and (>= idx 0) (< idx limit)))
