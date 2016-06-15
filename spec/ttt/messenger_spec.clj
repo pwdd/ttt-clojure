@@ -22,16 +22,16 @@
                             :o :x :o
                             :o :x :o])))
   (it "returns X if first player won"
-    (should= "Player X won on positions [1 2 3]" (result [:x :x :x
+    (should= "Player X won on positions 1, 2, 3" (result [:x :x :x
                                     :o :_ :o
                                     :o :x :o])))
   (it "returns 'O' if second player won"
-    (should= "Player O won on positions [1 5 9]" (result [:o :x :x
+    (should= "Player O won on positions 1, 5, 9" (result [:o :x :x
                                                           :x :o :_
                                                            :_ :_ :o]))))
 
 (describe "print-combo"
-  (it "returns [1 2 3]"
-    (should= [1 2 3] (print-combo [0 1 2])))
-  (it "returns [3 5 7]"
-    (should= [3 5 7] (print-combo [2 4 6]))))
+  (it "returns 1, 2, 3"
+    (should= "1, 2, 3" (print-combo [0 1 2])))
+  (it "returns 3, 5, 7"
+    (should= "3, 5, 7" (print-combo [2 4 6]))))

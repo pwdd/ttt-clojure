@@ -1,6 +1,6 @@
 (ns ttt.messenger
-  (:require [ttt.helpers :refer [translate-keyword]]
-            [ttt.board :refer [board-size draw? winner winning-combo]]))
+  (:require [ttt.helpers :as helpers]
+            [ttt.board :as board]))
 
 (def separator "\n---|---|---\n")
 
@@ -17,7 +17,7 @@
   [board]
   (str
     (clojure.string/join separator
-      (let [board (partition board-size (map translate-keyword board))]
+      (let [board (partition board/board-size (map helpers/translate-keyword board))]
         (for [combo board]
           (clojure.string/join "|" combo)
         )
@@ -29,13 +29,13 @@
 
 (defn print-combo
   [combo]
-  (vec (map #(inc %) combo)))
+  (clojure.string/join ", " (map #(inc %) combo)))
 
 (defn result
   [board]
-  (if (draw? board)
+  (if (board/draw? board)
     "tie"
     (str "Player "
-         (clojure.string/upper-case (name (winner board)))
+         (clojure.string/upper-case (name (board/winner board)))
          " won on positions "
-         (print-combo (winning-combo board)))))
+         (print-combo (board/winning-combo board)))))
