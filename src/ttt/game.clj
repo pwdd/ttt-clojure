@@ -3,6 +3,9 @@
            [ttt.user :as player]
            [ttt.messenger :as messenger]))
 
+(def first-player :x)
+(def second-player :o)
+
 (defn play
   [board current-player opponent]
   (let [input (player/get-valid-input board)

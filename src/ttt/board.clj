@@ -4,8 +4,6 @@
 (def board-size 3)
 (def board-length (* board-size board-size))
 (def empty-spot :_)
-(def first-player :x)
-(def second-player :o)
 
 (def winning-combos [
                      [0 1 2]
@@ -33,8 +31,8 @@
   (= empty-spot (board spot)))
 
 (defn is-full?
-  [board]
-  (every? #{first-player second-player} board))
+  [board first-marker second-marker]
+  (every? #{first-marker second-marker} board))
 
 (defn is-valid-move?
   [board spot]
@@ -58,11 +56,11 @@
        (board (combo 0)))))
 
 (defn draw?
-  [board]
-  (and (is-full? board)
+  [board first-marker second-marker]
+  (and (is-full? board first-marker second-marker)
        (not (winner board))))
 
 (defn game-over?
-  [board]
-  (or (draw? board)
+  [board first-marker second-marker]
+  (or (draw? board first-marker second-marker)
       (not (nil? (winner board)))))
