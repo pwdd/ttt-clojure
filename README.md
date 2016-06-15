@@ -2,7 +2,7 @@
 
 - Running the game:
 
-  From root, run `lein run`. It is necessary to have [Leinxxx]() installed.
+  From root, run `lein run`. It is necessary to have [Leiningen](http://leiningen.org/) installed.
 
 - Running the tests:
 
