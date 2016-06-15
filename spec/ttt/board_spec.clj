@@ -10,6 +10,14 @@
   (it "has the default value of squared board-size"
     (should= 9 board-length)))
 
+(describe "empty-spot"
+  (it "holds an empty space on board"
+    (should-not (nil? empty-spot))))
+
+(describe "winning-combos"
+  (it "holds all winning combination"
+    (should= 8 (count winning-combos))))
+
 (describe "new-board"
   (it "is a vector of (range 9)"
     (should= [:_ :_ :_ :_ :_ :_ :_ :_ :_]
@@ -44,6 +52,57 @@
     (should (is-valid-move? [:x :_ :o :_ :_ :_ :_ :_ :_] 3)))
   (it "returns false if move is not valid"
     (should-not (is-valid-move? [:_ :x :o :_ :_ :_ :_ :_ :_] 1))))
+
+(describe "triple?"
+  (it "returns false if board is empty"
+    (should-not (triple? [:_ :_ :_ :_ :_ :_ :_ :_ :_] [0 1 2])))
+  (it "returns true if there are three repeated elements in [0 1 2]"
+    (should (triple? [:x :x :x
+                      :o :_ :_
+                      :o :o :_] [0 1 2])))
+  (it "returns true if there are three repeated elements in [2 4 6]"
+    (should (triple? [:o :_ :x
+                      :o :x :_
+                      :x :o :_] [2 4 6]))))
+
+(describe "find-triple"
+  (it "return a list containing nil and [0 1 2]"
+    (should= '([0 1 2] nil nil nil nil nil nil nil)
+             (find-triple [:x :x :x
+                           :o :_ :_
+                           :o :o :_])))
+  (it "return a list containing nil, [3 4 5] and [6 7 8]"
+    (should= '(nil [3 4 5] [6 7 8] nil nil nil nil nil)
+              (find-triple [:x :o :_
+                            :o :o :o
+                            :x :x :x])))
+  (it "returns a list containing nil, [2 4 6] [2 5 8]"
+    (should= '(nil nil nil nil nil [2 5 8] nil [2 4 6])
+            (find-triple [:x :x :o
+                          :x :o :o
+                          :o :x :o]))))
+
+(describe "winning-combo"
+  (it "returns nothing when board is empty"
+    (should-not (winning-combo [:_ :_ :_
+                                :_ :_ :_
+                                :_ :_ :_])))
+  (it "returns nothing if finds 3 empty spots"
+    (should-not (winning-combo [:x :o :x
+                                :_ :_ :_
+                                :x :_ :o])))
+  (it "returns winning row"
+    (should= [0 1 2] (winning-combo [:x :x :x
+                                     :o :o :_
+                                     :o :_ :_])))
+  (it "returns winning column"
+    (should= [1 4 7] (winning-combo [:x :o :x
+                                     :_ :o :_
+                                     :x :o :x])))
+  (it "returns winning diagonal"
+    (should= [2 4 6] (winning-combo [:x :_ :o
+                                     :_ :o :x
+                                     :o :x :x]))))
 
 (describe "winner"
   (it "returns nil if board is empty"
@@ -108,37 +167,3 @@
     (should (game-over? [:x :x :x
                          :o :_ :o
                          :o :x :o] :o :x))))
-
-(describe "triples?"
-  (it "returns false if board is empty"
-    (should-not (triples? [:_ :_ :_ :_ :_ :_ :_ :_ :_] [0 1 2])))
-  (it "returns true if there are three repeated elements in [0 1 2]"
-    (should (triples? [:x :x :x
-                       :o :_ :_
-                       :o :o :_] [0 1 2])))
- (it "returns true if there are three repeated elements in [2 4 6]"
-   (should (triples? [:o :_ :x
-                      :o :x :_
-                      :x :o :_] [2 4 6]))))
-
-(describe "winning-combo"
-  (it "returns nothing when board is empty"
-    (should-not (winning-combo [:_ :_ :_
-                                :_ :_ :_
-                                :_ :_ :_])))
-  (it "returns nothing if finds 3 empty spots"
-    (should-not (winning-combo [:x :o :x
-                                :_ :_ :_
-                                :x :_ :o])))
-  (it "returns winning row"
-    (should= [0 1 2] (winning-combo [:x :x :x
-                                     :o :o :_
-                                     :o :_ :_])))
-  (it "returns winning column"
-    (should= [1 4 7] (winning-combo [:x :o :x
-                                     :_ :o :_
-                                     :x :o :x])))
-  (it "returns winning diagonal"
-    (should= [2 4 6] (winning-combo [:x :_ :o
-                                     :_ :o :x
-                                     :o :x :x]))))
