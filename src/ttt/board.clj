@@ -3,28 +3,25 @@
 (def board-size 3)
 (def board-length (* board-size board-size))
 (def empty-spot :_)
+(def first-player :x)
+(def second-player :o)
 
-(def winning-positions
-  [
-    [0 1 2]
-    [3 4 5]
-    [6 7 8]
+(def winning-combos [
+                     [0 1 2]
+                     [3 4 5]
+                     [6 7 8]
 
-    [0 3 6]
-    [1 4 7]
-    [2 5 8]
+                     [0 3 6]
+                     [1 4 7]
+                     [2 5 8]
 
-    [0 4 8]
-    [2 4 6]
-  ])
+                     [0 4 8]
+                     [2 4 6]
+                    ])
 
 (defn new-board
   []
   (vec (repeat board-length empty-spot)))
-
-(defn is-empty-spot?
-  [marker]
-  (= marker empty-spot))
 
 (defn move
   [board marker spot]
@@ -32,17 +29,11 @@
 
 (defn is-available?
   [board spot]
-  (= empty-spot (get board spot)))
+  (= empty-spot (board spot)))
 
 (defn is-full?
   [board]
-  (not (some is-empty-spot? board)))
-
-(defn available-spots
-  [board]
-  (map first
-    (filter #(= (second %) empty-spot)
-            (map-indexed vector board))))
+  (every? #{first-player second-player} board))
 
 (defn in-range?
   [number]
@@ -51,3 +42,30 @@
 (defn is-valid-move?
   [board spot]
   (and (in-range? spot) (is-available? board spot)))
+
+(defn winning-combo
+  [board]
+  (first
+    (filter #(not (nil? %))
+      (for [combo winning-combos]
+        (if (and (= (board (combo 0))
+                    (board (combo 1))
+                    (board (combo 2)))
+                  (not (= (board (combo 0)) empty-spot)))
+          combo)))))
+
+(defn winner
+  [board]
+  (if (winning-combo board)
+    (let [combo (winning-combo board)]
+       (board (combo 0)))))
+
+(defn draw?
+  [board]
+  (and (is-full? board)
+       (not (winner board))))
+
+(defn game-over?
+  [board]
+  (or (draw? board)
+      (not (nil? (winner board)))))

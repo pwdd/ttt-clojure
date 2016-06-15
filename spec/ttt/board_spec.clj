@@ -10,20 +10,10 @@
   (it "has the default value of squared board-size"
     (should= 9 board-length)))
 
-(describe "winning-positions"
-  (it "holds a vector with all winning positions"
-    (should= 8 (count winning-positions))))
-
 (describe "new-board"
   (it "is a vector of (range 9)"
     (should= [:_ :_ :_ :_ :_ :_ :_ :_ :_]
              (new-board))))
-
-(describe "is-empty-spot?"
-  (it "returns true if spot is :_"
-    (should (is-empty-spot? :_))
-  (it "returns false otherwise"
-    (should-not (is-empty-spot? :x)))))
 
 (describe "move"
   (it "sets a value to an empty board"
@@ -45,14 +35,6 @@
   (it "returns false if there is any spot available"
     (should-not (is-full? [:x :x :x :x :x :x :x :x :_]))))
 
-(describe "available-spots"
-  (it "returns a list with one element if only one spot is available"
-    (should= '(8) (available-spots [:x :x :x :x :x :x :x :x :_])))
-  (it "returns a vector with more than one spot available"
-    (should= '(0 1 8) (available-spots [:_ :_ :x :x :x :x :x :x :_])))
-  (it "returns an empty vector is no spot is available"
-    (should= '() (available-spots [[:x :x :x :x :x :x :x :x :x]]))))
-
 (describe "in-range?"
   (it "returns true if number is in range"
     (should (in-range? 2)))
@@ -70,3 +52,89 @@
     (should (is-valid-move? [:x :_ :o :_ :_ :_ :_ :_ :_] 3)))
   (it "returns false if move is not valid"
     (should-not (is-valid-move? [:_ :x :o :_ :_ :_ :_ :_ :_] 1))))
+
+(describe "winner"
+  (it "returns nil if board is empty"
+    (should (nil? (winner [:_ :_ :_ :_ :_ :_ :_ :_ :_]))))
+  (it "returns nil if there is no winner"
+    (should (nil? (winner [:x :o :x
+                           :o :x :o
+                           :o :x :o]))))
+  (it "returns the winner if there is one on rows"
+    (should= :x (winner [:x :x :x
+                         :_ :_ :o
+                         :o :o :_])))
+  (it "returns the winner if there is one in second row"
+    (should= :x (winner [:_ :_ :o
+                         :x :x :x
+                         :o :o :_])))
+  (it "returns the winner if there is one in column"
+    (should= :x (winner [:x :_ :_
+                         :x :o :o
+                         :x :_ :_])))
+  (it "returns the winner if there is one in the second row"
+    (should= :x (winner [:_ :x :_
+                         :o :x :o
+                         :o :x :_])))
+  (it "returns the winner if there is one in a diagonal"
+    (should= :o (winner [:o :x :x
+                         :x :o :_
+                         :_ :_ :o])))
+  (it "returns the winner if there is one in the other diagonal"
+    (should= :x (winner [:x :_ :x
+                         :o :x :o
+                         :x :o :_]))))
+
+(describe "draw?"
+  (it "returns false if board is empty"
+    (should-not (draw? [:_ :_ :_ :_ :_ :_ :_ :_ :_])))
+  (it "returns false if board is not full"
+    (should-not (draw? [:x :x :x :x :x :x :x :x :_])))
+  (it "returns false if there is a winner"
+    (should-not (draw? [:o :x :_
+                        :o :_ :x
+                        :o :x :x])))
+  (it "returns false if board is full and there is a winner"
+    (should-not (draw? [:x :o :x
+                        :o :x :o
+                        :o :o :x])))
+  (it "returns true if board is full and there is no winner"
+    (should (draw? [:x :o :x
+                    :o :x :o
+                    :o :x :o]))))
+
+(describe "game-over?"
+  (it "returns false if board is empty"
+    (should-not (game-over? [:_ :_ :_ :_ :_ :_ :_ :_ :_])))
+  (it "returns false if only some spots are taken"
+    (should-not (game-over? [:x :o :_ :_ :_ :x :_ :_ :o])))
+  (it "returns true if there is a draw"
+    (should (game-over? [:x :o :x
+                         :o :x :o
+                         :o :x :o])))
+  (it "returns true if there is a winner"
+    (should (game-over? [:x :x :x
+                         :o :_ :o
+                         :o :x :o]))))
+
+(describe "winning-combo"
+  (it "returns nothing when board is empty"
+    (should-not (winning-combo [:_ :_ :_
+                                :_ :_ :_
+                                :_ :_ :_])))
+  (it "returns nothing if finds 3 empty spots"
+    (should-not (winning-combo [:x :o :x
+                                :_ :_ :_
+                                :x :_ :o])))
+  (it "returns winning row"
+    (should= [0 1 2] (winning-combo [:x :x :x
+                                     :o :o :_
+                                     :o :_ :_])))
+  (it "returns winning column"
+    (should= [1 4 7] (winning-combo [:x :o :x
+                                     :_ :o :_
+                                     :x :o :x])))
+  (it "returns winning diagonal"
+    (should= [2 4 6] (winning-combo [:x :_ :o
+                                     :_ :o :x
+                                     :o :x :x]))))
