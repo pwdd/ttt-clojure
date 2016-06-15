@@ -109,6 +109,18 @@
                          :o :_ :o
                          :o :x :o] :o :x))))
 
+(describe "triples?"
+  (it "returns false if board is empty"
+    (should-not (triples? [:_ :_ :_ :_ :_ :_ :_ :_ :_] [0 1 2])))
+  (it "returns true if there are three repeated elements in [0 1 2]"
+    (should (triples? [:x :x :x
+                       :o :_ :_
+                       :o :o :_] [0 1 2])))
+ (it "returns true if there are three repeated elements in [2 4 6]"
+   (should (triples? [:o :_ :x
+                      :o :x :_
+                      :x :o :_] [2 4 6]))))
+
 (describe "winning-combo"
   (it "returns nothing when board is empty"
     (should-not (winning-combo [:_ :_ :_

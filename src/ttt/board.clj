@@ -39,15 +39,19 @@
   (and (helpers/in-range? spot board-length)
        (is-available? board spot)))
 
+(defn triples?
+  [board combo]
+  (and (= (board (combo 0))
+          (board (combo 1))
+          (board (combo 2)))
+      (not (= (board (combo 0)) empty-spot))))
+
 (defn winning-combo
   [board]
   (first
     (filter #(not (nil? %))
       (for [combo winning-combos]
-        (if (and (= (board (combo 0))
-                    (board (combo 1))
-                    (board (combo 2)))
-                  (not (= (board (combo 0)) empty-spot)))
+        (if (triples? board combo)
           combo)))))
 
 (defn winner
