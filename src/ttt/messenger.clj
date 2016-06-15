@@ -32,8 +32,8 @@
   (clojure.string/join ", " (map #(inc %) combo)))
 
 (defn result
-  [board]
-  (if (board/draw? board)
+  [board first-marker second-marker]
+  (if (board/draw? board first-marker second-marker)
     "tie"
     (str "Player "
          (clojure.string/upper-case (name (board/winner board)))
