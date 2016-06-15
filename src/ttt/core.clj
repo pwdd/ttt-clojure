@@ -1,5 +1,4 @@
 (ns ttt.core
-  ; FIXME temporarily load all so there is access on repl
   (:require [ttt.board :as board]
             [ttt.messenger :as messenger]
             [ttt.game :as game]))

@@ -36,7 +36,8 @@
 
 (defn is-valid-move?
   [board spot]
-  (and (helpers/in-range? spot board-length) (is-available? board spot)))
+  (and (helpers/in-range? spot board-length)
+       (is-available? board spot)))
 
 (defn winning-combo
   [board]
