@@ -31,23 +31,30 @@
   (= empty-spot (board spot)))
 
 (defn is-full?
-  [board first-marker second-marker]
-  (every? #{first-marker second-marker} board))
+  [board]
+  (not-any? #(= empty-spot %) board))
 
 (defn is-valid-move?
   [board spot]
-  (and (helpers/in-range? spot board-length) (is-available? board spot)))
+  (and (helpers/in-range? spot board-length)
+       (is-available? board spot)))
+
+(defn triple?
+  [board combo]
+  (and (= (board (combo 0))
+          (board (combo 1))
+          (board (combo 2)))
+      (not (= (board (combo 0)) empty-spot))))
+
+(defn find-triple
+  [board]
+  (for [combo winning-combos]
+    (if (triple? board combo)
+      combo)))
 
 (defn winning-combo
   [board]
-  (first
-    (filter #(not (nil? %))
-      (for [combo winning-combos]
-        (if (and (= (board (combo 0))
-                    (board (combo 1))
-                    (board (combo 2)))
-                  (not (= (board (combo 0)) empty-spot)))
-          combo)))))
+  (first (remove nil? (find-triple board))))
 
 (defn winner
   [board]
@@ -56,11 +63,11 @@
        (board (combo 0)))))
 
 (defn draw?
-  [board first-marker second-marker]
-  (and (is-full? board first-marker second-marker)
+  [board]
+  (and (is-full? board)
        (not (winner board))))
 
 (defn game-over?
-  [board first-marker second-marker]
-  (or (draw? board first-marker second-marker)
+  [board]
+  (or (draw? board)
       (not (nil? (winner board)))))

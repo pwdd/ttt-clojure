@@ -16,7 +16,7 @@
 
 (defn input-to-number
   [user-input]
-  (dec (Integer/parseInt user-input)))
+  (dec (Integer/parseInt (clojure.string/trim user-input))))
 
 (defn in-range?
   [idx limit]

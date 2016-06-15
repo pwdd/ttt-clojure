@@ -32,10 +32,22 @@
   (clojure.string/join ", " (map #(inc %) combo)))
 
 (defn result
-  [board first-marker second-marker]
-  (if (board/draw? board first-marker second-marker)
-    "tie"
-    (str "Player "
-         (clojure.string/upper-case (name (board/winner board)))
-         " won on positions "
-         (print-combo (board/winning-combo board)))))
+  [board]
+  (cond
+    (board/draw? board) "You tied\n"
+    (= (board/winner board) :x)
+      (str "You won!\n"
+      "Winning positions: "
+      (print-combo (board/winning-combo board))
+      "\n")
+    :else
+      (str "You lost.\n"
+           "Computer won on positions "
+           (print-combo (board/winning-combo board))
+            "\n")))
+
+(defn moved-to
+ [player spot]
+ (if (= (player :type) "computer")
+   (str "Computer moved to " (inc spot))
+   ""))
