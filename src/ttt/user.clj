@@ -5,14 +5,15 @@
 
 (defn get-spot
   []
+  (println messenger/choose-a-number)
   (let [input (read-line)]
     (if (helpers/is-int? input)
-      (helpers/input-to-number input))))
+      (helpers/input-to-number input)
+      (recur))))
 
 ; TODO test
 (defn get-valid-input
   [board]
-  (println messenger/choose-a-number)
   (let [input (get-spot)]
     (if (board/is-valid-move? board input)
       input
