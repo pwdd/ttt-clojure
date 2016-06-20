@@ -12,7 +12,7 @@
       (recur))))
 
 ; TODO test
-(defn get-valid-input
+(defn get-valid-user-input
   [board]
   (let [input (get-spot)]
     (if (board/is-valid-move? board input)
