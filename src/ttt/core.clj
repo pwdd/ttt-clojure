@@ -7,6 +7,5 @@
   []
   (println messenger/instructions)
   (println messenger/board-representation)
-  (game/play (board/new-board) (game/player "human" :x)
-                               (game/player "computer" :o))
+  (game/play (board/new-board) game/first-player game/second-player)
   )
