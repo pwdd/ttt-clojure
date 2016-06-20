@@ -3,18 +3,10 @@
             [ttt.board :as board]
             [ttt.messenger :as messenger]))
 
-(defn get-spot
+(defn get-user-spot
   []
   (println messenger/choose-a-number)
   (let [input (read-line)]
     (if (helpers/is-int? input)
       (helpers/input-to-number input)
       (recur))))
-
-; TODO test
-(defn get-valid-user-input
-  [board]
-  (let [input (get-spot)]
-    (if (board/is-valid-move? board input)
-      input
-      (recur board))))

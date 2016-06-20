@@ -31,8 +31,8 @@
   (= empty-spot (board spot)))
 
 (defn is-full?
-  [board first-marker second-marker]
-  (every? #{first-marker second-marker} board))
+  [board]
+  (not-any? #(= empty-spot %) board))
 
 (defn is-valid-move?
   [board spot]
@@ -63,11 +63,11 @@
        (board (combo 0)))))
 
 (defn draw?
-  [board first-marker second-marker]
-  (and (is-full? board first-marker second-marker)
+  [board]
+  (and (is-full? board)
        (not (winner board))))
 
 (defn game-over?
-  [board first-marker second-marker]
-  (or (draw? board first-marker second-marker)
+  [board]
+  (or (draw? board)
       (not (nil? (winner board)))))

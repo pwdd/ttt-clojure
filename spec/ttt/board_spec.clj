@@ -39,11 +39,11 @@
 
 (describe "is-full?"
   (it "returns true if board is full"
-    (should (is-full? [:x :x :x :x :x :x :x :x :x] :x :o)))
+    (should (is-full? [:x :x :x :x :x :x :x :x :x])))
   (it "returns true if board is full"
-    (should (is-full? [:x :o :x :o :x :o :o :x :x] :x :o)))
+    (should (is-full? [:x :o :x :o :x :o :o :x :x])))
   (it "returns false if there is any spot available"
-    (should-not (is-full? [:x :x :x :x :x :x :x :x :_] :x :o))))
+    (should-not (is-full? [:x :x :x :x :x :x :x :x :_]))))
 
 (describe "is-valid-move?"
   (it "returns true if input is valid move"
@@ -138,32 +138,32 @@
 
 (describe "draw?"
   (it "returns false if board is empty"
-    (should-not (draw? [:_ :_ :_ :_ :_ :_ :_ :_ :_] :x :o)))
+    (should-not (draw? [:_ :_ :_ :_ :_ :_ :_ :_ :_])))
   (it "returns false if board is not full"
-    (should-not (draw? [:x :x :x :x :x :x :x :x :_] :x :o)))
+    (should-not (draw? [:x :x :x :x :x :x :x :x :_])))
   (it "returns false if there is a winner"
     (should-not (draw? [:o :x :_
                         :o :_ :x
-                        :o :x :x] :o :x)))
+                        :o :x :x])))
   (it "returns false if board is full and there is a winner"
     (should-not (draw? [:x :o :x
                         :o :x :o
-                        :o :o :x] :x :o)))
+                        :o :o :x])))
   (it "returns true if board is full and there is no winner"
     (should (draw? [:x :o :x
                     :o :x :o
-                    :o :x :o] :o :x))))
+                    :o :x :o]))))
 
 (describe "game-over?"
   (it "returns false if board is empty"
-    (should-not (game-over? [:_ :_ :_ :_ :_ :_ :_ :_ :_] :x :o)))
+    (should-not (game-over? [:_ :_ :_ :_ :_ :_ :_ :_ :_])))
   (it "returns false if only some spots are taken"
-    (should-not (game-over? [:x :o :_ :_ :_ :x :_ :_ :o] :o :x)))
+    (should-not (game-over? [:x :o :_ :_ :_ :x :_ :_ :o])))
   (it "returns true if there is a draw"
     (should (game-over? [:x :o :x
                          :o :x :o
-                         :o :x :o] :x :o)))
+                         :o :x :o])))
   (it "returns true if there is a winner"
     (should (game-over? [:x :x :x
                          :o :_ :o
-                         :o :x :o] :o :x))))
+                         :o :x :o]))))
