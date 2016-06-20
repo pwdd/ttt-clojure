@@ -3,18 +3,10 @@
             [ttt.board :as board]
             [ttt.messenger :as messenger]))
 
-(defn get-spot
+(defn get-human-spot
   []
   (println messenger/choose-a-number)
-  (let [input (read-line)]
+  (let [input (clojure.string/trim (read-line))]
     (if (helpers/is-int? input)
       (helpers/input-to-number input)
       (recur))))
-
-; TODO test
-(defn get-valid-input
-  [board]
-  (let [input (get-spot)]
-    (if (board/is-valid-move? board input)
-      input
-      (recur board))))

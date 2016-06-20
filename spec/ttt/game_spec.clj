@@ -2,10 +2,17 @@
   (require [speclj.core :refer :all]
            [ttt.game :refer :all]))
 
-(describe "first-player"
-  (it "holds first player marker"
-    (should-not (nil? first-player))))
+(describe "player"
+  (it "holds information if player is human"
+    (should= "human" ((player "human" :x) :type)))
+  (it "holds the human marker"
+    (should= :x ((player "human" :x) :marker)))
+  (it "holds information if player is computer"
+    (should= "computer" ((player "computer" :o) :type)))
+  (it "holds the computer marker"
+    (should= :o ((player "computer" :o) :marker))))
 
-(describe "second-player"
-  (it "holds second player marker"
-    (should-not (nil? second-player))))
+
+(describe "get-player-spot"
+  (it "calls 'get-human-spot' if player type is 'human'"
+    (should= )))
