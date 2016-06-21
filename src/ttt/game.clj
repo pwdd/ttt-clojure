@@ -13,17 +13,18 @@
      (= input "computer")))
 
 (defn who-plays
- [prompt-msg]
+ []
+ (println messenger/h-or-c)
  (let [input (helpers/clean-string (read-line))]
    (if (valid-selection? input)
      (str (nth input 0))
-     (recur prompt-msg))))
+     (recur))))
 
-; TODO test
 (defn define-player
-  [marker message prompt-msg]
-  (println message)
-  (let [type (who-plays prompt-msg)]
+  [marker & [args]]
+  (if args
+    (println args))
+  (let [type (who-plays)]
     (if (= type "h")
       {:type "human" :marker marker}
       {:type "computer" :marker marker})))

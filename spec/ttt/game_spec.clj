@@ -3,18 +3,29 @@
            [ttt.game :refer :all]))
 
 (describe "valid-selection"
-  (it "accepts only 'h' as valid input"
-    (should (valid-selection? "h"))))
+  (let [acceptable ["h" "c" "human" "computer"]]
+    (it "only accepts 'h' 'c' 'human' 'computer' as valid"
+      (should (every? valid-selection? acceptable))))
+  (it "does not accept any other string"
+    (should-not (valid-selection? "a"))))
 
 (describe "who-plays"
-  (it "returns 'h' if human starts the game"
+  (it "returns 'h' if user chooses 'human'"
     (should= "h" (with-in-str "h" (who-plays))))
   (it "returns 'h' if user spells out 'human'"
     (should= "h" (with-in-str "hUmAn" (who-plays))))
-  (it "returns 'c' if computer starts the game"
+  (it "returns 'c' if user chooses computer"
     (should= "c" (with-in-str "c" (who-plays))))
   (it "returns 'c' if user spells 'computer'"
     (should= "c" (with-in-str "coMpUteR" (who-plays)))))
+
+(describe "define-player"
+  (it "returns player with type 'human' and its marker"
+    (should= {:type "human" :marker :x}
+             (with-in-str "h" (define-player :x))))
+  (it "returns player with type 'computer' and its marker"
+    (should= {:type "computer" :marker :x}
+             (with-in-str "c" (define-player :x)))))
 
 (describe "player-spot"
   (it "gets user spot"
