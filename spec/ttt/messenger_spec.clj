@@ -23,23 +23,25 @@
     (should= "3, 5, 7" (print-combo [2 4 6]))))
 
 (describe "result-human-computer"
-  (it "returns tied game message the game ends ties"
+  (it "returns tied message the game ends ties"
     (should= "You tied\n" (result-human-computer [:x :o :x
                                    :o :x :o
-                                   :o :x :o] "human" "computer")))
-  (it "returns winning message first player won"
+                                   :o :x :o]
+                                   {:type "human" :marker :x}
+                                   {:type "computer" :marker :o})))
+  (it "returns winning message human player won"
     (should (re-find #"You won\W*(.*)"  (result-human-computer [:x :x :x
                                                                 :o :_ :o
                                                                 :o :x :o]
-                                                                "human"
-                                                                "computer"))))
+                                                                {:type "human" :marker :x}
+                                                                {:type "computer" :marker :o}))))
 
-  (it "returns 'you lost' message if second player won"
+  (it "returns 'you lost' message if human player lost"
     (should (re-find #"You lost\W*(.*)" (result-human-computer [:o :x :x
                                                  :x :o :_
                                                  :_ :_ :o]
-                                                 "human"
-                                                 "computer")))))
+                                                 {:type "human" :marker :x}
+                                                 {:type "computer" :marker :o})))))
 
 (describe "result"
  (it "returns 'tie' the game ends ties"
