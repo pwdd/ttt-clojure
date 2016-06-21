@@ -26,12 +26,12 @@
     (println args))
   (let [type (who-plays)]
     (if (= type "h")
-      {:type "human" :marker marker}
-      {:type "computer" :marker marker})))
+      {:type :human :marker marker}
+      {:type :computer :marker marker})))
 
 (defn player-spot
   [player]
-  (if (= "human" (player :type))
+  (if (= :human (player :type))
     (user/get-user-spot)
     (computer/computer-spot board/board-length)))
 

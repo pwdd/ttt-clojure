@@ -4,15 +4,17 @@
 
 (def separator "\n---|---|---\n")
 
-(def welcome "Welcome to Tic Tac Toe")
+(def welcome (str "   |------------------------|"
+                  "\n---| Welcome to Tic Tac Toe |---\n"
+                  "   |------------------------|\n"))
 
 (def instructions (str
                      "\nFirst player will be playing with 'X'.\n"
                      "The board is represented like the following:\n"))
 
-(def ask-first-player "Should player 'X' be a human or a computer?")
+(def ask-first-player "\nShould player 'X' be a human or a computer?")
 
-(def ask-second-player "Should player 'O' be a human or a computer?")
+(def ask-second-player "\nShould player 'O' be a human or a computer?")
 
 (def h-or-c "Please type H (human) or C (computer):")
 
@@ -43,7 +45,7 @@
   [board first-player second-player]
   (cond
     (board/draw? board) "You tied\n"
-    (= (board/winner-type board first-player second-player) "human")
+    (= (board/winner-type board first-player second-player) :human)
       (str "You won!\n"
       "Winning positions: "
       (print-combo (board/winning-combo board))
