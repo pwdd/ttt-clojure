@@ -48,13 +48,11 @@
 
 (defn find-triple
   [board]
-  (for [combo winning-combos]
-    (if (triple? board combo)
-      combo)))
+  (filter #(triple? board %) winning-combos))
 
 (defn winning-combo
   [board]
-  (first (remove nil? (find-triple board))))
+  (first (find-triple board)))
 
 (defn winner
   [board]
@@ -62,7 +60,6 @@
     (let [combo (winning-combo board)]
        (board (combo 0)))))
 
-; TODO test
 (defn winner-type
  [board first-player second-player]
  (let [winner (winner board)]
