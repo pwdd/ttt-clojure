@@ -41,3 +41,9 @@
     (should-not (in-range? 9 8)))
   (it "returns true for 10 if limit is 20"
      (should (in-range? 10 20))))
+
+(describe "clean-string"
+  (it "trims whitespaces"
+    (should= "abc" (clean-string " abc ")))
+  (it "lower-case inteire string"
+    (should= "abc" (clean-string "aBc"))))

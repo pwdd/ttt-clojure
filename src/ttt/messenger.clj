@@ -4,9 +4,17 @@
 
 (def separator "\n---|---|---\n")
 
+(def welcome "Welcome to Tic Tac Toe")
+
 (def instructions (str
                      "\nFirst player will be playing with 'X'.\n"
                      "The board is represented like the following:\n"))
+
+(def ask-first-player "Should player 'X' be a human or a computer?")
+
+(def ask-second-player "Should player 'O' be a human or a computer?")
+
+(def h-or-c "Please type H (human) or C (computer):")
 
 (def choose-a-number "Please enter a number from 1-9: ")
 
@@ -31,11 +39,11 @@
   [combo]
   (clojure.string/join ", " (map #(inc %) combo)))
 
-(defn result
-  [board]
+(defn result-human-computer
+  [board first-player second-player]
   (cond
     (board/draw? board) "You tied\n"
-    (= (board/winner board) :x)
+    (= (board/winner-type board first-player second-player) "human")
       (str "You won!\n"
       "Winning positions: "
       (print-combo (board/winning-combo board))
@@ -45,6 +53,15 @@
            "Computer won on positions "
            (print-combo (board/winning-combo board))
             "\n")))
+
+(defn result
+  [board]
+ (if (board/draw? board)
+   "The game tied"
+   (str "Player "
+        (clojure.string/upper-case (name (board/winner board)))
+        " won on positions "
+        (print-combo (board/winning-combo board)))))
 
 (defn moved-to
  [player spot]

@@ -21,3 +21,7 @@
 (defn in-range?
   [idx limit]
   (and (>= idx 0) (< idx limit)))
+
+(defn clean-string
+  [str]
+  (clojure.string/lower-case (clojure.string/trim str)))

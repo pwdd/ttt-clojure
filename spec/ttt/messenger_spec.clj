@@ -22,20 +22,38 @@
   (it "returns 3, 5, 7"
     (should= "3, 5, 7" (print-combo [2 4 6]))))
 
-(describe "result"
+(describe "result-human-computer"
   (it "returns tied game message the game ends ties"
-    (should= "You tied\n" (result [:x :o :x
+    (should= "You tied\n" (result-human-computer [:x :o :x
                                    :o :x :o
-                                   :o :x :o])))
+                                   :o :x :o] "human" "computer")))
   (it "returns winning message first player won"
-    (should (re-find #"You won\W*(.*)"  (result [:x :x :x
-                                                :o :_ :o
-                                                :o :x :o]))))
+    (should (re-find #"You won\W*(.*)"  (result-human-computer [:x :x :x
+                                                                :o :_ :o
+                                                                :o :x :o]
+                                                                "human"
+                                                                "computer"))))
 
   (it "returns 'you lost' message if second player won"
-    (should (re-find #"You lost\W*(.*)" (result [:o :x :x
+    (should (re-find #"You lost\W*(.*)" (result-human-computer [:o :x :x
                                                  :x :o :_
-                                                 :_ :_ :o])))))
+                                                 :_ :_ :o]
+                                                 "human"
+                                                 "computer")))))
+
+(describe "result"
+ (it "returns 'tie' the game ends ties"
+   (should= "The game tied" (result [:x :o :x
+                                     :o :x :o
+                                     :o :x :o])))
+ (it "returns X if first player won"
+   (should= "Player X won on positions 1, 2, 3" (result [:x :x :x
+                                                         :o :_ :o
+                                                         :o :x :o])))
+ (it "returns 'O' if second player won"
+   (should= "Player O won on positions 1, 5, 9" (result [:o :x :x
+                                                         :x :o :_
+                                                         :_ :_ :o]))))
 
 (describe "moved-to"
   (it "returns empty string if player is human"

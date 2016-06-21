@@ -62,6 +62,14 @@
     (let [combo (winning-combo board)]
        (board (combo 0)))))
 
+; TODO test
+(defn winner-type
+ [board first-player second-player]
+ (let [winner (winner board)]
+   (if (= (first-player :marker) winner)
+     (first-player :type)
+     (second-player :type))))
+
 (defn draw?
   [board]
   (and (is-full? board)
