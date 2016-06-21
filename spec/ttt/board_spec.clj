@@ -63,23 +63,23 @@
                       :o :x :_
                       :x :o :_] [2 4 6]))))
 
-(describe "find-triple"
+(describe "find-triples"
   (it "returns an empty list if board is empty"
     (should= '()
-             (find-triple [:_ :_ :_ :_ :_ :_ :_ :_ :_])))
+             (find-triples [:_ :_ :_ :_ :_ :_ :_ :_ :_])))
   (it "returns an empty list if board is full and there is no winner"
     (should= '()
-             (find-triple [:x :o :x
+             (find-triples [:x :o :x
                            :o :x :o
                            :o :x :o])))
   (it "identifies a single triple"
     (should= '([0 1 2])
-             (find-triple [:x :x :x
+             (find-triples [:x :x :x
                            :o :_ :_
                            :o :o :_])))
   (it "identifies multiple triples"
     (should= '([3 4 5] [6 7 8])
-              (find-triple [:x :o :_
+              (find-triples [:x :o :_
                             :o :o :o
                             :x :x :x]))))
 
@@ -144,18 +144,18 @@
 (describe "winner-type"
   (it "returns 'human' if winner has :type 'human'"
     (with-redefs [winner (fn [& _] :x)])
-    (should= "human" (winner-type [:x :o :x
+    (should= :human (winner-type [:x :o :x
                                    :o :x :o
                                    :o :o :x]
-                                   { :type "human" :marker :x }
-                                   { :type "computer" :marker :o})))
+                                   { :type :human :marker :x }
+                                   { :type :computer :marker :o})))
   (it "returns 'computer' if winner has :type 'computer'"
     (with-redefs [winner (fn [& _] :o)])
-    (should= "human" (winner-type [:x :x :x
+    (should= :human (winner-type [:x :x :x
                                    :o :o :o
                                    :o :o :x]
-                                   { :type "human" :marker :x }
-                                   { :type "computer" :marker :o}))))
+                                   { :type :human :marker :x }
+                                   { :type :computer :marker :o}))))
 
 (describe "draw?"
   (it "returns false if board is empty"

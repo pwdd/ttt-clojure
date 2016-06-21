@@ -23,25 +23,26 @@
     (should= "3, 5, 7" (print-combo [2 4 6]))))
 
 (describe "result-human-computer"
-  (it "returns tied message the game ends ties"
+  (it "returns tied message if the game ties"
     (should= "You tied\n" (result-human-computer [:x :o :x
-                                   :o :x :o
-                                   :o :x :o]
-                                   {:type "human" :marker :x}
-                                   {:type "computer" :marker :o})))
-  (it "returns winning message human player won"
-    (should (re-find #"You won\W*(.*)"  (result-human-computer [:x :x :x
-                                                                :o :_ :o
-                                                                :o :x :o]
-                                                                {:type "human" :marker :x}
-                                                                {:type "computer" :marker :o}))))
+                                                  :o :x :o
+                                                  :o :x :o]
+                                                  {:type :human :marker :x}
+                                                  {:type :computer :marker :o})))
+  (it "returns winning message if human player won"
+    (should (re-find #"You won\W*(.*)"
+                     (result-human-computer [:x :x :x
+                                             :o :_ :o
+                                             :o :x :o]
+                                             {:type :human :marker :x}
+                                             {:type :computer :marker :o}))))
 
   (it "returns 'you lost' message if human player lost"
     (should (re-find #"You lost\W*(.*)" (result-human-computer [:o :x :x
                                                  :x :o :_
                                                  :_ :_ :o]
-                                                 {:type "human" :marker :x}
-                                                 {:type "computer" :marker :o})))))
+                                                 {:type :human :marker :x}
+                                                 {:type :computer :marker :o})))))
 
 (describe "result"
  (it "returns 'tie' the game ends ties"
@@ -59,8 +60,8 @@
 
 (describe "moved-to"
   (it "returns empty string if player is human"
-    (should (empty? (moved-to {:type "human" :marker :x} 1))))
+    (should (empty? (moved-to {:type :human :marker :x} 1))))
   (it "returns a message to where computer moved incremented by one"
-    (should= "Computer moved to 4" (moved-to {:type "computer"
+    (should= "Computer moved to 4" (moved-to {:type :computer
                                               :marker :o}
                                               3))))

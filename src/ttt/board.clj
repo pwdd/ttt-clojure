@@ -46,13 +46,13 @@
           (board (combo 2)))
       (not (= (board (combo 0)) empty-spot))))
 
-(defn find-triple
+(defn find-triples
   [board]
   (filter #(triple? board %) winning-combos))
 
 (defn winning-combo
   [board]
-  (first (find-triple board)))
+  (first (find-triples board)))
 
 (defn winner
   [board]

@@ -67,6 +67,6 @@
 
 (defn moved-to
  [player spot]
- (if (= (player :type) "computer")
+ (if (= (player :type) :computer)
    (str "Computer moved to " (inc spot))
    ""))
