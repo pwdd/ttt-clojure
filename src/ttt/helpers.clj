@@ -4,12 +4,6 @@
   [str]
   (clojure.string/lower-case (clojure.string/trim str)))
 
-(defn translate-keyword
-  [k]
-  (if (not (= k :_))
-    (str " " (name k) " ")
-    "   "))
-
 (defn is-int?
   [user-input]
   (try

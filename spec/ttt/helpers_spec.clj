@@ -2,14 +2,6 @@
   (:require [speclj.core :refer :all]
             [ttt.helpers :refer :all]))
 
-(describe "translate-keyword"
-  (it "returns ' x '"
-    (should= " x " (translate-keyword :x)))
-  (it "returns ' o '"
-    (should= " o " (translate-keyword :o)))
-  (it "returns an empty space for :_"
-    (should= "   " (translate-keyword :_))))
-
 (describe "is-int?"
   (it "returns true if string is 0"
     (should (is-int? "0")))

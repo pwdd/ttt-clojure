@@ -2,6 +2,14 @@
   (:require [speclj.core :refer :all]
             [ttt.messenger :refer :all]))
 
+(describe "translate-keyword"
+  (it "returns ' x '"
+    (should= " x " (translate-keyword :x)))
+  (it "returns ' o '"
+    (should= " o " (translate-keyword :o)))
+  (it "returns an empty space for :_"
+    (should= "   " (translate-keyword :_))))
+
 (describe "print-board"
   (it "outputs a numbered representation of the board if no spot is taken"
     (should=

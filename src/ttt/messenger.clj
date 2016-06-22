@@ -1,6 +1,5 @@
 (ns ttt.messenger
-  (:require [ttt.helpers :as helpers]
-            [ttt.board :as board]))
+  (:require [ttt.board :as board]))
 
 (def separator "\n---|---|---\n")
 
@@ -23,11 +22,18 @@
 (def board-representation
   " 1 | 2 | 3 \n---|---|---\n 4 | 5 | 6 \n---|---|---\n 7 | 8 | 9 \n")
 
+(defn translate-keyword
+  [k]
+  (if (not (= k board/empty-spot))
+    (str " " (name k) " ")
+    "   "))
+
 (defn print-board
   [board]
   (str
     (clojure.string/join separator
-      (let [board (partition board/board-size (map helpers/translate-keyword board))]
+      (let [board (partition board/board-size
+                             (map translate-keyword board))]
         (for [combo board]
           (clojure.string/join "|" combo)
         )

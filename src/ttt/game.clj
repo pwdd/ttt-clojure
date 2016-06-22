@@ -51,12 +51,13 @@
 ; TODO test
 (defn play
   [board current-player opponent]
-  (let [spot (valid-spot board current-player)
+  (let [      spot (valid-spot board current-player)
         game-board (board/move board (current-player :marker) spot)]
     (println (messenger/moved-to current-player spot))
     (println (messenger/print-board game-board))
     (if (board/game-over? game-board)
       (if (game-type (current-player :type) (opponent :type))
-        (println (messenger/result-human-computer game-board current-player opponent))
+        (println (messenger/result-human-computer
+                  game-board current-player opponent))
         (println (messenger/result game-board)))
       (recur game-board opponent current-player))))
