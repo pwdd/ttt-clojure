@@ -5,27 +5,29 @@
            [ttt.computer :as computer]
            [ttt.helpers :as helpers]))
 
+(def acceptable-human-player #{ "h" "human" })
+(def acceptable-computer-player #{ "c" "computer" })
+
 (defn valid-selection?
  [input]
- (or (= input "h")
-     (= input "human")
-     (= input "c")
-     (= input "computer")))
+ (or (contains? acceptable-human-player input)
+     (contains? acceptable-computer-player input)))
 
+; TODO test
 (defn who-plays
  []
  (println messenger/h-or-c)
  (let [input (helpers/clean-string (read-line))]
    (if (valid-selection? input)
-     (str (nth input 0))
+     input
      (recur))))
 
 (defn define-player
-  [marker & [args]]
-  (if args
-    (println args))
+  [marker & [msg]]
+  (if msg
+    (println msg))
   (let [type (who-plays)]
-    (if (= type "h")
+    (if (contains? acceptable-human-player type)
       {:type :human :marker marker}
       {:type :computer :marker marker})))
 

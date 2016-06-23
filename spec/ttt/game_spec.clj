@@ -9,16 +9,6 @@
   (it "does not accept any other string"
     (should-not (valid-selection? "a"))))
 
-(describe "who-plays"
-  (it "returns 'h' if user chooses 'human'"
-    (should= "h" (with-in-str "h" (who-plays))))
-  (it "returns 'h' if user spells out 'human'"
-    (should= "h" (with-in-str "hUmAn" (who-plays))))
-  (it "returns 'c' if user chooses computer"
-    (should= "c" (with-in-str "c" (who-plays))))
-  (it "returns 'c' if user spells 'computer'"
-    (should= "c" (with-in-str "coMpUteR" (who-plays)))))
-
 (describe "define-player"
   (it "returns player with type 'human' and its marker"
     (should= {:type :human :marker :x}
