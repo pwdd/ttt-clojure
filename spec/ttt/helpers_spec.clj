@@ -3,17 +3,13 @@
             [ttt.helpers :refer :all]))
 
 (describe "is-int?"
-  (it "returns true if string is 0"
-    (should (is-int? "0")))
-  (it "returns true if string is 5"
+  (it "returns true if argument is numreric string"
     (should (is-int? "5")))
-  (it "returns true if string is '  1 '"
+  (it "returns true if argument is numeric string with whitespaces"
     (should (is-int? "  1 ")))
-  (it "returns false if string is 'a'"
+  (it "returns false if argument is not a numeric string"
     (should-not (is-int? "a")))
-  (it "returns false if string is '   a '"
-    (should-not (is-int? "a")))
-  (it "returns false if string is 'parakeet'"
+  (it "returns false if argument is a word"
     (should-not (is-int? "parakeet"))))
 
 (describe "input-to-number"
@@ -37,5 +33,5 @@
 (describe "clean-string"
   (it "trims whitespaces"
     (should= "abc" (clean-string " abc ")))
-  (it "lower-case inteire string"
+  (it "lower-case entire string"
     (should= "abc" (clean-string "aBc"))))
