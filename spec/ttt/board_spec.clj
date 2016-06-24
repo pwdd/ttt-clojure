@@ -51,35 +51,39 @@
   (it "returns false if input is out of range"
     (should-not (is-valid-move? [:_ :x :o :_ :_ :_ :_ :_ :_] 10))))
 
-(describe "triple?"
+(describe "repeated?"
   (it "returns false if board is empty"
-    (should-not (triple? [:_ :_ :_ :_ :_ :_ :_ :_ :_] [0 1 2])))
+    (should-not (repeated? [:_ :_ :_ :_ :_ :_ :_ :_ :_] [0 1 2])))
+  (it "returns false if there is no repetition on board postions"
+    (should-not (repeated? [:x :o :x
+                          :o :x :o
+                          :o :x :x] [0 1 2])))
   (it "returns true if there are three repeated elements in a row"
-    (should (triple? [:x :x :x
+    (should (repeated? [:x :x :x
                       :o :_ :_
                       :o :o :_] [0 1 2])))
   (it "returns true if there are three repeated elements in a diagonal"
-    (should (triple? [:o :_ :x
+    (should (repeated? [:o :_ :x
                       :o :x :_
                       :x :o :_] [2 4 6]))))
 
-(describe "find-triples"
+(describe "find-repetition"
   (it "returns an empty list if board is empty"
     (should= '()
-             (find-triples [:_ :_ :_ :_ :_ :_ :_ :_ :_])))
+             (find-repetition [:_ :_ :_ :_ :_ :_ :_ :_ :_])))
   (it "returns an empty list if board is full and there is no winner"
     (should= '()
-             (find-triples [:x :o :x
+             (find-repetition [:x :o :x
                            :o :x :o
                            :o :x :o])))
   (it "identifies a single triple"
     (should= '([0 1 2])
-             (find-triples [:x :x :x
+             (find-repetition [:x :x :x
                            :o :_ :_
                            :o :o :_])))
   (it "identifies multiple triples"
     (should= '([3 4 5] [6 7 8])
-              (find-triples [:x :o :_
+              (find-repetition [:x :o :_
                             :o :o :o
                             :x :x :x]))))
 

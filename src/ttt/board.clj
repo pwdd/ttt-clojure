@@ -39,20 +39,21 @@
   (and (helpers/in-range? spot board-length)
        (is-available? board spot)))
 
-(defn triple?
+(defn repeated?
   [board combo]
-  (and (= (board (combo 0))
-          (board (combo 1))
-          (board (combo 2)))
-      (not (= (board (combo 0)) empty-spot))))
+  (let [selected-combo
+        (for [idx combo]
+          (nth board idx))]
+    (if (not-any? #{empty-spot} selected-combo)
+      (apply = selected-combo))))
 
-(defn find-triples
+(defn find-repetition
   [board]
-  (filter #(triple? board %) winning-combos))
+  (filter #(repeated? board %) winning-combos))
 
 (defn winning-combo
   [board]
-  (first (find-triples board)))
+  (first (find-repetition board)))
 
 (defn winner
   [board]
