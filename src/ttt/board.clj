@@ -31,30 +31,29 @@
   (= empty-spot (board spot)))
 
 (defn is-full?
-  [board first-marker second-marker]
-  (every? #{first-marker second-marker} board))
+  [board]
+  (not-any? #(= empty-spot %) board))
 
 (defn is-valid-move?
   [board spot]
   (and (helpers/in-range? spot board-length)
        (is-available? board spot)))
 
-(defn triple?
+(defn repeated?
   [board combo]
-  (and (= (board (combo 0))
-          (board (combo 1))
-          (board (combo 2)))
-      (not (= (board (combo 0)) empty-spot))))
+  (let [selected-combo
+        (for [idx combo]
+          (nth board idx))]
+    (if (not-any? #{empty-spot} selected-combo)
+      (apply = selected-combo))))
 
-(defn find-triple
+(defn find-repetition
   [board]
-  (for [combo winning-combos]
-    (if (triple? board combo)
-      combo)))
+  (filter #(repeated? board %) winning-combos))
 
 (defn winning-combo
   [board]
-  (first (remove nil? (find-triple board))))
+  (first (find-repetition board)))
 
 (defn winner
   [board]
@@ -62,12 +61,19 @@
     (let [combo (winning-combo board)]
        (board (combo 0)))))
 
+(defn winner-type
+ [board first-player second-player]
+ (let [winner (winner board)]
+   (if (= (first-player :marker) winner)
+     (first-player :type)
+     (second-player :type))))
+
 (defn draw?
-  [board first-marker second-marker]
-  (and (is-full? board first-marker second-marker)
+  [board]
+  (and (is-full? board)
        (not (winner board))))
 
 (defn game-over?
-  [board first-marker second-marker]
-  (or (draw? board first-marker second-marker)
+  [board]
+  (or (draw? board)
       (not (nil? (winner board)))))
