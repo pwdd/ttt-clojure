@@ -58,11 +58,11 @@
     (should-not (repeated? [:x :o :x
                           :o :x :o
                           :o :x :x] [0 1 2])))
-  (it "returns true if there are three repeated elements in a row"
+  (it "returns true if there are repeated elements in a row"
     (should (repeated? [:x :x :x
                       :o :_ :_
                       :o :o :_] [0 1 2])))
-  (it "returns true if there are three repeated elements in a diagonal"
+  (it "returns true if there are repeated elements in a diagonal"
     (should (repeated? [:o :_ :x
                       :o :x :_
                       :x :o :_] [2 4 6]))))
@@ -76,12 +76,12 @@
              (find-repetition [:x :o :x
                            :o :x :o
                            :o :x :o])))
-  (it "identifies a single triple"
+  (it "identifies a single combo with repeated markers"
     (should= '([0 1 2])
              (find-repetition [:x :x :x
                            :o :_ :_
                            :o :o :_])))
-  (it "identifies multiple triples"
+  (it "identifies multiple combos with repeated markers"
     (should= '([3 4 5] [6 7 8])
               (find-repetition [:x :o :_
                             :o :o :o
