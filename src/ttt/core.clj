@@ -1,10 +1,11 @@
 (ns ttt.core
-  (:require [ttt.board :refer :all]
-            [ttt.messenger :refer [print-board]]))
-
-(def first-player :x)
-(def second-player :o)
+  (:require [ttt.board :as board]
+            [ttt.messenger :as messenger]
+            [ttt.game :as game]))
 
 (defn -main
   []
-  (println "message"))
+  (println messenger/instructions)
+  (println messenger/board-representation)
+  (game/play (board/new-board) game/first-player game/second-player)
+  )

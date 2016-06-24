@@ -2,8 +2,10 @@
   (require [speclj.core :refer :all]
            [ttt.game :refer :all]))
 
-; (describe "won"
-;   (it "finds combo with winning combination"
-;     (should= '(0 1 2) (won [:x :x :x :_ :_ :o :_ :o :_])))
-;   (it "returns nil if there is no winning combo"
-;     (should (nil? (won [:_ :x :_ :o :_ :_ :x :_ :_])))))
+(describe "first-player"
+  (it "holds first player marker"
+    (should-not (nil? first-player))))
+
+(describe "second-player"
+  (it "holds second player marker"
+    (should-not (nil? second-player))))
