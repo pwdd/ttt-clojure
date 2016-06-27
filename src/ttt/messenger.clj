@@ -51,16 +51,16 @@
   [board first-player second-player]
   (cond
     (board/draw? board) "You tied\n"
-    (= (board/winner-type board first-player second-player) :human)
-      (str "You won!\n"
-      "Winning positions: "
-      (print-combo (board/winning-combo board))
-      "\n")
-    :else
+    (board/is-winner-ai? board first-player second-player)
       (str "You lost.\n"
            "Computer won on positions "
            (print-combo (board/winning-combo board))
-            "\n")))
+            "\n")
+    :else
+      (str "You won!\n"
+      "Winning positions: "
+      (print-combo (board/winning-combo board))
+      "\n")))
 
 (defn result
   [board]
@@ -73,6 +73,6 @@
 
 (defn moved-to
  [player spot]
- (if (= (player :type) :computer)
+ (if (:is-ai? player)
    (str "Computer moved to " (inc spot))
    ""))

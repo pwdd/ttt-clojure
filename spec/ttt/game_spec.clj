@@ -2,6 +2,9 @@
   (require [speclj.core :refer :all]
            [ttt.game :refer :all]))
 
+(def human (->Player :x false))
+(def computer (->Player :o true))
+
 (describe "valid-selection"
   (let [acceptable ["h" "c" "human" "computer"]]
     (it "only accepts 'h' 'c' 'human' 'computer' as valid"
@@ -11,24 +14,24 @@
 
 (describe "define-player"
   (it "returns player with type 'human' and its marker"
-    (should= {:type :human :marker :x}
+    (should= human
              (with-in-str "h" (define-player :x))))
   (it "returns player with type 'computer' and its marker"
-    (should= {:type :computer :marker :x}
-             (with-in-str "c" (define-player :x)))))
+    (should= computer
+             (with-in-str "c" (define-player :o)))))
 
 (describe "player-spot"
   (it "gets user spot"
-    (should= 3 (with-in-str "4" (player-spot {:type :human :marker :x}))))
+    (should= 3 (with-in-str "4" (player-spot human))))
   (it "gets computer spot"
-    (should (integer? (player-spot {:type :computer :marker :o})))))
+    (should (integer? (player-spot computer)))))
 
 (describe "game-type"
-  (it "returns :human-computer if game is h vs c"
-    (should= :human-computer (game-type :human :computer)))
-  (it "returns :human-computer if game is c vs h"
-    (should= :human-computer (game-type :computer :human)))
-  (it "returns nil if c vs c"
-    (should-not (game-type :computer :computer)))
-  (it "returns nil if h vs h"
-    (should-not (game-type :human :human))))
+  (it "returns :human-computer if game is human vs computer"
+    (should= :human-computer (game-type human computer)))
+  (it "returns :human-computer if game is computer vs human"
+    (should= :human-computer (game-type computer human)))
+  (it "returns nil if game is computer vs computer"
+    (should-not (game-type computer computer)))
+  (it "returns nil if game is human vs human"
+    (should-not (game-type human human))))

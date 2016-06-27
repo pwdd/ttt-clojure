@@ -1,6 +1,10 @@
 (ns ttt.messenger-spec
   (:require [speclj.core :refer :all]
-            [ttt.messenger :refer :all]))
+            [ttt.messenger :refer :all]
+            [ttt.game :refer :all]))
+
+(def human (->Player :x false))
+(def computer (->Player :o true))
 
 (describe "translate-keyword"
   (it "returns ' x '"
@@ -35,22 +39,22 @@
     (should= "You tied\n" (result-human-computer [:x :o :x
                                                   :o :x :o
                                                   :o :x :o]
-                                                  {:type :human :marker :x}
-                                                  {:type :computer :marker :o})))
+                                                  human
+                                                  computer)))
   (it "returns winning message if human player won"
     (should (re-find #"You won\W*(.*)"
                      (result-human-computer [:x :x :x
                                              :o :_ :o
                                              :o :x :o]
-                                             {:type :human :marker :x}
-                                             {:type :computer :marker :o}))))
+                                             human
+                                             computer))))
 
   (it "returns 'you lost' message if human player lost"
     (should (re-find #"You lost\W*(.*)" (result-human-computer [:o :x :x
                                                  :x :o :_
                                                  :_ :_ :o]
-                                                 {:type :human :marker :x}
-                                                 {:type :computer :marker :o})))))
+                                                 human
+                                                 computer)))))
 
 (describe "result"
  (it "returns 'tie' the game ends ties"
@@ -70,6 +74,4 @@
   (it "returns empty string if player is human"
     (should (empty? (moved-to {:type :human :marker :x} 1))))
   (it "returns a message to where computer moved incremented by one"
-    (should= "Computer moved to 4" (moved-to {:type :computer
-                                              :marker :o}
-                                              3))))
+    (should= "Computer moved to 4" (moved-to computer 3))))

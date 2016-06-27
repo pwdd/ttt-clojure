@@ -1,6 +1,10 @@
 (ns ttt.board-spec
   (:require [speclj.core :refer :all]
-            [ttt.board :refer :all]))
+            [ttt.board :refer :all]
+            [ttt.game :refer :all]))
+
+(def human (->Player :x false))
+(def computer (->Player :o true))
 
 (describe "board-size"
   (it "has a default size"
@@ -74,18 +78,18 @@
   (it "returns an empty list if board is full and there is no winner"
     (should= '()
              (find-repetition [:x :o :x
-                           :o :x :o
-                           :o :x :o])))
+                               :o :x :o
+                               :o :x :o])))
   (it "identifies a single combo with repeated markers"
     (should= '([0 1 2])
              (find-repetition [:x :x :x
-                           :o :_ :_
-                           :o :o :_])))
+                               :o :_ :_
+                               :o :o :_])))
   (it "identifies multiple combos with repeated markers"
     (should= '([3 4 5] [6 7 8])
               (find-repetition [:x :o :_
-                            :o :o :o
-                            :x :x :x]))))
+                                :o :o :o
+                                :x :x :x]))))
 
 (describe "winning-combo"
   (it "returns nothing when board is empty"
@@ -145,21 +149,19 @@
                          :o :x :o
                          :x :o :_]))))
 
-(describe "winner-type"
-  (it "returns 'human' if winner has :type 'human'"
-    (with-redefs [winner (fn [& _] :x)])
-    (should= :human (winner-type [:x :o :x
-                                   :o :x :o
-                                   :o :o :x]
-                                   { :type :human :marker :x }
-                                   { :type :computer :marker :o})))
-  (it "returns 'computer' if winner has :type 'computer'"
-    (with-redefs [winner (fn [& _] :o)])
-    (should= :human (winner-type [:x :x :x
-                                   :o :o :o
-                                   :o :o :x]
-                                   { :type :human :marker :x }
-                                   { :type :computer :marker :o}))))
+(describe "is-winner-ai?"
+  (it "returns false if winner has :is-ai? false"
+    (should-not (is-winner-ai? [:x :o :x
+                                :o :x :o
+                                :o :o :x]
+                                human
+                                computer)))
+  (it "returns true if winner has :is-ai? true"
+    (should (is-winner-ai? [:x :x :o
+                            :o :o :o
+                            :o :o :x]
+                             human
+                             computer))))
 
 (describe "draw?"
   (it "returns false if board is empty"

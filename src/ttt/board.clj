@@ -61,12 +61,12 @@
     (let [combo (winning-combo board)]
        (board (combo 0)))))
 
-(defn winner-type
+(defn is-winner-ai?
  [board first-player second-player]
  (let [winner (winner board)]
-   (if (= (first-player :marker) winner)
-     (first-player :type)
-     (second-player :type))))
+   (if (= (:marker first-player) winner)
+     (:is-ai? first-player)
+     (:is-ai? second-player))))
 
 (defn draw?
   [board]

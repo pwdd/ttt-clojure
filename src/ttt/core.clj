@@ -15,4 +15,5 @@
               opponent (game/define-player
                             :o
                             messenger/ask-second-player)]
-    (game/play (board/new-board) current-player opponent)))
+    (game/play (board/new-board) current-player opponent)
+    ))
