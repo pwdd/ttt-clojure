@@ -1,5 +1,6 @@
 (ns ttt.board
-  (:require [ttt.helpers :as helpers]))
+  (:require [ttt.helpers :as helpers]
+            [ttt.player :as player]))
 
 (def board-size 3)
 (def board-length (* board-size board-size))
@@ -23,8 +24,8 @@
   (vec (repeat board-length empty-spot)))
 
 (defn move
-  [board marker spot]
-  (assoc board spot marker))
+  [board player spot]
+  (assoc board spot (player/marker player)))
 
 (defn is-available?
   [board spot]
@@ -34,6 +35,16 @@
   [board]
   (not-any? #(= empty-spot %) board))
 
+(defn is-empty?
+  [board]
+  (every? #(= empty-spot %) board))
+
+(defn available-spots
+  [board]
+  (map first
+    (filter #(= empty-spot (second %))
+      (map-indexed vector board))))
+
 (defn is-valid-move?
   [board spot]
   (and (helpers/in-range? spot board-length)
@@ -41,9 +52,7 @@
 
 (defn repeated?
   [board combo]
-  (let [selected-combo
-        (for [idx combo]
-          (nth board idx))]
+  (let [selected-combo (for [idx combo] (nth board idx))]
     (if (not-any? #{empty-spot} selected-combo)
       (apply = selected-combo))))
 
@@ -55,25 +64,32 @@
   [board]
   (first (find-repetition board)))
 
-(defn winner
+(defn winner-marker
   [board]
   (if (winning-combo board)
     (let [combo (winning-combo board)]
        (board (combo 0)))))
 
-(defn winner-type
+(defn winner-player
+  [board first-player second-player]
+  (let [winner (winner-marker board)]
+    (cond
+      (= (player/marker first-player) winner) first-player
+      (= (player/marker second-player) winner) second-player
+      :else
+        false)))
+
+(defn is-winner-ai?
  [board first-player second-player]
- (let [winner (winner board)]
-   (if (= (first-player :marker) winner)
-     (first-player :type)
-     (second-player :type))))
+ (let [winner (winner-player board first-player second-player)]
+   (player/is-ai? winner)))
 
 (defn draw?
   [board]
   (and (is-full? board)
-       (not (winner board))))
+       (not (winner-marker board))))
 
 (defn game-over?
   [board]
   (or (draw? board)
-      (not (nil? (winner board)))))
+      (not (nil? (winning-combo board)))))
