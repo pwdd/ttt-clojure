@@ -12,10 +12,10 @@
   (println messenger/instructions)
   (println messenger/board-representation)
   (let [current-player (game/define-player
-                            messenger/ask-first-player-marker
-                            "")
+                            { :msg messenger/ask-first-player-marker })
               opponent (game/define-player
-                            messenger/ask-second-player-marker
-                            (player/player-marker current-player))]
+                            {:msg messenger/ask-second-player-marker
+                             :opponent-marker (player/player-marker
+                                               current-player) })]
     (game/play (board/new-board) current-player opponent)
     ))

@@ -23,12 +23,12 @@
 
 ; TODO test
 (defn get-marker
-  [msg opponent-marker]
+  [{ :keys [msg opponent-marker] :or { opponent-marker "" }}]
   (println msg)
   (let [marker (clojure.string/trim (read-line))]
     (if (helpers/valid-marker? marker opponent-marker)
       marker
-      (recur msg opponent-marker))))
+      (recur { :msg msg :opponent-marker opponent-marker }))))
 
 ; TODO test
 (defn get-role
@@ -40,8 +40,8 @@
       (recur marker))))
 
 (defn define-player
-  [get-marker-msg opponent-marker]
-  (let [marker (get-marker get-marker-msg opponent-marker)
+  [{ :keys [msg opponent-marker] :or { opponent-marker "" }}]
+  (let [marker (get-marker { :msg msg :opponent-marker opponent-marker })
        role (get-role marker)]
     (cond
       (contains? acceptable-human-player role)

@@ -20,10 +20,10 @@
 (describe "define-player"
   (it "returns player with type 'human' and its marker"
     (should= human
-             (with-in-str "x\nh" (define-player "set marker" ""))))
+             (with-in-str "x\nh" (define-player { :msg "set marker" }))))
   (it "returns player with type 'computer' and its marker"
     (should= computer
-             (with-in-str "o\nec" (define-player "set marker" "")))))
+             (with-in-str "o\nec" (define-player { :msg "set marker" })))))
 
 (describe "player-spot"
   (it "gets user spot"
