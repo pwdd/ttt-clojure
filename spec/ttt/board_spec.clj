@@ -1,10 +1,11 @@
 (ns ttt.board-spec
   (:require [speclj.core :refer :all]
             [ttt.board :refer :all]
-            [ttt.game :refer :all]))
+            [ttt.player :refer :all])
+  (:import [ttt.player Player]))
 
-(def human (->Player :x false))
-(def computer (->Player :o true))
+(def human (->Player :x false -1))
+(def computer (->Player :o true 1))
 
 (describe "board-size"
   (it "has a default size"
@@ -26,10 +27,10 @@
 (describe "move"
   (it "sets a value to an empty board"
     (should= [:x :_ :_ :_ :_ :_ :_ :_ :_]
-             (move [:_ :_ :_ :_ :_ :_ :_ :_ :_] :x 0)))
+             (move [:_ :_ :_ :_ :_ :_ :_ :_ :_] human 0)))
   (it "sets a spot on a board with some spots already taken"
     (should= [:x :_ :_ :o :_ :x :_ :_ :_]
-             (move [:x :_ :_ :o :_ :_ :_ :_ :_] :x 5))))
+             (move [:x :_ :_ :o :_ :_ :_ :_ :_] human 5))))
 
 (describe "is-available?"
   (it "returns true when spot is not taken"
@@ -44,6 +45,14 @@
     (should-not (is-full? [:_ :_ :_ :_ :_ :_ :_ :_ :_])))
   (it "returns false if there is any spot available"
     (should-not (is-full? [:x :x :x :x :x :x :x :x :_]))))
+
+(describe "available-spots"
+  (it "returns a list with one element if only one spot is available"
+    (should= '(8) (available-spots [:x :x :x :x :x :x :x :x :_])))
+  (it "returns a vector with more than one spot available"
+    (should= '(0 1 8) (available-spots [:_ :_ :x :x :x :x :x :x :_])))
+  (it "returns an empty vector is no spot is available"
+    (should= '() (available-spots [[:x :x :x :x :x :x :x :x :x]]))))
 
 (describe "is-valid-move?"
   (it "returns true if input is valid move"

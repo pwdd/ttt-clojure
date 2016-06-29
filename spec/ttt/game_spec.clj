@@ -1,9 +1,11 @@
 (ns ttt.game-spec
-  (require [speclj.core :refer :all]
-           [ttt.game :refer :all]))
+  (:require [speclj.core :refer :all]
+           [ttt.game :refer :all]
+           [ttt.player :refer :all])
+  (:import [ttt.player Player]))
 
-(def human (->Player :x false))
-(def computer (->Player :o true))
+(def human (->Player :x false -1))
+(def computer (->Player :o true 1))
 
 (describe "valid-selection"
   (let [acceptable ["h" "c" "human" "computer"]]

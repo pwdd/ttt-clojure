@@ -1,11 +1,12 @@
 (ns ttt.game
-  (require [ttt.board :as board]
-           [ttt.user :as user]
-           [ttt.messenger :as messenger]
-           [ttt.computer :as computer]
-           [ttt.helpers :as helpers]))
-
-(defrecord Player [marker is-ai?])
+  (:require [ttt.board :as board]
+            [ttt.user :as user]
+            [ttt.messenger :as messenger]
+            [ttt.computer :as computer]
+            [ttt.helpers :as helpers]
+            [ttt.player :as player])
+  ;(:import [ttt.player Player])
+  )
 
 (def acceptable-human-player #{ "h" "human" })
 (def acceptable-computer-player #{ "c" "computer" })
@@ -30,12 +31,12 @@
     (println msg))
   (let [role (who-plays)]
     (if (contains? acceptable-human-player role)
-      (->Player marker false)
-      (->Player marker true))))
+      (player/make-player {:marker marker :ai false})
+      (player/make-player {:marker marker :ai true}))))
 
 (defn player-spot
   [player]
-  (if (:is-ai? player)
+  (if (player/is-ai? player)
     (computer/computer-spot board/board-length)
     (user/get-user-spot)))
 
@@ -49,14 +50,15 @@
 
 (defn game-type
   [first-player second-player]
-  (if (not (= (:is-ai? first-player) (:is-ai? second-player)))
+  (if (not (= (player/is-ai? first-player)
+              (player/is-ai? second-player)))
     :human-computer))
 
 ; TODO test
 (defn play
   [board current-player opponent]
   (let [      spot (valid-spot board current-player)
-        game-board (board/move board (:marker current-player) spot)]
+        game-board (board/move board current-player spot)]
     (println (messenger/moved-to current-player spot))
     (println (messenger/print-board game-board))
     (if (board/game-over? game-board)

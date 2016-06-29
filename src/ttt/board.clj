@@ -1,5 +1,6 @@
 (ns ttt.board
-  (:require [ttt.helpers :as helpers]))
+  (:require [ttt.helpers :as helpers]
+            [ttt.player :as player]))
 
 (def board-size 3)
 (def board-length (* board-size board-size))
@@ -23,8 +24,8 @@
   (vec (repeat board-length empty-spot)))
 
 (defn move
-  [board marker spot]
-  (assoc board spot marker))
+  [board player spot]
+  (assoc board spot (player/player-marker player)))
 
 (defn is-available?
   [board spot]
@@ -33,6 +34,12 @@
 (defn is-full?
   [board]
   (not-any? #(= empty-spot %) board))
+
+(defn available-spots
+  [board]
+  (map first
+    (filter #(= empty-spot (second %))
+      (map-indexed vector board))))
 
 (defn is-valid-move?
   [board spot]
@@ -65,8 +72,16 @@
  [board first-player second-player]
  (let [winner (winner board)]
    (if (= (:marker first-player) winner)
-     (:is-ai? first-player)
-     (:is-ai? second-player))))
+     (player/is-ai? first-player)
+     (player/is-ai? second-player))))
+
+(defn winner-value
+  [board first-player second-player]
+  (cond
+    (is-winner-ai? board first-player second-player) 1
+    (not (is-winner-ai? board first-player second-player)) -1
+    :else
+      0))
 
 (defn draw?
   [board]

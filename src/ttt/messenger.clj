@@ -1,5 +1,6 @@
 (ns ttt.messenger
-  (:require [ttt.board :as board]))
+  (:require [ttt.board :as board]
+            [ttt.player :as player]))
 
 (def separator "\n---|---|---\n")
 
@@ -73,6 +74,6 @@
 
 (defn moved-to
  [player spot]
- (if (:is-ai? player)
+ (if (player/is-ai? player)
    (str "Computer moved to " (inc spot))
    ""))
