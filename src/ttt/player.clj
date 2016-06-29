@@ -1,6 +1,6 @@
 (ns ttt.player)
 
-(defrecord Player [marker ai value])
+(defrecord Player [marker role ai value])
 
 (defn player-marker
   [player]
@@ -14,8 +14,12 @@
   [player]
   (:ai player))
 
+(defn player-role
+  [player]
+  (:role player))
+
 (defn make-player
   [params]
-  (if (:ai params)
-    (->Player (:marker params) (:ai params) 1)
-    (->Player (:marker params) (:ai params) -1)))
+  (if (= (:role params) :human)
+    (->Player (:marker params) (:role params) false -1)
+    (->Player (:marker params) (:role params) true 1)))

@@ -1,26 +1,29 @@
 (ns ttt.game-spec
   (:require [speclj.core :refer :all]
            [ttt.game :refer :all]
-           [ttt.player :refer :all])
-  (:import [ttt.player Player]))
+           [ttt.player :refer [make-player]]))
 
-(def human (->Player :x false -1))
-(def computer (->Player :o true 1))
+(def human (make-player {:marker "x" :role :human}))
+(def computer (make-player {:marker "o" :role :easy-computer}))
+
+(def acceptable-roles
+  (clojure.set/union acceptable-human-player
+                     acceptable-easy-computer
+                     acceptable-hard-computer))
 
 (describe "valid-selection"
-  (let [acceptable ["h" "c" "human" "computer"]]
-    (it "only accepts 'h' 'c' 'human' 'computer' as valid"
-      (should (every? valid-selection? acceptable))))
+  (it "only accepts 'h' 'c' 'human' 'computer' as valid"
+    (should (every? valid-selection? acceptable-roles)))
   (it "does not accept any other string"
     (should-not (valid-selection? "a"))))
 
 (describe "define-player"
   (it "returns player with type 'human' and its marker"
     (should= human
-             (with-in-str "h" (define-player :x))))
+             (with-in-str "x\nh" (define-player "set marker" ""))))
   (it "returns player with type 'computer' and its marker"
     (should= computer
-             (with-in-str "c" (define-player :o)))))
+             (with-in-str "o\nec" (define-player "set marker" "")))))
 
 (describe "player-spot"
   (it "gets user spot"

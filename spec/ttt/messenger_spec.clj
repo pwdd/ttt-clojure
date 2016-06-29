@@ -4,8 +4,8 @@
             [ttt.player :refer :all])
   (:import [ttt.player Player]))
 
-(def human (->Player :x false -1))
-(def computer (->Player :o true 1))
+(def human (->Player :x :human false -1))
+(def computer (->Player :o :easy-computer true 1))
 
 (describe "translate-keyword"
   (it "returns ' x '"

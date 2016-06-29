@@ -4,35 +4,55 @@
             [ttt.messenger :as messenger]
             [ttt.computer :as computer]
             [ttt.helpers :as helpers]
-            [ttt.player :as player])
-  ;(:import [ttt.player Player])
-  )
+            [ttt.player :as player]))
 
-(def acceptable-human-player #{ "h" "human" })
-(def acceptable-computer-player #{ "c" "computer" })
+(def acceptable-human-player
+  #{ "h" "human" "hum" })
+
+(def acceptable-easy-computer
+  #{ "ec" "easy computer" "easycomputer" "easy" "easy comp" "easycomp"})
+
+(def acceptable-hard-computer
+  #{ "hc" "hard computer" "hardcomputer" "hard" "difficult"})
 
 (defn valid-selection?
  [input]
  (or (contains? acceptable-human-player input)
-     (contains? acceptable-computer-player input)))
+     (contains? acceptable-easy-computer input)
+     (contains? acceptable-hard-computer input)))
 
 ; TODO test
-(defn who-plays
- []
- (println messenger/h-or-c)
- (let [input (helpers/clean-string (read-line))]
-   (if (valid-selection? input)
-     input
-     (recur))))
+(defn get-marker
+  [msg opponent-marker]
+  (println msg)
+  (let [marker (clojure.string/trim (read-line))]
+    (if (helpers/valid-marker? marker opponent-marker)
+      marker
+      (recur msg opponent-marker))))
+
+; TODO test
+(defn get-role
+  [marker]
+  (messenger/ask-player-role marker)
+  (let [input (helpers/clean-string (read-line))]
+    (if (valid-selection? input)
+      input
+      (recur marker))))
 
 (defn define-player
-  [marker & [msg]]
-  (if msg
-    (println msg))
-  (let [role (who-plays)]
-    (if (contains? acceptable-human-player role)
-      (player/make-player {:marker marker :ai false})
-      (player/make-player {:marker marker :ai true}))))
+  [get-marker-msg opponent-marker]
+  (let [marker (get-marker get-marker-msg opponent-marker)
+       role (get-role marker)]
+    (cond
+      (contains? acceptable-human-player role)
+        (player/make-player { :marker marker
+                              :role :human })
+      (contains? acceptable-easy-computer role)
+        (player/make-player { :marker marker
+                              :role :easy-computer })
+      :else
+        (player/make-player { :marker marker
+                              :role :hard-computer }))))
 
 (defn player-spot
   [player]

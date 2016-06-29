@@ -8,13 +8,23 @@
                   "\n---| Welcome to Tic Tac Toe |---\n"
                   "   |------------------------|\n"))
 
-(def instructions (str
-                     "\nFirst player will be playing with 'X'.\n"
-                     "The board is represented like the following:\n"))
+(def instructions "The board is represented like the following:\n")
 
-(def ask-first-player "\nShould player 'X' be a human or a computer?")
+(def player-role-msg
+  "Please enter 'h' (human), 'ec' (easy computer) or 'hc' (hard computer)")
 
-(def ask-second-player "\nShould player 'O' be a human or a computer?")
+(defn ask-player-role
+  [marker]
+  (println (str "\nShould player '"
+                marker
+                "' be a human or a computer?\n"
+                player-role-msg)))
+
+(def ask-first-player-marker
+  "\nPlease enter a letter that will be the first player's marker")
+
+(def ask-second-player-marker
+  "\nPlease enter a single letter that will be the second player's marker")
 
 (def h-or-c "Please type H (human) or C (computer):")
 
@@ -75,5 +85,9 @@
 (defn moved-to
  [player spot]
  (if (player/is-ai? player)
-   (str "Computer moved to " (inc spot))
+   (str (clojure.string/capitalize
+          (name (player/player-role player)))
+          " moved to "
+          (inc spot)
+          "\n")
    ""))
