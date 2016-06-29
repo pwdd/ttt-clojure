@@ -1,11 +1,10 @@
 (ns ttt.messenger-spec
   (:require [speclj.core :refer :all]
             [ttt.messenger :refer :all]
-            [ttt.player :refer :all])
-  (:import [ttt.player Player]))
+            [ttt.player :refer [make-player]]))
 
-(def human (->Player :x :human false -1))
-(def computer (->Player :o :easy-computer true 1))
+(def human (make-player { :marker :x :role :human }))
+(def computer (make-player { :marker :o :role :easy-computer }))
 
 (describe "translate-keyword"
   (it "returns ' x '"
@@ -73,6 +72,6 @@
 
 (describe "moved-to"
   (it "returns empty string if player is human"
-    (should (empty? (moved-to {:type :human :marker :x} 1))))
+    (should (empty? (moved-to human 1))))
   (it "returns a message to where computer moved incremented by one"
-    (should= "Computer moved to 4" (moved-to computer 3))))
+    (should-not (empty? (moved-to computer 3)))))

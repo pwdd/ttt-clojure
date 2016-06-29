@@ -1,13 +1,12 @@
 (ns ttt.computer-spec
   (:require [speclj.core :refer :all]
             [ttt.computer :refer :all]
-            [ttt.player :refer :all])
-  (:import [ttt.player Player]))
+            [ttt.player :refer [make-player]]))
 
 (def board-t )
 
-(def computer (->Player :o :easy-computer true 1))
-(def human (->Player :x :human false -1))
+(def computer (make-player { :marker :o :role :easy-computer }))
+(def human (make-player { :marker :x :role :human }))
 
 (describe "computer-spot"
   (it "returns an integer from 0 to board-length exclusive"

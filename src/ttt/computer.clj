@@ -2,15 +2,6 @@
   (:require [ttt.board :as board]
             [ttt.player :as player]))
 
-(defn set-max
-  [max number]
-  (if (nil? max)
-    number
-    (if (not (nil? max))
-      (if (> number max)
-        number
-        max))))
-
 (defn computer-spot
   [board-length]
   (rand-int board-length))

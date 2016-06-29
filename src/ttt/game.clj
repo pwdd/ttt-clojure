@@ -10,7 +10,7 @@
   #{ "h" "human" "hum" })
 
 (def acceptable-easy-computer
-  #{ "ec" "easy computer" "easycomputer" "easy" "easy comp" "easycomp"})
+  #{ "ec" "easy computer" "easycomputer" "easy"})
 
 (def acceptable-hard-computer
   #{ "hc" "hard computer" "hardcomputer" "hard" "difficult"})

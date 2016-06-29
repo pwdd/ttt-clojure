@@ -12,7 +12,7 @@
                      acceptable-hard-computer))
 
 (describe "valid-selection"
-  (it "only accepts 'h' 'c' 'human' 'computer' as valid"
+  (it "only accepts whitelisted strings as valid input"
     (should (every? valid-selection? acceptable-roles)))
   (it "does not accept any other string"
     (should-not (valid-selection? "a"))))
