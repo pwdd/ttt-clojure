@@ -35,6 +35,10 @@
   [board]
   (not-any? #(= empty-spot %) board))
 
+(defn is-empty?
+  [board]
+  (every? #(= empty-spot) board))
+
 (defn available-spots
   [board]
   (map first
