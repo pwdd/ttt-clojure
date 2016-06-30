@@ -10,15 +10,12 @@
 
 (declare negamax)
 
-; get collection of values for node (state of board)
 (defn scores
   [board current-player opponent depth]
   (let [spots (board/available-spots board)
         new-boards (map #(board/move board current-player %) spots)]
     (map #(- (negamax % opponent current-player (inc depth))) new-boards)))
 
-; if game is over, return board analysis
-; else get the max from scores
 (defn negamax
   [board current-player opponent depth]
   (if (board/game-over? board)
@@ -28,7 +25,6 @@
 
 (def negamax (memoize negamax))
 
-; get best move
 (defn best-move
   [board current-player opponent depth]
   (if (board/is-empty? board)

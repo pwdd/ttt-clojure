@@ -13,22 +13,44 @@
     (should (and (>= (computer-spot 9) 0)
                  (< (computer-spot 9) 9)))))
 
+; (describe "scores"
+;   (it "returns spot that blocks opponent victory"
+;     (should= 8 (scores [:x :o :o
+;                         :o :x :x
+;                         :_ :_ :_]
+;                         computer
+;                         human
+;                         0)))
+;   (it "returns spot that blocks opponent victory"
+;     (should= 8 (scores [:_ :x :_
+;                         :_ :o :_
+;                         :_ :x :o]
+;                         computer
+;                         human
+;                         0)))
+;   (it "last test"
+;     (should= 10 (scores [:o :_ :_
+;                          :_ :x :_
+;                          :_ :_ :x]
+;                          computer
+;                          human
+;                          0))))
 
 (describe "best-move"
   (it "returns spot that blocks opponent victory"
     (should= 8 (best-move [:x :o :o
-                         :o :x :x
-                         :_ :_ :_]
-                         computer
-                         human
-                         0)))
+                           :o :x :x
+                           :_ :_ :_]
+                           computer
+                           human
+                           0)))
   (it "returns spot makes computer win instead of blocking opponent"
     (should= 0 (best-move [:_ :o :o
-                         :_ :x :x
-                         :x :x :o]
-                         computer
-                         human
-                         0)))
+                           :_ :x :x
+                           :x :x :o]
+                           computer
+                           human
+                           0)))
   (it "avoids opponent to create an invincible situation"
     (should (or (= 2 (best-move [:o :_ :_
                                  :_ :x :_

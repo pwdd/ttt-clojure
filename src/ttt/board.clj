@@ -83,7 +83,7 @@
   [board first-player second-player depth]
   (cond
     (is-winner-ai? board first-player second-player) (+ 10 depth)
-    (not (is-winner-ai? board first-player second-player)) (- depth 10)
+    (not (is-winner-ai? board first-player second-player)) (+ -10 depth)
     :else
       0))
 

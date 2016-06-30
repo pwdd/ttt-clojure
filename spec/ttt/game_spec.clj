@@ -41,9 +41,9 @@
 
 (describe "player-spot"
   (it "gets user spot"
-    (should= 3 (with-in-str "4" (player-spot human))))
+    (should= 3 (with-in-str "4" (player-spot [:_ :_ :_] human computer))))
   (it "gets computer spot"
-    (should (integer? (player-spot computer)))))
+    (should (integer? (player-spot [:_ :_ :_] computer human)))))
 
 (describe "game-type"
   (it "returns :human-computer if game is human vs computer"
