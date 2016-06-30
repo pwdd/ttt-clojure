@@ -35,17 +35,3 @@
     (should= "abc" (clean-string " abc ")))
   (it "lower-case entire string"
     (should= "abc" (clean-string "aBc"))))
-
-(describe "valid-marker?"
-  (it "returns false if input is empty"
-    (should-not (valid-marker? " " "")))
-  (it "returns true if input is a single character"
-    (should (valid-marker? "a" "")))
-  (it "returns true if input is a capitalized character"
-    (should (valid-marker? "B" "")))
-  (it "returns false if input is a numeric string"
-    (should-not (valid-marker? "0" "")))
-  (it "returns false if input has more than one character"
-    (should-not (valid-marker? "ab" "")))
-  (it "returns false if chosen marker is the same as opponent's marker"
-    (should-not (valid-marker? "a" "a"))))

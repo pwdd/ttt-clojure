@@ -75,11 +75,11 @@
      (player/is-ai? first-player)
      (player/is-ai? second-player))))
 
-(defn winner-value
-  [board first-player second-player]
+(defn board-analysis
+  [board first-player second-player depth]
   (cond
-    (is-winner-ai? board first-player second-player) 1
-    (not (is-winner-ai? board first-player second-player)) -1
+    (is-winner-ai? board first-player second-player) (+ 10 depth)
+    (not (is-winner-ai? board first-player second-player)) (- depth 10)
     :else
       0))
 

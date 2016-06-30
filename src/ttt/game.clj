@@ -21,12 +21,18 @@
      (contains? acceptable-easy-computer input)
      (contains? acceptable-hard-computer input)))
 
+(defn valid-marker?
+ [input opponent-marker]
+ (and (= (count input) 1)
+      (re-matches #"^[a-zA-Z]$" input)
+      (not (= input opponent-marker))))
+
 ; TODO test
 (defn get-marker
   [{ :keys [msg opponent-marker] :or { opponent-marker "" }}]
   (println msg)
   (let [marker (clojure.string/trim (read-line))]
-    (if (helpers/valid-marker? marker opponent-marker)
+    (if (valid-marker? marker opponent-marker)
       marker
       (recur { :msg msg :opponent-marker opponent-marker }))))
 

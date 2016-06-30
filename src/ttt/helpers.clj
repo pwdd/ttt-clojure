@@ -19,9 +19,3 @@
 (defn in-range?
   [idx limit]
   (and (>= idx 0) (< idx limit)))
-
-(defn valid-marker?
-  [input opponent-marker]
-  (and (= (count input) 1)
-       (re-matches #"^[a-zA-Z]$" input)
-       (not (= input opponent-marker))))

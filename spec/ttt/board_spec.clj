@@ -172,6 +172,22 @@
                              human
                              computer))))
 
+(describe "board-analysis"
+  (it "returns board value when human won"
+    (should= -8 (board-analysis [:x :x :x
+                                 :o :o :_
+                                 :_ :_ :_]
+                                 human
+                                 computer
+                                 2)))
+  (it "returns board value when computer won"
+    (should= 13 (board-analysis [:o :o :o
+                                 :x :x :_
+                                 :_ :_ :_]
+                                 human
+                                 computer
+                                 3))))
+
 (describe "draw?"
   (it "returns false if board is empty"
     (should-not (draw? [:_ :_ :_ :_ :_ :_ :_ :_ :_])))
