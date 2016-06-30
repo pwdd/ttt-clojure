@@ -2,6 +2,8 @@
   (:require [ttt.board :as board]
             [ttt.player :as player]))
 
+(def start-depth 0)
+
 (defn computer-spot
   [board-length]
   (rand-int board-length))

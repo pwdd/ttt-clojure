@@ -61,18 +61,22 @@
                               :role :hard-computer }))))
 
 (defn player-spot
-  [player]
-  (if (player/is-ai? player)
-    (computer/computer-spot board/board-length)
-    (user/get-user-spot)))
+  [board player opponent]
+  (cond
+    (= :human (player/player-role player))
+      (user/get-user-spot)
+    (= :easy-computer (player/player-role player))
+      (computer/computer-spot board/board-length)
+    :else
+      (computer/best-move board player opponent computer/start-depth)))
 
 ; TODO test
 (defn valid-spot
-  [board player]
-  (let [spot (player-spot player)]
+  [board player opponent]
+  (let [spot (player-spot board player opponent)]
     (if (board/is-valid-move? board spot)
       spot
-      (recur board player))))
+      (recur board player opponent))))
 
 (defn game-type
   [first-player second-player]
@@ -83,7 +87,7 @@
 ; TODO test
 (defn play
   [board current-player opponent]
-  (let [      spot (valid-spot board current-player)
+  (let [      spot (valid-spot board current-player opponent)
         game-board (board/move board current-player spot)]
     (println (messenger/moved-to current-player spot))
     (println (messenger/print-board game-board))

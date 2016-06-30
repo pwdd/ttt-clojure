@@ -46,12 +46,11 @@
   (it "returns false if there is any spot available"
     (should-not (is-full? [:x :x :x :x :x :x :x :x :_]))))
 
-
 (describe "is-empty?"
   (it "returns true if board has only empty spots"
     (should (is-empty? [:_ :_ :_ :_ :_ :_ :_ :_ :_])))
   (it "returns false if any spot is taken"
-    (should-not (is-empty? :_ :_ :_ :_ :_ :x :_ :_ :_))))
+    (should-not (is-empty? [:_ :_ :_ :_ :_ :x :_ :_ :_]))))
 
 (describe "available-spots"
   (it "returns a list with one element if only one spot is available"
