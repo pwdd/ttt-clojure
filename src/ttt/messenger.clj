@@ -11,7 +11,7 @@
 (def instructions "The board is represented like the following:\n")
 
 (def player-role-msg
-  "Please enter 'h' (human), 'ec' (easy computer) or 'hc' (hard computer)")
+  "Please type H (human), EC (easy computer) or HC (hard computer): ")
 
 (defn ask-player-role
   [marker]
@@ -78,7 +78,7 @@
  (if (board/draw? board)
    "The game tied"
    (str "Player "
-        (clojure.string/upper-case (name (board/winner board)))
+        (clojure.string/upper-case (name (board/winner-mark board)))
         " won on positions "
         (print-combo (board/winning-combo board)))))
 

@@ -66,33 +66,39 @@
   [board]
   (first (find-repetition board)))
 
-(defn winner
+(defn winner-mark
   [board]
   (if (winning-combo board)
     (let [combo (winning-combo board)]
        (board (combo 0)))))
 
+ (defn winner-player
+   [board first-player second-player]
+   (let [winner (winner-mark board)]
+     (if (= (player/player-role first-player) winner)
+       first-player
+       second-player)))
+
 (defn is-winner-ai?
  [board first-player second-player]
- (let [winner (winner board)]
-   (if (= (:marker first-player) winner)
+ (let [winner (winner-mark board)]
+   (if (= (player/player-marker first-player) winner)
      (player/is-ai? first-player)
      (player/is-ai? second-player))))
 
-(defn board-analysis
-  [board first-player second-player depth]
-  (cond
-    (is-winner-ai? board first-player second-player) (+ 10 depth)
-    (not (is-winner-ai? board first-player second-player)) (+ -10 depth)
-    :else
-      0))
+(defn winner-player
+  [board first-player second-player]
+  (let [winner (winner-mark board)]
+    (if (= (player/player-role first-player) winner)
+      first-player
+      second-player)))
 
 (defn draw?
   [board]
   (and (is-full? board)
-       (not (winner board))))
+       (not (winner-mark board))))
 
 (defn game-over?
   [board]
   (or (draw? board)
-      (not (nil? (winner board)))))
+      (not (nil? (winner-mark board)))))

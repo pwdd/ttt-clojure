@@ -78,12 +78,6 @@
       spot
       (recur board player opponent))))
 
-(defn game-type
-  [first-player second-player]
-  (if (not (= (player/is-ai? first-player)
-              (player/is-ai? second-player)))
-    :human-computer))
-
 ; TODO test
 (defn play
   [board current-player opponent]
@@ -92,7 +86,7 @@
     (println (messenger/moved-to current-player spot))
     (println (messenger/print-board game-board))
     (if (board/game-over? game-board)
-      (if (game-type current-player opponent)
+      (if (computer/game-type current-player opponent)
         (println (messenger/result-human-computer
                   game-board current-player opponent))
         (println (messenger/result game-board)))

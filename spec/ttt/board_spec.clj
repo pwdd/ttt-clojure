@@ -1,11 +1,11 @@
 (ns ttt.board-spec
   (:require [speclj.core :refer :all]
             [ttt.board :refer :all]
-            [ttt.player :refer :all])
-  (:import [ttt.player Player]))
+            [ttt.player :refer [make-player]]))
 
-(def human (->Player :x :human false -1))
-(def computer (->Player :easy-computer :o true 1))
+(def human (make-player { :marker :x :role :human }))
+(def computer (make-player { :role :easy-computer :marker :o }))
+(def hard-computer (make-player { :role :hard-computer :marker :o }))
 
 (describe "board-size"
   (it "has a default size"
@@ -132,35 +132,35 @@
                                      :_ :o :x
                                      :o :x :x]))))
 
-(describe "winner"
+(describe "winner-mark"
   (it "returns nil if board is empty"
-    (should (nil? (winner [:_ :_ :_ :_ :_ :_ :_ :_ :_]))))
+    (should (nil? (winner-mark [:_ :_ :_ :_ :_ :_ :_ :_ :_]))))
   (it "returns nil if there is no winner"
-    (should (nil? (winner [:x :o :x
+    (should (nil? (winner-mark [:x :o :x
                            :o :x :o
                            :o :x :o]))))
   (it "returns the winner if there is one on rows"
-    (should= :x (winner [:x :x :x
+    (should= :x (winner-mark [:x :x :x
                          :_ :_ :o
                          :o :o :_])))
   (it "returns the winner if there is one in second row"
-    (should= :x (winner [:_ :_ :o
+    (should= :x (winner-mark [:_ :_ :o
                          :x :x :x
                          :o :o :_])))
   (it "returns the winner if there is one in column"
-    (should= :x (winner [:x :_ :_
+    (should= :x (winner-mark [:x :_ :_
                          :x :o :o
                          :x :_ :_])))
   (it "returns the winner if there is one in the second column"
-    (should= :x (winner [:_ :x :_
+    (should= :x (winner-mark [:_ :x :_
                          :o :x :o
                          :o :x :_])))
   (it "returns the winner if there is one in a diagonal"
-    (should= :o (winner [:o :x :x
+    (should= :o (winner-mark [:o :x :x
                          :x :o :_
                          :_ :_ :o])))
   (it "returns the winner if there is one in the other diagonal"
-    (should= :x (winner [:x :_ :x
+    (should= :x (winner-mark [:x :_ :x
                          :o :x :o
                          :x :o :_]))))
 
@@ -177,22 +177,6 @@
                             :o :o :x]
                              human
                              computer))))
-
-(describe "board-analysis"
-  (it "returns board value when human won"
-    (should= -8 (board-analysis [:x :x :x
-                                 :o :o :_
-                                 :_ :_ :_]
-                                 human
-                                 computer
-                                 2)))
-  (it "returns board value when computer won"
-    (should= 13 (board-analysis [:o :o :o
-                                 :x :x :_
-                                 :_ :_ :_]
-                                 human
-                                 computer
-                                 3))))
 
 (describe "draw?"
   (it "returns false if board is empty"
