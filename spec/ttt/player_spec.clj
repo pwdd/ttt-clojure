@@ -50,3 +50,14 @@
   (it "returns a Player that has a :role attribute"
     (should= :hard-computer
              (:role (make-player { :role :hard-computer :marker "a" })))))
+
+(describe "select-spot :easy-computer"
+  (it "returns an integer from 0 to board-length exclusive"
+   (should (and (>= (select-spot easy-computer { :board-length 9 }) 0)
+                (< (select-spot easy-computer { :board-length 9 }) 9)))))
+
+(describe "select-spot :human"
+  (it "returns 0 if input is '1'"
+    (should= 0 (with-in-str "1" (select-spot human))))
+  (it "returns 8 if input is 9"
+    (should= 8 (with-in-str "9" (select-spot human)))))
