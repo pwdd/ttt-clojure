@@ -178,6 +178,26 @@
                              human
                              computer))))
 
+(describe "winner-player"
+  (it "returns human player if human won game"
+    (should= human (winner-player [:x :x :x
+                                   :o :o :_
+                                   :o :o :_]
+                                   computer
+                                   human)))
+  (it "should not return computer player if human won game"
+    (should-not (= computer (winner-player [:x :x :x
+                                            :o :o :_
+                                            :o :o :_]
+                                            computer
+                                            human))))
+  (it "returns computer player if computer won game"
+    (should= computer  (winner-player [:o :x :x
+                                       :o :_ :x
+                                       :o :x :_]
+                                       computer
+                                       human))))
+
 (describe "draw?"
   (it "returns false if board is empty"
     (should-not (draw? [:_ :_ :_ :_ :_ :_ :_ :_ :_])))

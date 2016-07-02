@@ -10,20 +10,20 @@
 
 (def instructions "The board is represented like the following:\n")
 
-(def player-role-msg
+(def role-msg
   "Please type H (human), EC (easy computer) or HC (hard computer): ")
 
-(defn ask-player-role
+(defn ask-role
   [marker]
   (println (str "\nShould player '"
                 marker
                 "' be a human or a computer?\n"
-                player-role-msg)))
+                role-msg)))
 
-(def ask-first-player-marker
+(def ask-first-marker
   "\nPlease enter a letter that will be the first player's marker")
 
-(def ask-second-player-marker
+(def ask-second-marker
   "\nPlease enter a single letter that will be the second player's marker")
 
 (def h-or-c "Please type H (human) or C (computer):")
@@ -86,7 +86,7 @@
  [player spot]
  (if (player/is-ai? player)
    (str (clojure.string/capitalize
-          (name (player/player-role player)))
+          (name (player/role player)))
           " moved to "
           (inc spot)
           "\n")

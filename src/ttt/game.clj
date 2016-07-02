@@ -39,7 +39,7 @@
 ; TODO test
 (defn get-role
   [marker]
-  (messenger/ask-player-role marker)
+  (messenger/ask-role marker)
   (let [input (helpers/clean-string (read-line))]
     (if (valid-selection? input)
       input
@@ -63,9 +63,9 @@
 (defn player-spot
   [board player opponent]
   (cond
-    (= :human (player/player-role player))
+    (= :human (player/role player))
       (user/get-user-spot)
-    (= :easy-computer (player/player-role player))
+    (= :easy-computer (player/role player))
       (computer/computer-spot board/board-length)
     :else
       (computer/best-move board player opponent computer/start-depth)))

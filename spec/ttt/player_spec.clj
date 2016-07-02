@@ -6,17 +6,17 @@
 (def human (->Player "a" :human false -1))
 (def computer (->Player "x" :easy-computer true 1))
 
-(describe "player-marker"
+(describe "marker"
   (it "returns the marker associated with a human player"
-    (should= "a" (player-marker human)))
+    (should= "a" (marker human)))
   (it "returns the marker associated with a computer player"
-    (should= "x" (player-marker computer))))
+    (should= "x" (marker computer))))
 
-(describe "player-value"
+(describe "value"
   (it "returns the value associated with a human player"
-    (should= -1 (player-value human)))
+    (should= -1 (value human)))
   (it "returns the value associate with a computer player"
-    (should= 1 (player-value computer))))
+    (should= 1 (value computer))))
 
 (describe "is-ai?"
   (it "returns true if player is ai"
@@ -24,11 +24,11 @@
   (it "returns false if player is not ai"
     (should-not (is-ai? human))))
 
-(describe "player-role"
+(describe "role"
   (it "returns :human if player role is human"
-    (should= :human (player-role human)))
+    (should= :human (role human)))
   (it "returns :easy-computer if player role is easy computer"
-    (should= :easy-computer (player-role computer))))
+    (should= :easy-computer (role computer))))
 
 (describe "make-player"
   (it "returns an instance of Player"

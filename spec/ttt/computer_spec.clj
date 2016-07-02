@@ -3,19 +3,17 @@
             [ttt.computer :refer :all]
             [ttt.player :refer [make-player]]))
 
-(def board-t )
-
-(def computer (make-player { :marker :o :role :easy-computer }))
+(def easy-computer (make-player { :marker :o :role :easy-computer }))
 (def human (make-player { :marker :x :role :human }))
 (def hard-computer (make-player { :marker :x :role :hard-computer }))
 
 (describe "game-type"
   (it "returns :human-computer if game is human vs computer"
-    (should= :human-computer (game-type human computer)))
+    (should= :human-computer (game-type human easy-computer)))
   (it "returns :human-computer if game is computer vs human"
-    (should= :human-computer (game-type computer human)))
+    (should= :human-computer (game-type hard-computer human)))
   (it "returns nil if game is computer vs computer"
-    (should-not (game-type computer computer)))
+    (should-not (game-type computer easy-computer)))
   (it "returns nil if game is human vs human"
     (should-not (game-type human human))))
 
@@ -25,14 +23,14 @@
                                  :o :o :_
                                  :_ :_ :_]
                                  human
-                                 computer
+                                 easy-computer
                                  2)))
   (it "returns board value when computer won"
     (should= 13 (board-analysis [:o :o :o
                                  :x :x :_
                                  :_ :_ :_]
                                  human
-                                 computer
+                                 easy-computer
                                  3))))
 
 (describe "computer-spot"

@@ -10,27 +10,39 @@
 
 (defn game-type
   [first-player second-player]
-  (if (not (= (player/is-ai? first-player)
-              (player/is-ai? second-player)))
-    :human-computer))
+  (cond
+    (not (= (player/is-ai? first-player)
+            (player/is-ai? second-player))) :human-computer
+    (and (or (= :easy-computer (player/role first-player))
+             (= :easy-computer (player/role second-player)))
+         (or (= :hard-computer (player/role first-player))
+             (= :hard-computer (player/role second-player)))) :easy-hard
+    :else
+      :computer-computer))
 
 (defn board-analysis
   [board first-player second-player depth]
-  (if (= (game-type first-player second-player) :human-computer)
-    (cond
-      (board/is-winner-ai? board first-player second-player) (+ 10 depth)
-      (not (board/is-winner-ai? board first-player second-player)) (+ -10 depth)
-      :else
+  (let [winner (board/winner-player board first-player second-player)]
+  (cond
+    (= :human-computer (game-type first-player second-player))
+      (cond
+        (= :human (player/role winner)) (+ -10 depth)
+        (or (= :easy-computer (player/role winner))
+            (= :hard-computer (player/role winner))) (+ 10 depth)
+        :else
+          0)
+    (= :easy-hard (game-type first-player second-player))
+      (cond
+        (= :easy-computer (player/role winner)) (+ -10 depth)
+        (= :hard-computer (player/role winner)) (+ 10 depth)
+        :else
         0)
-    (cond
-      (= (board/winner-player board first-player second-player)
-          first-player)
-          (+ 10 depth)
-      (= (board/winner-player board first-player second-player)
-         second-player)
-         (+ -10 depth)
+    :else
+      (cond
+        (= winner first-player) (+ 10 depth)
+        (= winner second-player) (+ -10 depth)
       :else
-      0)))
+        0))))
 
 (declare negamax)
 
@@ -43,7 +55,7 @@
 (defn negamax-value
   [board current-player opponent depth]
   (if (board/game-over? board)
-    (* (player/player-value current-player)
+    (* (player/value current-player)
        (board-analysis board current-player opponent depth))
     (apply max (scores board current-player opponent depth))))
 

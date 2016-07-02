@@ -2,11 +2,11 @@
 
 (defrecord Player [marker role ai value])
 
-(defn player-marker
+(defn marker
   [player]
   (:marker player))
 
-(defn player-value
+(defn value
   [player]
   (:value player))
 
@@ -14,12 +14,14 @@
   [player]
   (:ai player))
 
-(defn player-role
+(defn role
   [player]
   (:role player))
 
 (defn make-player
   [params]
-  (if (= (:role params) :human)
-    (->Player (:marker params) (:role params) false -1)
-    (->Player (:marker params) (:role params) true 1)))
+  (cond
+    (= (:role params) :human) (->Player (:marker params) (:role params) false -1)
+    (= (:role params) :easy-computer) (->Player (:marker params) (:role params) true -1)
+    :else
+      (->Player (:marker params) (:role params) true 1)))

@@ -25,7 +25,7 @@
 
 (defn move
   [board player spot]
-  (assoc board spot (player/player-marker player)))
+  (assoc board spot (player/marker player)))
 
 (defn is-available?
   [board spot]
@@ -75,23 +75,21 @@
  (defn winner-player
    [board first-player second-player]
    (let [winner (winner-mark board)]
-     (if (= (player/player-role first-player) winner)
+     (if (= (player/role first-player) winner)
        first-player
        second-player)))
-
-(defn is-winner-ai?
- [board first-player second-player]
- (let [winner (winner-mark board)]
-   (if (= (player/player-marker first-player) winner)
-     (player/is-ai? first-player)
-     (player/is-ai? second-player))))
 
 (defn winner-player
   [board first-player second-player]
   (let [winner (winner-mark board)]
-    (if (= (player/player-role first-player) winner)
+    (if (= (player/marker first-player) winner)
       first-player
       second-player)))
+
+(defn is-winner-ai?
+ [board first-player second-player]
+ (let [winner (winner-player board first-player second-player)]
+   (player/is-ai? winner)))
 
 (defn draw?
   [board]
