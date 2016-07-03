@@ -78,7 +78,7 @@
  (if (board/draw? board)
    "The game tied"
    (str "Player "
-        (clojure.string/upper-case (name (board/winner-mark board)))
+        (clojure.string/upper-case (name (board/winner-marker board)))
         " won on positions "
         (print-combo (board/winning-combo board)))))
 

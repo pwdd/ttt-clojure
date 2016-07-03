@@ -1,6 +1,6 @@
-(ns ttt.computer-spec
+(ns ttt.negamax-spec
   (:require [speclj.core :refer :all]
-            [ttt.computer :refer :all]
+            [ttt.negamax :refer :all]
             [ttt.player :refer [make-player]]))
 
 (def easy-computer (make-player { :marker :o :role :easy-computer }))
@@ -13,7 +13,7 @@
   (it "returns :human-computer if game is computer vs human"
     (should= :human-computer (game-type hard-computer human)))
   (it "returns nil if game is computer vs computer"
-    (should-not (game-type computer easy-computer)))
+    (should-not (game-type easy-computer easy-computer)))
   (it "returns nil if game is human vs human"
     (should-not (game-type human human))))
 
@@ -43,40 +43,40 @@
     (should= 8 (best-move [:x :o :o
                            :o :x :x
                            :_ :_ :_]
-                           computer
+                           easy-computer
                            human
                            0)))
   (it "returns spot that makes computer win instead of blocking opponent"
     (should= 0 (best-move [:_ :o :o
                            :_ :x :x
                            :x :x :o]
-                           computer
+                           easy-computer
                            human
                            0)))
   (it "returns winning spot"
     (should= 1 (best-move [:o :_ :o
                            :_ :x :x
                            :_ :_ :x]
-                           computer
+                           easy-computer
                            human
                            0)))
   (it "avoids opponent to create an invincible situation"
     (should (or (= 2 (best-move [:o :_ :_
                                  :_ :x :_
                                  :_ :_ :x]
-                                 computer
+                                 easy-computer
                                  human
                                  0))
                 (= 6 (best-move [:o :_ :_
                                  :_ :x :_
                                  :_ :_ :x]
-                                 computer
+                                 easy-computer
                                  human
                                  0)))))
   (it "blocks opponent from winning"
     (should= 6 (best-move [:o :x :x
                            :_ :x :_
                            :_ :o :_]
-                           computer
+                           easy-computer
                            human
                            0))))

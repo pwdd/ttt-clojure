@@ -1,10 +1,10 @@
 (ns ttt.game
   (:require [ttt.board :as board]
-            [ttt.user :as user]
             [ttt.messenger :as messenger]
-            [ttt.computer :as computer]
             [ttt.helpers :as helpers]
-            [ttt.player :as player]))
+            [ttt.player :as player]
+            [ttt.spots :as spots]
+            [ttt.negamax :as negamax]))
 
 (def acceptable-human-player
   #{ "h" "human" "hum" })
@@ -60,33 +60,23 @@
         (player/make-player { :marker marker
                               :role :hard-computer }))))
 
-(defn player-spot
-  [board player opponent]
-  (cond
-    (= :human (player/role player))
-      (user/get-user-spot)
-    (= :easy-computer (player/role player))
-      (computer/computer-spot board/board-length)
-    :else
-      (computer/best-move board player opponent computer/start-depth)))
-
 ; TODO test
-(defn valid-spot
-  [board player opponent]
-  (let [spot (player-spot board player opponent)]
-    (if (board/is-valid-move? board spot)
+(defn validate-spot
+  [player params]
+  (let [spot (spots/select-spot player params)]
+    (if (board/is-valid-move? (:board params) spot)
       spot
-      (recur board player opponent))))
+      (recur player params))))
 
 ; TODO test
 (defn play
   [board current-player opponent]
-  (let [      spot (valid-spot board current-player opponent)
+  (let [      spot (validate-spot board current-player opponent)
         game-board (board/move board current-player spot)]
     (println (messenger/moved-to current-player spot))
     (println (messenger/print-board game-board))
     (if (board/game-over? game-board)
-      (if (computer/game-type current-player opponent)
+      (if (negamax/game-type current-player opponent)
         (println (messenger/result-human-computer
                   game-board current-player opponent))
         (println (messenger/result game-board)))

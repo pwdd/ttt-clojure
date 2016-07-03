@@ -1,4 +1,4 @@
-(ns ttt.computer
+(ns ttt.negamax
   (:require [ttt.board :as board]
             [ttt.player :as player]))
 
@@ -62,11 +62,11 @@
 (def negamax (memoize negamax-value))
 
 (defn best-move
-  [board current-player opponent depth]
-  (if (board/is-empty? board)
-    4
-    (let [spots (board/available-spots board)
-          scores (scores board current-player opponent depth)
-          max-value (apply max scores)
-          move (.indexOf scores max-value)]
-      (nth spots move))))
+ [board current-player opponent depth]
+ (if (board/is-empty? board)
+   4
+   (let [spots (board/available-spots board)
+         scores (scores board current-player opponent depth)
+         max-value (apply max scores)
+         move (.indexOf scores max-value)]
+     (nth spots move))))

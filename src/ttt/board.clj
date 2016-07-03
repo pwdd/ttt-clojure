@@ -52,9 +52,7 @@
 
 (defn repeated?
   [board combo]
-  (let [selected-combo
-        (for [idx combo]
-          (nth board idx))]
+  (let [selected-combo (for [idx combo] (nth board idx))]
     (if (not-any? #{empty-spot} selected-combo)
       (apply = selected-combo))))
 
@@ -66,22 +64,15 @@
   [board]
   (first (find-repetition board)))
 
-(defn winner-mark
+(defn winner-marker
   [board]
   (if (winning-combo board)
     (let [combo (winning-combo board)]
        (board (combo 0)))))
 
- (defn winner-player
-   [board first-player second-player]
-   (let [winner (winner-mark board)]
-     (if (= (player/role first-player) winner)
-       first-player
-       second-player)))
-
 (defn winner-player
   [board first-player second-player]
-  (let [winner (winner-mark board)]
+  (let [winner (winner-marker board)]
     (if (= (player/marker first-player) winner)
       first-player
       second-player)))
@@ -94,9 +85,9 @@
 (defn draw?
   [board]
   (and (is-full? board)
-       (not (winner-mark board))))
+       (not (winner-marker board))))
 
 (defn game-over?
   [board]
   (or (draw? board)
-      (not (nil? (winner-mark board)))))
+      (not (nil? (winner-marker board)))))

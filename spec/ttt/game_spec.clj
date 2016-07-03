@@ -1,7 +1,7 @@
 (ns ttt.game-spec
   (:require [speclj.core :refer :all]
-           [ttt.game :refer :all]
-           [ttt.player :refer [make-player]]))
+            [ttt.game :refer :all]
+            [ttt.player :refer [make-player]]))
 
 (def human (make-player {:marker "x" :role :human}))
 (def computer (make-player {:marker "o" :role :easy-computer}))
@@ -39,12 +39,8 @@
     (should= computer
              (with-in-str "o\nec" (define-player { :msg "set marker" })))))
 
-(describe "player-spot"
-  (it "gets user spot"
-    (should= 3 (with-in-str "4" (player-spot [:_ :_ :_ :_ :_ :_ :_ :_ :_]
-                                             human
-                                             computer))))
-  (it "gets computer spot"
-    (should (integer? (player-spot [:_ :_ :_ :_ :_ :_ :_ :_ :_]
-                                   computer
-                                   human)))))
+; (describe "validate-spot"
+;   (it "returns a valid spot when a human selects one"
+;     (should= human (validate-spot human { :board [:x :x :_
+;                                                   :o :_ :_
+;                                                   :_ :_ :_] }))))
