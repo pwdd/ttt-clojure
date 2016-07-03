@@ -71,7 +71,11 @@
 ; TODO test
 (defn play
   [board current-player opponent]
-  (let [      spot (validate-spot board current-player opponent)
+  (let [spot (validate-spot current-player { :board board
+                                             :current-player current-player
+                                             :opponent opponent
+                                             :depth negamax/start-depth
+                                             :board-length board/board-length})
         game-board (board/move board current-player spot)]
     (println (messenger/moved-to current-player spot))
     (println (messenger/print-board game-board))

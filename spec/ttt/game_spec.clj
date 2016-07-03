@@ -38,9 +38,3 @@
   (it "returns player with type 'computer' and its marker"
     (should= computer
              (with-in-str "o\nec" (define-player { :msg "set marker" })))))
-
-; (describe "validate-spot"
-;   (it "returns a valid spot when a human selects one"
-;     (should= human (validate-spot human { :board [:x :x :_
-;                                                   :o :_ :_
-;                                                   :_ :_ :_] }))))
