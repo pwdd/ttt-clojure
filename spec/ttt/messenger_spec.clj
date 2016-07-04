@@ -1,10 +1,12 @@
 (ns ttt.messenger-spec
   (:require [speclj.core :refer :all]
             [ttt.messenger :refer :all]
-            [ttt.player :refer [make-player]]))
+            [ttt.player :refer [make-player]]
+            [ttt.game :refer [create-game]]))
 
 (def human (make-player { :marker :x :role :human }))
 (def computer (make-player { :marker :o :role :easy-computer }))
+(def game (create-game human human))
 
 (describe "translate-keyword"
   (it "returns ' x '"
@@ -14,25 +16,25 @@
   (it "returns an empty space for :_"
     (should= "   " (translate-keyword :_))))
 
-(describe "print-board"
+(describe "stringfy-board"
   (it "outputs a numbered representation of the board if no spot is taken"
     (should=
       "   |   |   \n---|---|---\n   |   |   \n---|---|---\n   |   |   \n"
-      (print-board [:_ :_ :_ :_ :_ :_ :_ :_ :_])))
+      (stringfy-board [:_ :_ :_ :_ :_ :_ :_ :_ :_])))
   (it "combines numbers and letters when some spots are taken"
     (should=
       "   | x |   \n---|---|---\n o |   |   \n---|---|---\n   |   | x \n"
-      (print-board [:_ :x :_ :o :_ :_ :_ :_ :x]))))
+      (stringfy-board [:_ :x :_ :o :_ :_ :_ :_ :x]))))
 
 (describe "separator"
   (it "has a default value"
     (should= "\n---|---|---\n" separator)))
 
-(describe "print-combo"
+(describe "stringfy-combo"
   (it "returns 1, 2, 3"
-    (should= "1, 2, 3" (print-combo [0 1 2])))
+    (should= "1, 2, 3" (stringfy-combo [0 1 2])))
   (it "returns 3, 5, 7"
-    (should= "3, 5, 7" (print-combo [2 4 6]))))
+    (should= "3, 5, 7" (stringfy-combo [2 4 6]))))
 
 (describe "result-human-computer"
   (it "returns tied message if the game ties"
@@ -58,15 +60,18 @@
 
 (describe "result"
  (it "returns 'tie' the game ends ties"
-   (should= "The game tied" (result [:x :o :x
+   (should= "The game tied" (result game
+                                    [:x :o :x
                                      :o :x :o
                                      :o :x :o])))
  (it "returns X if first player won"
-   (should= "Player X won on positions 1, 2, 3" (result [:x :x :x
+   (should= "Player X won on positions 1, 2, 3" (result game
+                                                        [:x :x :x
                                                          :o :_ :o
                                                          :o :x :o])))
  (it "returns 'O' if second player won"
-   (should= "Player O won on positions 1, 5, 9" (result [:o :x :x
+   (should= "Player O won on positions 1, 5, 9" (result game
+                                                        [:o :x :x
                                                          :x :o :_
                                                          :_ :_ :o]))))
 
@@ -75,3 +80,17 @@
     (should (empty? (moved-to human 1))))
   (it "returns a message to where computer moved incremented by one"
     (should-not (empty? (moved-to computer 3)))))
+
+(describe "print-message"
+  (around [it]
+    (with-out-str (it)))
+  (it "outputs a message to stdout"
+    (should= "test message\r\n" (with-out-str (print-message "test message")))))
+
+(describe "not-a-number"
+  (it "explains that empty space is not a number"
+    (should= "\nYour choice is not valid. Empty spaces are not a number"
+             (not-a-number "")))
+  (it "builds a string explaining that input is not a number"
+    (should= "\nYour choice is not valid. 'a' is not a number"
+             (not-a-number "a"))))

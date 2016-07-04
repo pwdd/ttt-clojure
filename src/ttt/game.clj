@@ -3,8 +3,45 @@
             [ttt.messenger :as messenger]
             [ttt.helpers :as helpers]
             [ttt.player :as player]
-            [ttt.spots :as spots]
-            [ttt.negamax :as negamax]))
+            [ttt.spots :as spots]))
+
+(defrecord Game [type])
+
+(defn game-type
+  [first-player second-player]
+  (cond
+    (= :human (player/role first-player) (player/role second-player))
+      :human-x-human
+
+    (= :hard-computer (player/role first-player) (player/role second-player))
+      :hard-x-hard
+
+    (= :easy-computer (player/role first-player) (player/role second-player))
+      :easy-x-easy
+
+    (and (= :human (player/role first-player))
+         (= :hard-computer (player/role second-player))) :human-x-hard
+
+    (and (= :hard-computer (player/role first-player))
+         (= :human (player/role second-player))) :human-x-hard
+
+    (and (= :human (player/role first-player))
+         (= :easy-computer (player/role second-player))) :human-x-easy
+
+    (and (= :easy-computer (player/role first-player))
+         (= :human (player/role second-player))) :human-x-easy
+
+    (and (= :easy-computer (player/role first-player))
+         (= :hard-computer (player/role second-player))) :easy-x-hard
+
+    (and (= :hard-computer (player/role first-player))
+         (= :easy-computer (player/role second-player))) :easy-x-hard
+    :else
+      :not-game-type))
+
+(defn create-game
+  [first-player second-player]
+  (->Game (game-type first-player second-player)))
 
 (def acceptable-human-player
   #{ "h" "human" "hum" })
@@ -29,9 +66,9 @@
 
 ; TODO test
 (defn get-marker
-  [{ :keys [msg opponent-marker] :or { opponent-marker "" }}]
-  (println msg)
-  (let [marker (clojure.string/trim (read-line))]
+  [{ :keys [msg opponent-marker] :or { opponent-marker "" } }]
+  (messenger/print-message msg)
+  (let [marker (messenger/ask-player-marker)]
     (if (valid-marker? marker opponent-marker)
       marker
       (recur { :msg msg :opponent-marker opponent-marker }))))
@@ -67,21 +104,3 @@
     (if (board/is-valid-move? (:board params) spot)
       spot
       (recur player params))))
-
-; TODO test
-(defn play
-  [board current-player opponent]
-  (let [spot (validate-spot current-player { :board board
-                                             :current-player current-player
-                                             :opponent opponent
-                                             :depth negamax/start-depth
-                                             :board-length board/board-length})
-        game-board (board/move board current-player spot)]
-    (println (messenger/moved-to current-player spot))
-    (println (messenger/print-board game-board))
-    (if (board/game-over? game-board)
-      (if (negamax/game-type current-player opponent)
-        (println (messenger/result-human-computer
-                  game-board current-player opponent))
-        (println (messenger/result game-board)))
-      (recur game-board opponent current-player))))

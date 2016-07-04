@@ -73,9 +73,11 @@
 (defn winner-player
   [board first-player second-player]
   (let [winner (winner-marker board)]
-    (if (= (player/marker first-player) winner)
-      first-player
-      second-player)))
+    (cond
+      (= (player/marker first-player) winner) first-player
+      (= (player/marker second-player) winner) second-player
+      :else
+        false)))
 
 (defn is-winner-ai?
  [board first-player second-player]

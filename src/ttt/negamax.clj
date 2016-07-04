@@ -4,69 +4,75 @@
 
 (def start-depth 0)
 
-(defn computer-spot
-  [board-length]
-  (rand-int board-length))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;   Multimethod: board-value   ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn game-type
-  [first-player second-player]
-  (cond
-    (not (= (player/is-ai? first-player)
-            (player/is-ai? second-player))) :human-computer
-    (and (or (= :easy-computer (player/role first-player))
-             (= :easy-computer (player/role second-player)))
-         (or (= :hard-computer (player/role first-player))
-             (= :hard-computer (player/role second-player)))) :easy-hard
-    :else
-      :computer-computer))
+(defmulti board-value (fn [player depth] (:role player)))
 
-(defn board-analysis
-  [board first-player second-player depth]
+(defmethod board-value :human
+  [player depth]
+  (- depth 10))
+
+(defmethod board-value :easy-computer
+  [player depth]
+  (- depth 10))
+
+(defmethod board-value :hard-computer
+  [player depth]
+  (+ depth 10))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;   Multimethod: board-analysis   ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmulti board-analysis
+  (fn [game board first-player second-player depth]
+    (:type game)))
+
+(defmethod board-analysis :hard-x-hard
+  [game board first-player second-player depth]
   (let [winner (board/winner-player board first-player second-player)]
   (cond
-    (= :human-computer (game-type first-player second-player))
-      (cond
-        (= :human (player/role winner)) (+ -10 depth)
-        (or (= :easy-computer (player/role winner))
-            (= :hard-computer (player/role winner))) (+ 10 depth)
-        :else
-          0)
-    (= :easy-hard (game-type first-player second-player))
-      (cond
-        (= :easy-computer (player/role winner)) (+ -10 depth)
-        (= :hard-computer (player/role winner)) (+ 10 depth)
-        :else
-        0)
+    (= winner first-player) (+ 10 depth)
+    (= winner second-player) (+ -10 depth)
     :else
-      (cond
-        (= winner first-player) (+ 10 depth)
-        (= winner second-player) (+ -10 depth)
-      :else
-        0))))
+      0)))
+
+(defmethod board-analysis :default
+  [game board first-player second-player depth]
+  (let [winner (board/winner-player board first-player second-player)]
+  (if winner
+    (board-value winner depth)
+    0)))
+
+;;;;;;;;;;;;;;;;;
+;;   Negamax   ;;
+;;;;;;;;;;;;;;;;;
 
 (declare negamax)
 
 (defn scores
-  [board current-player opponent depth]
+  [game board current-player opponent depth]
   (let [spots (board/available-spots board)
         new-boards (map #(board/move board current-player %) spots)]
-    (map #(- (negamax % opponent current-player (inc depth))) new-boards)))
+    (map #(- (negamax game % opponent current-player (inc depth))) new-boards)))
 
 (defn negamax-value
-  [board current-player opponent depth]
+  [game board current-player opponent depth]
   (if (board/game-over? board)
     (* (player/value current-player)
-       (board-analysis board current-player opponent depth))
-    (apply max (scores board current-player opponent depth))))
+       (board-analysis game board current-player opponent depth))
+    (apply max (scores game board current-player opponent depth))))
 
 (def negamax (memoize negamax-value))
 
 (defn best-move
- [board current-player opponent depth]
+ [game board current-player opponent depth]
  (if (board/is-empty? board)
    4
    (let [spots (board/available-spots board)
-         scores (scores board current-player opponent depth)
+         scores (scores game board current-player opponent depth)
          max-value (apply max scores)
          move (.indexOf scores max-value)]
      (nth spots move))))

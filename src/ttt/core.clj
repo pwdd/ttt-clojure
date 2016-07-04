@@ -3,7 +3,8 @@
             [ttt.messenger :as messenger]
             [ttt.game :as game]
             [ttt.helpers :as helpers]
-            [ttt.player :as player]))
+            [ttt.player :as player]
+            [ttt.logic :as logic]))
 
 
 ; TODO test
@@ -17,6 +18,7 @@
               opponent (game/define-player
                             {:msg messenger/ask-second-marker
                              :opponent-marker (player/marker
-                                               current-player) })]
-    (game/play (board/new-board) current-player opponent)
+                                               current-player) })
+        game (game/create-game current-player opponent)]
+    (logic/play game (board/new-board) current-player opponent)
     ))

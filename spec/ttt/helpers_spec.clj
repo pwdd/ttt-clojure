@@ -2,6 +2,12 @@
   (:require [speclj.core :refer :all]
             [ttt.helpers :refer :all]))
 
+(describe "clean-string"
+  (it "trims whitespaces"
+    (should= "abc" (clean-string " abc ")))
+  (it "lower-case entire string"
+    (should= "abc" (clean-string "aBc"))))
+
 (describe "is-int?"
   (it "returns true if argument is numreric string"
     (should (is-int? "5")))
@@ -29,9 +35,3 @@
     (should-not (in-range? 9 8)))
   (it "returns true for 10 if limit is 20"
      (should (in-range? 10 20))))
-
-(describe "clean-string"
-  (it "trims whitespaces"
-    (should= "abc" (clean-string " abc ")))
-  (it "lower-case entire string"
-    (should= "abc" (clean-string "aBc"))))

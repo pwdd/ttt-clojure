@@ -1,6 +1,7 @@
 (ns ttt.messenger
   (:require [ttt.board :as board]
-            [ttt.player :as player]))
+            [ttt.player :as player]
+            [ttt.helpers :as helpers]))
 
 (def separator "\n---|---|---\n")
 
@@ -39,7 +40,7 @@
     (str " " (name k) " ")
     "   "))
 
-(defn print-board
+(defn stringfy-board
   [board]
   (str
     (clojure.string/join separator
@@ -54,33 +55,57 @@
   )
 )
 
-(defn print-combo
+(defn stringfy-combo
   [combo]
   (clojure.string/join ", " (map #(inc %) combo)))
+
+(defn human-lost
+  [board]
+  (str "You lost.\n"
+       "Computer won on positions "
+       (stringfy-combo (board/winning-combo board))
+        "\n"))
+
+(defn human-won
+  [board]
+  (str "You won!\n"
+  "Winning positions: "
+  (stringfy-combo (board/winning-combo board))
+  "\n"))
+
+(defn default-win
+  [board]
+  (str "Player "
+       (clojure.string/upper-case (name (board/winner-marker board)))
+       " won on positions "
+       (stringfy-combo (board/winning-combo board))))
 
 (defn result-human-computer
   [board first-player second-player]
   (cond
     (board/draw? board) "You tied\n"
     (board/is-winner-ai? board first-player second-player)
-      (str "You lost.\n"
-           "Computer won on positions "
-           (print-combo (board/winning-combo board))
-            "\n")
+      (human-lost board)
     :else
-      (str "You won!\n"
-      "Winning positions: "
-      (print-combo (board/winning-combo board))
-      "\n")))
+      (human-won board)))
 
-(defn result
-  [board]
- (if (board/draw? board)
-   "The game tied"
-   (str "Player "
-        (clojure.string/upper-case (name (board/winner-marker board)))
-        " won on positions "
-        (print-combo (board/winning-combo board)))))
+(defmulti result
+  (fn [game & [board first-player second-player]]
+    (:type game)))
+
+(defmethod result :human-x-easy
+  [game & [board first-player second-player]]
+  (result-human-computer board first-player second-player))
+
+(defmethod result :human-x-hard
+  [game & [board first-player second-player]]
+  (result-human-computer board first-player second-player))
+
+(defmethod result :default
+  [game & [board first-player second-player]]
+  (if (board/draw? board)
+    "The game tied"
+    (default-win board)))
 
 (defn moved-to
  [player spot]
@@ -91,3 +116,25 @@
           (inc spot)
           "\n")
    ""))
+
+(defn print-message
+  [msg]
+  (println msg))
+
+(defn not-a-number
+  [input]
+  (if (empty? input)
+    "\nYour choice is not valid. Empty spaces are not a number"
+    (str "\nYour choice is not valid. '" input "' is not a number")))
+
+(defn ask-user-number
+  []
+  (clojure.string/trim (read-line)))
+
+(defn ask-player-marker
+  []
+  (clojure.string/trim (read-line)))
+
+(defn ask-player-role
+  []
+  (helpers/clean-string (read-line)))
