@@ -12,15 +12,16 @@
 (def human-hard (create-game human hard-computer))
 (def hard-hard (create-game hard-computer-one hard-computer))
 
-(describe "scores"
-  (it "test"
-    (should= 1 (scores human-hard
-                          [:o :_ :o
-                           :_ :x :x
-                           :_ :_ :x]
-                           hard-computer
-                           human
-                           0))))
+(describe "board-value"
+  (context ":human"
+    (it "returns depth - 10 if player is human"
+      (should= -8 (board-value human 2))))
+  (context ":easy-computer"
+    (it "returns depth - 10 if player is easy computer"
+      (should= -8 (board-value easy-computer 2))))
+  (context ":hard-computer"
+    (it "returns depth + 10 if player is hard-computer"
+      (should= 8 (board-value hard-computer 2)))))
 
 (describe "board-analysis :hard-x-hard"
   (it "returns 0 if there is not winner"
@@ -32,7 +33,7 @@
                                     hard-computer-one
                                     2))))
   (it "returns board value when the first player won"
-    (should= 12 (board-analysis hard-hard
+    (should= 8 (board-analysis hard-hard
                                 [:x :x :x
                                  :o :o :_
                                  :_ :_ :_]
@@ -40,21 +41,13 @@
                                  hard-computer
                                  2)))
   (it "returns board value when the second player won"
-    (should= 12 (board-analysis human-hard
-                                 [:x :o :_
-                                  :o :x :_
-                                  :_ :_ :x]
+    (should= 8 (board-analysis human-hard
+                                 [:o :x :_
+                                  :x :o :_
+                                  :_ :_ :o]
                                   hard-computer-one
                                   hard-computer
-                                  2)))
-  (it "returns board value when second-player won"
-    (should= 13 (board-analysis human-hard
-                                [:o :o :o
-                                 :x :x :_
-                                 :X :_ :_]
-                                 hard-computer-one
-                                 hard-computer
-                                 3))))
+                                  2))))
 
 (describe "board-analysis :default"
   (it "returns 0 if there is not winner"
@@ -82,7 +75,7 @@
                                   hard-computer
                                   2)))
   (it "returns board value when hard-computer won"
-    (should= 13 (board-analysis human-hard
+    (should= 7 (board-analysis human-hard
                                 [:o :o :o
                                  :x :x :_
                                  :X :_ :_]

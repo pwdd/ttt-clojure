@@ -20,7 +20,7 @@
 
 (defmethod board-value :hard-computer
   [player depth]
-  (+ depth 10))
+  (- 10 depth))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;   Multimethod: board-analysis   ;;
@@ -34,8 +34,8 @@
   [game board first-player second-player depth]
   (let [winner (board/winner-player board first-player second-player)]
   (cond
-    (= winner first-player) (+ 10 depth)
-    (= winner second-player) (+ -10 depth)
+    (= winner first-player) (- 10 depth)
+    (= winner second-player) (- depth 10)
     :else
       0)))
 
