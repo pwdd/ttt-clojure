@@ -84,7 +84,9 @@
   (let [input (helpers/clean-string (read-line))]
     (if (valid-selection? input)
       input
-      (recur marker))))
+      (do
+        (messenger/print-message messenger/invalid-role-msg)
+        (recur marker)))))
 
 (defn define-player
   [{ :keys [msg opponent-marker] :or { opponent-marker "" }}]
@@ -100,11 +102,3 @@
       :else
         (player/make-player { :marker marker
                               :role :hard-computer }))))
-
-; TODO test
-(defn validate-spot
-  [player params]
-  (let [spot (spots/select-spot player params)]
-    (if (board/is-valid-move? (:board params) spot)
-      spot
-      (recur player params))))

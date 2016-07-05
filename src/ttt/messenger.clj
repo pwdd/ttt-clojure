@@ -34,6 +34,10 @@
 
 (def default-invalid-input "\nYour choice is not valid. ")
 
+(def invalid-role-msg
+  (str default-invalid-input
+    "Only (H) human, (EC) easy computer and (HC) hard computer are available"))
+
 (defn translate-keyword
   [k]
   (if (not (= k board/empty-spot))
@@ -126,10 +130,14 @@
   (cond
     (empty? input)
       (str default-invalid-input "Empty spaces are not a number")
-    (not (helpers/is-int? input))
-      (str default-invalid-input "'" input "' is not a number")
-    (not (helpers/in-range? (helpers/input-to-number input) board/board-length))
-      (str default-invalid-input "There is no position " input " in the board")
+    :else
+      (str default-invalid-input "'" input "' is not a number")))
+
+(defn not-a-valid-move
+  [position]
+  (cond
+    (not (helpers/in-range? position board/board-length))
+      (str default-invalid-input "There is no position " (inc position) " in the board")
     :else
       (str default-invalid-input "The position is taken")))
 

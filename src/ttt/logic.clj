@@ -2,10 +2,11 @@
   (:require [ttt.game :as game]
             [ttt.messenger :as messenger]
             [ttt.board :as board]
-            [ttt.negamax :as negamax]))
+            [ttt.negamax :as negamax]
+            [ttt.spots :as spots]))
 (defn play
   [game board current-player opponent]
-  (let [spot (game/validate-spot current-player { :game game
+  (let [spot (spots/select-spot current-player { :game game
                                                   :board board
                                                   :current-player current-player
                                                   :opponent opponent

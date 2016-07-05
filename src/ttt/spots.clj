@@ -11,11 +11,16 @@
 (defmulti select-spot (fn [player & params] (:role player)))
 
 (defmethod select-spot :human
-  [player & params]
+  [player params]
   (messenger/print-message messenger/choose-a-number)
   (let [input (messenger/ask-user-number)]
     (if (helpers/is-int? input)
-      (helpers/input-to-number input)
+      (let [valid-number (helpers/input-to-number input)]
+        (if (board/is-valid-move? (:board params) valid-number)
+          valid-number
+          (do
+            (messenger/print-message (messenger/not-a-valid-move valid-number))
+            (recur player params))))
       (do
         (messenger/print-message (messenger/not-a-valid-number input))
         (recur player params)))))
