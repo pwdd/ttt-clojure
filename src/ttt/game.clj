@@ -5,44 +5,6 @@
             [ttt.player :as player]
             [ttt.spots :as spots]))
 
-(defrecord Game [type])
-
-(defn game-type
-  [first-player second-player]
-  (cond
-    (= :human (player/role first-player) (player/role second-player))
-      :human-x-human
-
-    (= :hard-computer (player/role first-player) (player/role second-player))
-      :hard-x-hard
-
-    (= :easy-computer (player/role first-player) (player/role second-player))
-      :easy-x-easy
-
-    (and (= :human (player/role first-player))
-         (= :hard-computer (player/role second-player))) :human-x-hard
-
-    (and (= :hard-computer (player/role first-player))
-         (= :human (player/role second-player))) :human-x-hard
-
-    (and (= :human (player/role first-player))
-         (= :easy-computer (player/role second-player))) :human-x-easy
-
-    (and (= :easy-computer (player/role first-player))
-         (= :human (player/role second-player))) :human-x-easy
-
-    (and (= :easy-computer (player/role first-player))
-         (= :hard-computer (player/role second-player))) :easy-x-hard
-
-    (and (= :hard-computer (player/role first-player))
-         (= :easy-computer (player/role second-player))) :easy-x-hard
-    :else
-      :not-game-type))
-
-(defn create-game
-  [first-player second-player]
-  (->Game (game-type first-player second-player)))
-
 (def acceptable-human-player
   #{ "h" "human" "hum" })
 
@@ -52,7 +14,19 @@
 (def acceptable-hard-computer
   #{ "hc" "hard computer" "hardcomputer" "hard" "difficult"})
 
-(defn valid-selection?
+(defrecord Game [type])
+
+(defn game-type
+  [first-player second-player]
+  (let [first-name (messenger/stringfy-role first-player)
+        second-name (messenger/stringfy-role second-player)]
+    (keyword (clojure.string/join "-x-"(sort [first-name second-name])))))
+
+(defn create-game
+  [first-player second-player]
+  (->Game (game-type first-player second-player)))
+
+(defn valid-role-selection?
  [input]
  (or (contains? acceptable-human-player input)
      (contains? acceptable-easy-computer input)
@@ -64,7 +38,7 @@
       (re-matches #"^[a-zA-Z]$" input)
       (not (= input opponent-marker))))
 
-; TODO test
+; TODO test // only base case is tested
 (defn get-marker
   [{ :keys [msg opponent-marker] :or { opponent-marker "" } }]
   (messenger/print-message msg)
@@ -82,7 +56,7 @@
   [marker]
   (messenger/ask-role marker)
   (let [input (helpers/clean-string (read-line))]
-    (if (valid-selection? input)
+    (if (valid-role-selection? input)
       input
       (do
         (messenger/print-message messenger/invalid-role-msg)

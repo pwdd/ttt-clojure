@@ -97,11 +97,11 @@
   (fn [game & [board first-player second-player]]
     (:type game)))
 
-(defmethod result :human-x-easy
+(defmethod result :easy-x-human
   [game & [board first-player second-player]]
   (result-human-computer board first-player second-player))
 
-(defmethod result :human-x-hard
+(defmethod result :hard-x-human
   [game & [board first-player second-player]]
   (result-human-computer board first-player second-player))
 
@@ -165,3 +165,11 @@
       (str default-invalid-input "This marker is taken by the first player.")
     :else
       (str default-invalid-input "Only a letter from 'a' to 'z' is valid.")))
+
+(defn stringfy-role
+  [player]
+  (if (= :human (player/role player))
+    "human"
+    (let [role (name (player/role player))
+         limit (.indexOf role "-")]
+      (subs role 0 limit))))

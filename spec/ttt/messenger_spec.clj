@@ -97,3 +97,11 @@
   (it "explains that input is out of range"
     (should= "\nYour choice is not valid. There is no position 11 in the board"
              (not-a-valid-number "11"))))
+
+(describe "stringfy-role"
+  (it "returns 'easy' if player is easy computer"
+    (should= "easy" (stringfy-role easy-computer)))
+  (it "returns 'hard' if player is hard computer"
+    (should= "hard" (stringfy-role hard-computer)))
+  (it "returns 'human' if player is human"
+    (should= "human" (stringfy-role human))))
