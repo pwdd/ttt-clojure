@@ -12,6 +12,16 @@
 (def human-hard (create-game human hard-computer))
 (def hard-hard (create-game hard-computer-one hard-computer))
 
+(describe "scores"
+  (it "test"
+    (should= 1 (scores human-hard
+                          [:o :_ :o
+                           :_ :x :x
+                           :_ :_ :x]
+                           hard-computer
+                           human
+                           0))))
+
 (describe "board-analysis :hard-x-hard"
   (it "returns 0 if there is not winner"
     (should (zero? (board-analysis hard-hard
@@ -97,14 +107,6 @@
                            hard-computer
                            human
                            0)))
-  ; (it "returns winning spot"
-  ;   (should= 1 (best-move human-hard
-  ;                         [:o :_ :o
-  ;                          :_ :x :x
-  ;                          :_ :_ :x]
-  ;                          hard-computer
-  ;                          human
-  ;                          0)))
   (it "avoids opponent to create an invincible situation"
     (should (or (= 2 (best-move human-hard
                                 [:o :_ :_

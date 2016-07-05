@@ -71,7 +71,11 @@
   (let [marker (messenger/ask-player-marker)]
     (if (valid-marker? marker opponent-marker)
       marker
-      (recur { :msg msg :opponent-marker opponent-marker }))))
+      (do
+        (messenger/print-message
+          (messenger/invalid-marker-msg marker opponent-marker))
+        (recur { :msg msg
+                 :opponent-marker opponent-marker })))))
 
 ; TODO test
 (defn get-role

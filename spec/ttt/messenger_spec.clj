@@ -87,10 +87,13 @@
   (it "outputs a message to stdout"
     (should= "test message\r\n" (with-out-str (print-message "test message")))))
 
-(describe "not-a-number"
+(describe "not-a-valid-number"
   (it "explains that empty space is not a number"
     (should= "\nYour choice is not valid. Empty spaces are not a number"
-             (not-a-number "")))
-  (it "builds a string explaining that input is not a number"
+             (not-a-valid-number "")))
+  (it "explains that a letter input is not a number"
     (should= "\nYour choice is not valid. 'a' is not a number"
-             (not-a-number "a"))))
+             (not-a-valid-number "a")))
+  (it "explains that input is out of range"
+    (should= "\nYour choice is not valid. There is no position 11 in the board"
+             (not-a-valid-number "11"))))

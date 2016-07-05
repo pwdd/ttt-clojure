@@ -22,17 +22,17 @@
                 role-msg)))
 
 (def ask-first-marker
-  "\nPlease enter a letter that will be the first player's marker")
+  "\nPlease enter a single letter that will be the first player's marker")
 
 (def ask-second-marker
   "\nPlease enter a single letter that will be the second player's marker")
-
-(def h-or-c "Please type H (human) or C (computer):")
 
 (def choose-a-number "Please enter a number from 1-9: ")
 
 (def board-representation
   " 1 | 2 | 3 \n---|---|---\n 4 | 5 | 6 \n---|---|---\n 7 | 8 | 9 \n")
+
+(def default-invalid-input "\nYour choice is not valid. ")
 
 (defn translate-keyword
   [k]
@@ -121,11 +121,17 @@
   [msg]
   (println msg))
 
-(defn not-a-number
+(defn not-a-valid-number
   [input]
-  (if (empty? input)
-    "\nYour choice is not valid. Empty spaces are not a number"
-    (str "\nYour choice is not valid. '" input "' is not a number")))
+  (cond
+    (empty? input)
+      (str default-invalid-input "Empty spaces are not a number")
+    (not (helpers/is-int? input))
+      (str default-invalid-input "'" input "' is not a number")
+    (not (helpers/in-range? (helpers/input-to-number input) board/board-length))
+      (str default-invalid-input "There is no position " input " in the board")
+    :else
+      (str default-invalid-input "The position is taken")))
 
 (defn ask-user-number
   []
@@ -138,3 +144,16 @@
 (defn ask-player-role
   []
   (helpers/clean-string (read-line)))
+
+(defn invalid-marker-msg
+  [input opponent-marker]
+  (cond
+    (> (count input) 1)
+      (str default-invalid-input "Marker must be a single letter.")
+    (not (re-matches #"^[a-zA-Z]$" input))
+      (str default-invalid-input
+           "Numbers and special characters are not accepted.")
+    (= input opponent-marker)
+      (str default-invalid-input "This marker is taken by the first player.")
+    :else
+      (str default-invalid-input "Only a letter from 'a' to 'z' is valid.")))

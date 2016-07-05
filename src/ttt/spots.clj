@@ -1,7 +1,8 @@
 (ns ttt.spots
   (:require [ttt.helpers :as helpers]
             [ttt.negamax :as negamax]
-            [ttt.messenger :as messenger]))
+            [ttt.messenger :as messenger]
+            [ttt.board :as board]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;   Multimethod: select-spot   ;;
@@ -16,12 +17,12 @@
     (if (helpers/is-int? input)
       (helpers/input-to-number input)
       (do
-        (messenger/print-message (messenger/not-a-number input))
+        (messenger/print-message (messenger/not-a-valid-number input))
         (recur player params)))))
 
 (defmethod select-spot :easy-computer
   [player params]
-  (rand-int (:board-length params)))
+  (rand-nth (board/available-spots (:board params))))
 
 (defmethod select-spot :hard-computer
   [player params]
