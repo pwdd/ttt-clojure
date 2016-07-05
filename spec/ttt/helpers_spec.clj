@@ -9,7 +9,7 @@
     (should= "abc" (clean-string "aBc"))))
 
 (describe "is-int?"
-  (it "returns true if argument is numreric string"
+  (it "returns true if argument is numeric string"
     (should (is-int? "5")))
   (it "returns true if argument is numeric string with whitespaces"
     (should (is-int? "  1 ")))
@@ -19,9 +19,9 @@
     (should-not (is-int? "parakeet"))))
 
 (describe "input-to-number"
-  (it "returns 0 when input is '1'"
+  (it "returns integer 0 when input is string '1'"
     (should= 0 (input-to-number "1")))
-  (it "returns 8 when input is '9'"
+  (it "returns integer 8 when input is string '9'"
     (should= 8 (input-to-number "9"))))
 
 (describe "in-range?"
@@ -33,5 +33,5 @@
     (should (in-range? 0 8)))
   (it "returns false if 9"
     (should-not (in-range? 9 8)))
-  (it "returns true for 10 if limit is 20"
+  (it "returns true if 10 and if limit is 20"
      (should (in-range? 10 20))))

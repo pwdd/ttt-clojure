@@ -51,13 +51,8 @@
       (let [board (partition board/board-size
                              (map translate-keyword board))]
         (for [combo board]
-          (clojure.string/join "|" combo)
-        )
-      )
-    )
-    "\n"
-  )
-)
+          (clojure.string/join "|" combo))))
+    "\n"))
 
 (defn stringfy-combo
   [combo]
@@ -79,9 +74,9 @@
 
 (defn default-win
   [board]
-  (str "Player "
-       (clojure.string/upper-case (name (board/winner-marker board)))
-       " won on positions "
+  (str "Player '"
+       (name (board/winner-marker board))
+       "' won on positions "
        (stringfy-combo (board/winning-combo board))))
 
 (defn result-human-computer
