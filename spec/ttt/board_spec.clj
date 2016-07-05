@@ -26,9 +26,10 @@
     (should= 8 (count winning-combos))))
 
 (describe "new-board"
-  (it "is a vector of empty spots and with size equal to board length"
-    (should (and (= board-length (count (new-board)))
-                 (every? #{empty-spot} (new-board))))))
+  (it "is a vector of empty spots"
+    (should (every? #{empty-spot} (new-board))))
+  (it "has length equal to board-length"
+    (should (= board-length (count (new-board))))))
 
 (describe "move"
   (it "sets a value to an empty board"
@@ -59,21 +60,21 @@
     (should-not (is-empty? [_ _ _ _ _ u _ _ _]))))
 
 (describe "available-spots"
-  (it "returns a list with one element if only one spot is available"
+  (it "returns a collection with one element if only one spot is available"
     (should= '(8) (available-spots [u u u u u u u u _])))
-  (it "returns a vector with more than one spot available"
+  (it "returns a collection with more than one spot available"
     (should= '(0 1 8) (available-spots [_ _ u u u u u u _])))
-  (it "returns an empty vector if no spot is available"
+  (it "returns an empty collection if no spot is available"
     (should= '() (available-spots [(vec (repeat board-length u))]))))
 
 (describe "is-valid-move?"
-  (it "returns true if input is valid move"
+  (it "returns true if number is a valid move"
     (should (is-valid-move? empty-board 0)))
-  (it "returns true if is valid move on a board with spots taken"
+  (it "returns true if is valid move on a board with some spots taken"
     (should (is-valid-move? [u _ e _ _ _ _ _ _] 3)))
   (it "returns false if spot is taken"
     (should-not (is-valid-move? [_ u e _ _ _ _ _ _] 1)))
-  (it "returns false if input is out of range"
+  (it "returns false if number is out of range"
     (should-not (is-valid-move? empty-board 10))))
 
 (describe "repeated?"
@@ -90,13 +91,17 @@
   (it "returns true if there are repeated elements in a diagonal"
     (should (repeated? [e _ u
                         e u _
-                        u e _] [2 4 6]))))
+                        u e _] [2 4 6])))
+  (it "returns true if there are repeated elements in a column"
+    (should (repeated? [e _ u
+                        e u _
+                        e u _] [0 3 6]))))
 
 (describe "find-repetition"
-  (it "returns an empty list if board is empty"
+  (it "returns an empty collection if board is empty"
     (should= '()
              (find-repetition empty-board)))
-  (it "returns an empty list if board is full and there is no winner"
+  (it "returns an empty collection if board is full and there is no winner"
     (should= '()
              (find-repetition [u e u
                                e u e
@@ -113,15 +118,15 @@
                                 u u u]))))
 
 (describe "winning-combo"
-  (it "returns nothing when board is empty"
+  (it "returns nil when board is empty"
     (should-not (winning-combo empty-board)))
-  (it "returns nothing if finds 3 empty spots and there is no winner"
+  (it "returns nil if finds 3 empty spots and there is no winner"
     (should-not (winning-combo [u e u
                                 _ _ _
                                 u _ e])))
-  (it "returns winning row even if there are 3 empty spots in the board"
-    (should= [0 1 2] (winning-combo [u u u
-                                     _ _ _
+  (it "returns winning combo even if there are 3 empty spots in the board"
+    (should= [3 4 5] (winning-combo [_ _ _
+                                     u u u
                                      u _ e])))
   (it "returns winning row"
     (should= [0 1 2] (winning-combo [u u u
@@ -168,40 +173,20 @@
                                e u e
                                u e _]))))
 
-(describe "is-winner-ai?"
-  (it "returns false if winner has :is-ai? false"
-    (should-not (is-winner-ai? [u e u
-                                e u e
-                                e e u]
-                                human
-                                easy-computer)))
-  (it "returns true if winner is easy-computer"
-    (should (is-winner-ai? [u u e
-                            e e e
-                            e e u]
-                            human
-                            easy-computer)))
-  (it "returns true if winner is hard-computer"
-    (should (is-winner-ai? [u u h
-                            h h h
-                            h h u]
-                            human
-                            hard-computer))))
-
 (describe "winner-player"
-  (it "returns human player if human won game"
+  (it "returns human player if human won the game"
     (should= human (winner-player [u u u
                                    e e _
                                    e e _]
                                    easy-computer
                                    human)))
-  (it "should not return easy-computer player if human won game"
+  (it "should not return easy-computer player if human won the game"
     (should-not (= easy-computer (winner-player [u u u
                                                  e e _
                                                  e e _]
                                                  easy-computer
                                                  human))))
-  (it "returns easy-computer player if it won game"
+  (it "returns easy-computer player if it won the game"
     (should= easy-computer  (winner-player [e u u
                                             e _ u
                                             e u _]
@@ -213,6 +198,26 @@
                                            _ _ _]
                                            hard-computer
                                            easy-computer))))
+
+(describe "is-winner-ai?"
+  (it "returns false if winner has :ai attribute false"
+   (should-not (is-winner-ai? [u e u
+                               e u e
+                               e e u]
+                               human
+                               easy-computer)))
+  (it "returns true if winner is easy-computer"
+   (should (is-winner-ai? [u u e
+                           e e e
+                           e e u]
+                           human
+                           easy-computer)))
+  (it "returns true if winner is hard-computer"
+   (should (is-winner-ai? [u u h
+                           h h h
+                           h h u]
+                           human
+                           hard-computer))))
 
 (describe "draw?"
   (it "returns false if board is empty"

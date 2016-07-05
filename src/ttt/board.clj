@@ -92,4 +92,4 @@
 (defn game-over?
   [board]
   (or (draw? board)
-      (not (nil? (winner-marker board)))))
+      (not (nil? (winning-combo board)))))
