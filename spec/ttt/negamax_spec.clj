@@ -91,9 +91,7 @@
                            :_ :_ :_]
                            hard-computer
                            human
-                           0
-                           -100
-                           100)))
+                           0)))
   (it "returns spot that makes computer win instead of blocking opponent"
     (should= 0 (best-move human-hard
                           [:_ :o :o
@@ -101,9 +99,7 @@
                            :x :x :o]
                            hard-computer
                            human
-                           0
-                           -100
-                           100)))
+                           0)))
   (it "avoids opponent to create an invincible situation"
     (should (or (= 2 (best-move human-hard
                                 [:o :_ :_
@@ -111,18 +107,14 @@
                                  :_ :_ :x]
                                  hard-computer
                                  human
-                                 0
-                                 -100
-                                 100))
+                                 0))
                 (= 6 (best-move human-hard
                                 [:o :_ :_
                                  :_ :x :_
                                  :_ :_ :x]
                                  hard-computer
                                  human
-                                 0
-                                 -100
-                                 100)))))
+                                 0)))))
   (it "blocks opponent from winning"
     (should= 6 (best-move human-hard
                           [:o :x :x
@@ -130,6 +122,4 @@
                            :_ :o :_]
                            hard-computer
                            human
-                           0
-                           -100
-                           100))))
+                           0))))

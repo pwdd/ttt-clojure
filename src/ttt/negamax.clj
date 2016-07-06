@@ -55,43 +55,35 @@
 
 (declare negamax)
 
-(defn scores
-  [game board current-player opponent depth alpha beta]
+(defn negamax-scores
+  [game board current-player opponent depth]
   (let [spots (board/available-spots board)
-        new-boards (map #(board/move board current-player %) spots)]
+       new-boards (map #(board/move board current-player %) spots)]
     (map #(- (negamax game
                       %
                       opponent
                       current-player
-                      (inc depth)
-                      (- beta)
-                      (- alpha))) new-boards)))
+                      (inc depth))) new-boards)))
 
-(defn negamax-value
-  [game board current-player opponent depth alpha beta]
+(defn negamax-score
+  [game board current-player opponent depth]
   (if (board/game-over? board)
     (* (player/value current-player)
        (board-analysis game board current-player opponent depth))
-    (let [value (apply max (scores game
-                       board
-                       current-player
-                       opponent
-                       depth
-                       alpha
-                       beta))
-          max-value (apply max [value alpha])]
-          (if (>= max-value beta)
-            max-value
-            value))))
+    (apply max (negamax-scores game
+                               board
+                               current-player
+                               opponent
+                               depth))))
 
-(def negamax (memoize negamax-value))
+(def negamax (memoize negamax-score))
 
 (defn best-move
- [game board current-player opponent depth alpha beta]
- (if (board/is-empty? board)
-   4
-   (let [spots (board/available-spots board)
-         scores (scores game board current-player opponent depth alpha beta)
+  [game board current-player opponent depth]
+  (if (board/is-empty? board)
+    4
+    (let [spots (board/available-spots board)
+         scores (negamax-scores game board current-player opponent depth)
          max-value (apply max scores)
-         move (.indexOf scores max-value)]
-     (nth spots move))))
+         best (.indexOf scores max-value)]
+      (nth spots best))))
