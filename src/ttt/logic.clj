@@ -11,9 +11,7 @@
                                                   :current-player current-player
                                                   :opponent opponent
                                                   :depth negamax/start-depth
-                                                  :board-length board/board-length
-                                                  :alpha negamax/start-alpha
-                                                  :beta negamax/start-beta })
+                                                  :board-length board/board-length })
         game-board (board/move board current-player spot)]
     (messenger/print-message (messenger/moved-to current-player spot))
     (messenger/print-message (messenger/stringfy-board game-board))

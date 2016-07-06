@@ -4,8 +4,6 @@
 
 (def start-depth 0)
 (def limit-depth 10)
-(def start-alpha -100)
-(def start-beta 100)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;   Multimethod: board-value   ;;
