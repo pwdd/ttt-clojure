@@ -35,4 +35,6 @@
                      (:board params)
                      (:current-player params)
                      (:opponent params)
-                     (:depth params)))
+                     (:depth params)
+                     (:alpha params)
+                     (:beta params)))

@@ -3,6 +3,9 @@
             [ttt.player :as player]))
 
 (def start-depth 0)
+(def limit-depth 10)
+(def start-alpha -100)
+(def start-beta 100)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;   Multimethod: board-value   ;;
@@ -53,26 +56,42 @@
 (declare negamax)
 
 (defn scores
-  [game board current-player opponent depth]
+  [game board current-player opponent depth alpha beta]
   (let [spots (board/available-spots board)
         new-boards (map #(board/move board current-player %) spots)]
-    (map #(- (negamax game % opponent current-player (inc depth))) new-boards)))
+    (map #(- (negamax game
+                      %
+                      opponent
+                      current-player
+                      (inc depth)
+                      (- beta)
+                      (- alpha))) new-boards)))
 
 (defn negamax-value
-  [game board current-player opponent depth]
+  [game board current-player opponent depth alpha beta]
   (if (board/game-over? board)
     (* (player/value current-player)
        (board-analysis game board current-player opponent depth))
-    (apply max (scores game board current-player opponent depth))))
+    (let [value (apply max (scores game
+                       board
+                       current-player
+                       opponent
+                       depth
+                       alpha
+                       beta))
+          max-value (apply max [value alpha])]
+          (if (>= max-value beta)
+            max-value
+            value))))
 
 (def negamax (memoize negamax-value))
 
 (defn best-move
- [game board current-player opponent depth]
+ [game board current-player opponent depth alpha beta]
  (if (board/is-empty? board)
    4
    (let [spots (board/available-spots board)
-         scores (scores game board current-player opponent depth)
+         scores (scores game board current-player opponent depth alpha beta)
          max-value (apply max scores)
          move (.indexOf scores max-value)]
      (nth spots move))))

@@ -6,12 +6,14 @@
             [ttt.spots :as spots]))
 (defn play
   [game board current-player opponent]
-  (let [spot (spots/select-spot current-player { :game game
+  (let [spot (spots/select-spot current-player {  :game game
                                                   :board board
                                                   :current-player current-player
                                                   :opponent opponent
                                                   :depth negamax/start-depth
-                                                  :board-length board/board-length})
+                                                  :board-length board/board-length
+                                                  :alpha negamax/start-alpha
+                                                  :beta negamax/start-beta })
         game-board (board/move board current-player spot)]
     (messenger/print-message (messenger/moved-to current-player spot))
     (messenger/print-message (messenger/stringfy-board game-board))

@@ -16,7 +16,7 @@
       (should= 3 (with-in-str "4"
                  (select-spot human { :board (new-board) })))))
   (context ":easy-computer"
-    (with spots (vec (available-spots [:x :_ :o :_ :o :_ :_ :x :o :o])))
+    (with spots (available-spots [:x :_ :o :_ :o :_ :_ :x :o :o]))
     (it "returns a random index from the available-spots"
       (should (some #{ (select-spot easy-computer
                                     { :board [:x :_ :o
