@@ -44,7 +44,7 @@
     (str " " (name k) " ")
     "   "))
 
-(defn stringfy-board
+(defn stringify-board
   [board]
   (str
     (clojure.string/join separator
@@ -54,7 +54,7 @@
           (clojure.string/join "|" combo))))
     "\n"))
 
-(defn stringfy-combo
+(defn stringify-combo
   [combo]
   (clojure.string/join ", " (map #(inc %) combo)))
 
@@ -62,14 +62,14 @@
   [board]
   (str "You lost.\n"
        "Computer won on positions "
-       (stringfy-combo (board/winning-combo board))
+       (stringify-combo (board/winning-combo board))
         "\n"))
 
 (defn human-won
   [board]
   (str "You won!\n"
   "Winning positions: "
-  (stringfy-combo (board/winning-combo board))
+  (stringify-combo (board/winning-combo board))
   "\n"))
 
 (defn default-win
@@ -77,7 +77,7 @@
   (str "Player '"
        (name (board/winner-marker board))
        "' won on positions "
-       (stringfy-combo (board/winning-combo board))))
+       (stringify-combo (board/winning-combo board))))
 
 (defn result-human-computer
   [board first-player second-player]
@@ -161,10 +161,14 @@
     :else
       (str default-invalid-input "Only a letter from 'a' to 'z' is valid.")))
 
-(defn stringfy-role
+(defn stringify-role
   [player]
   (if (= :human (player/role player))
     "human"
     (let [role (name (player/role player))
          limit (.indexOf role "-")]
       (subs role 0 limit))))
+
+(defn write-game-type
+  [first-name second-name]
+  (keyword (clojure.string/join "-x-"(sort [first-name second-name]))))

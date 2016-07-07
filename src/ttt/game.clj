@@ -18,9 +18,9 @@
 
 (defn game-type
   [first-player second-player]
-  (let [first-name (messenger/stringfy-role first-player)
-        second-name (messenger/stringfy-role second-player)]
-    (keyword (clojure.string/join "-x-"(sort [first-name second-name])))))
+  (let [first-name (messenger/stringify-role first-player)
+        second-name (messenger/stringify-role second-player)]
+    (messenger/write-game-type first-name second-name)))
 
 (defn create-game
   [first-player second-player]

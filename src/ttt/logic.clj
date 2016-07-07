@@ -14,7 +14,7 @@
                                                   :board-length board/board-length })
         game-board (board/move board current-player spot)]
     (messenger/print-message (messenger/moved-to current-player spot))
-    (messenger/print-message (messenger/stringfy-board game-board))
+    (messenger/print-message (messenger/stringify-board game-board))
     (if (board/game-over? game-board)
       (messenger/print-message
         (messenger/result game game-board current-player opponent))

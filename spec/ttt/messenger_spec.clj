@@ -18,21 +18,21 @@
   (it "returns an empty space for :_"
     (should= "   " (translate-keyword empty-spot))))
 
-(describe "stringfy-board"
+(describe "stringify-board"
   (it "outputs a numbered representation of the board if no spot is taken"
     (should=
       "   |   |   \n---|---|---\n   |   |   \n---|---|---\n   |   |   \n"
-      (stringfy-board [:_ :_ :_ :_ :_ :_ :_ :_ :_])))
+      (stringify-board [:_ :_ :_ :_ :_ :_ :_ :_ :_])))
   (it "combines numbers and letters when some spots are taken"
     (should=
       "   | x |   \n---|---|---\n o |   |   \n---|---|---\n   |   | x \n"
-      (stringfy-board [:_ :x :_ :o :_ :_ :_ :_ :x]))))
+      (stringify-board [:_ :x :_ :o :_ :_ :_ :_ :x]))))
 
-(describe "stringfy-combo"
+(describe "stringify-combo"
   (it "returns a string representing a vector of numbers"
-    (should= "1, 2, 3" (stringfy-combo [0 1 2])))
+    (should= "1, 2, 3" (stringify-combo [0 1 2])))
   (it "increases number by one"
-    (should= "3, 5, 7" (stringfy-combo [2 4 6]))))
+    (should= "3, 5, 7" (stringify-combo [2 4 6]))))
 
 (describe "result-human-computer"
   (it "returns tied message if the game ties"
@@ -132,10 +132,16 @@
     (should= "\nYour choice is not valid. This marker is taken by the first player."
              (invalid-marker-msg "x" "x"))))
 
-(describe "stringfy-role"
+(describe "stringify-role"
   (it "returns 'easy' if player is easy computer"
-    (should= "easy" (stringfy-role easy-computer)))
+    (should= "easy" (stringify-role easy-computer)))
   (it "returns 'hard' if player is hard computer"
-    (should= "hard" (stringfy-role hard-computer)))
+    (should= "hard" (stringify-role hard-computer)))
   (it "returns 'human' if player is human"
-    (should= "human" (stringfy-role human))))
+    (should= "human" (stringify-role human))))
+
+(describe "write-game-type"
+  (it "returns a keyword"
+    (should (keyword? (write-game-type "easy" "human"))))
+  (it "returns an alphabetically ordered keyword, does not matter the order of arguments"
+    (should= :easy-x-hard (write-game-type "hard" "easy"))))
