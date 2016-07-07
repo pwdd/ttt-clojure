@@ -1,22 +1,20 @@
 (ns ttt.helpers)
 
-(defn translate-keyword
-  [k]
-  (if (not (= k :_))
-    (str " " (name k) " ")
-    "   "))
+(defn clean-string
+  [str]
+  (clojure.string/lower-case (clojure.string/trim str)))
 
 (defn is-int?
   [user-input]
   (try
-    (Integer/parseInt (clojure.string/trim user-input))
+    (Integer/parseInt (clean-string user-input))
     true
   (catch Exception e false
     )))
 
 (defn input-to-number
   [user-input]
-  (dec (Integer/parseInt (clojure.string/trim user-input))))
+  (dec (Integer/parseInt (clean-string user-input))))
 
 (defn in-range?
   [idx limit]

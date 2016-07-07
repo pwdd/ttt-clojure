@@ -1,5 +1,6 @@
 (ns ttt.board
-  (:require [ttt.helpers :as helpers]))
+  (:require [ttt.helpers :as helpers]
+            [ttt.player :as player]))
 
 (def board-size 3)
 (def board-length (* board-size board-size))
@@ -23,51 +24,72 @@
   (vec (repeat board-length empty-spot)))
 
 (defn move
-  [board marker spot]
-  (assoc board spot marker))
+  [board player spot]
+  (assoc board spot (player/marker player)))
 
 (defn is-available?
   [board spot]
   (= empty-spot (board spot)))
 
 (defn is-full?
-  [board first-marker second-marker]
-  (every? #{first-marker second-marker} board))
+  [board]
+  (not-any? #(= empty-spot %) board))
+
+(defn is-empty?
+  [board]
+  (every? #(= empty-spot %) board))
+
+(defn available-spots
+  [board]
+  (map first
+    (filter #(= empty-spot (second %))
+      (map-indexed vector board))))
 
 (defn is-valid-move?
   [board spot]
   (and (helpers/in-range? spot board-length)
        (is-available? board spot)))
 
-(defn triple?
+(defn repeated?
   [board combo]
-  (and (= (board (combo 0))
-          (board (combo 1))
-          (board (combo 2)))
-      (not (= (board (combo 0)) empty-spot))))
+  (let [selected-combo (for [idx combo] (nth board idx))]
+    (if (not-any? #{empty-spot} selected-combo)
+      (apply = selected-combo))))
 
-(defn find-triple
+(defn find-repetition
   [board]
-  (for [combo winning-combos]
-    (if (triple? board combo)
-      combo)))
+  (filter #(repeated? board %) winning-combos))
 
 (defn winning-combo
   [board]
-  (first (remove nil? (find-triple board))))
+  (first (find-repetition board)))
 
-(defn winner
+(defn winner-marker
   [board]
   (if (winning-combo board)
     (let [combo (winning-combo board)]
        (board (combo 0)))))
 
+(defn winner-player
+  [board first-player second-player]
+  (let [winner (winner-marker board)]
+    (cond
+      (= (player/marker first-player) winner) first-player
+      (= (player/marker second-player) winner) second-player
+      :else
+        false)))
+
+(defn is-winner-ai?
+ [board first-player second-player]
+ (let [winner (winner-player board first-player second-player)]
+   (player/is-ai? winner)))
+
 (defn draw?
-  [board first-marker second-marker]
-  (and (is-full? board first-marker second-marker)
-       (not (winner board))))
+  [board]
+  (and (is-full? board)
+       (not (winner-marker board))))
 
 (defn game-over?
-  [board first-marker second-marker]
-  (or (draw? board first-marker second-marker)
-      (not (nil? (winner board)))))
+  [board]
+  (or (draw? board)
+      (not (nil? (winning-combo board)))))

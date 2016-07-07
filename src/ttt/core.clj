@@ -1,11 +1,24 @@
 (ns ttt.core
   (:require [ttt.board :as board]
             [ttt.messenger :as messenger]
-            [ttt.game :as game]))
+            [ttt.game :as game]
+            [ttt.helpers :as helpers]
+            [ttt.player :as player]
+            [ttt.logic :as logic]))
 
+
+; TODO test
 (defn -main
   []
+  (println messenger/welcome)
   (println messenger/instructions)
   (println messenger/board-representation)
-  (game/play (board/new-board) game/first-player game/second-player)
-  )
+  (let [current-player (game/define-player
+                            { :msg messenger/ask-first-marker })
+              opponent (game/define-player
+                            {:msg messenger/ask-second-marker
+                             :opponent-marker (player/marker
+                                               current-player) })
+        game (game/create-game current-player opponent)]
+    (logic/play game (board/new-board) current-player opponent)
+    ))
