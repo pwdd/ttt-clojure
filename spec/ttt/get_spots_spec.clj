@@ -1,6 +1,6 @@
-(ns ttt.spots-spec
+(ns ttt.get-spots-spec
   (:require [speclj.core :refer :all]
-            [ttt.spots :refer :all]
+            [ttt.get-spots :refer :all]
             [ttt.player :refer [make-player]]
             [ttt.board :refer [new-board available-spots]]))
 

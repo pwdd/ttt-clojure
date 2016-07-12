@@ -4,11 +4,13 @@
             [ttt.helpers :as helpers]))
 
 (def half-screen 60)
+(def lines 5)
 
 (defn clear-screen
   []
   (print (str (char 27) "[2J"))
-  (print (str (char 27) "[;H")))
+  (print (str (char 27) "[;H"))
+  (print (clojure.string/join (repeat lines "\n"))))
 
 (defn number-of-spaces
   [message-length & [optional-half-screen]]
@@ -161,7 +163,7 @@
   [player spot]
   (str "Player '"
        (name (player/marker player))
-       "' move to "
+       "' moved to "
        (inc spot)
        "\n"))
 
@@ -205,17 +207,20 @@
   [input]
   (cond
     (empty? input)
-      (str default-invalid-input "Empty spaces are not a number")
+      (str default-invalid-input "Empty spaces are not a number\n")
     :else
-      (str default-invalid-input "'" input "' is not a number")))
+      (str default-invalid-input "'" input "' is not a number\n")))
 
 (defn not-a-valid-move
   [position]
   (cond
     (not (helpers/in-range? position board/board-length))
-      (str default-invalid-input "There is no position " (inc position) " in the board")
+      (str default-invalid-input
+           "There is no position "
+           (inc position)
+           " in the board\n")
     :else
-      (str default-invalid-input "The position is taken")))
+      (str default-invalid-input "The position is taken\n")))
 
 (defn centralize-cursor
   []
@@ -266,3 +271,10 @@
 (defn write-game-type
   [first-name second-name]
   (keyword (clojure.string/join "-x-"(sort [first-name second-name]))))
+
+(defn make-board-disappear
+  [player]
+  (if (or (= :easy-computer (player/role player))
+          (= :hard-computer (player/role player)))
+    (do (Thread/sleep 1000)
+        (clear-screen))))

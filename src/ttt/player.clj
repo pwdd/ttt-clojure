@@ -1,10 +1,6 @@
 (ns ttt.player
   (:require [ttt.helpers :as helpers]))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;   Player record and getters   ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defrecord Player [marker role ai value])
 
 (defn marker
@@ -23,16 +19,12 @@
   [player]
   (:role player))
 
-;;;;;;;;;;;;;;;;;;;;;;;
-;;   Create Player   ;;
-;;;;;;;;;;;;;;;;;;;;;;;
-
 (defn make-player
-  [params]
+  [player-params]
   (cond
-    (= (:role params) :human)
-       (->Player (:marker params) (:role params) false -1)
-    (= (:role params) :easy-computer)
-       (->Player (:marker params) (:role params) true -1)
+    (= (:role player-params) :human)
+       (->Player (:marker player-params) (:role player-params) false -1)
+    (= (:role player-params) :easy-computer)
+       (->Player (:marker player-params) (:role player-params) true -1)
     :else
-      (->Player (:marker params) (:role params) true 1)))
+      (->Player (:marker player-params) (:role player-params) true 1)))

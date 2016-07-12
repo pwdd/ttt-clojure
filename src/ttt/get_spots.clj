@@ -1,12 +1,8 @@
-(ns ttt.spots
+(ns ttt.get-spots
   (:require [ttt.helpers :as helpers]
             [ttt.negamax :as negamax]
             [ttt.messenger :as messenger]
             [ttt.board :as board]))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;   Multimethod: select-spot   ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmulti select-spot (fn [player & params] (:role player)))
 
@@ -20,9 +16,11 @@
           valid-number
           (do
             (messenger/print-message (messenger/not-a-valid-move valid-number))
+            (messenger/print-message (messenger/stringify-board (:board params)))
             (recur player params))))
       (do
         (messenger/print-message (messenger/not-a-valid-number input))
+        (messenger/print-message (messenger/stringify-board (:board params)))
         (recur player params)))))
 
 (defmethod select-spot :easy-computer

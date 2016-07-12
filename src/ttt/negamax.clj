@@ -78,7 +78,7 @@
 
 (defn best-move
   [game board current-player opponent depth]
-  (if (board/is-empty? board)
+  (if (board/is-board-empty? board)
     4
     (let [spots (board/available-spots board)
          scores (negamax-scores game board current-player opponent depth)

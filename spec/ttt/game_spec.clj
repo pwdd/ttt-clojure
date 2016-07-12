@@ -8,11 +8,6 @@
 (def easy-computer (make-player {:marker "o" :role :easy-computer}))
 (def hard-computer (make-player {:marker "h" :role :hard-computer}))
 
-(def acceptable-roles
-  (clojure.set/union acceptable-human-player
-                     acceptable-easy-computer
-                     acceptable-hard-computer))
-
 (describe "game-type"
   (it "returns :human-x-human if game is human vs human"
     (should= :human-x-human (game-type human human)))
@@ -38,26 +33,6 @@
     (should (instance? Game (create-game human easy-computer))))
   (it "returns a Game with a type"
     (should (:type (create-game human hard-computer)))))
-
-(describe "valid-role-selection?"
-  (it "only accepts whitelisted strings as valid input"
-    (should (every? valid-role-selection? acceptable-roles)))
-  (it "does not accept any other string"
-    (should-not (valid-role-selection? "a"))))
-
-(describe "valid-marker?"
-  (it "returns false if input is empty"
-    (should-not (valid-marker? " " "")))
-  (it "returns true if input is a single character"
-    (should (valid-marker? "a" "")))
-  (it "returns true if input is a capitalized character"
-    (should (valid-marker? "B" "")))
-  (it "returns false if input is a numeric string"
-    (should-not (valid-marker? "0" "")))
-  (it "returns false if input has more than one character"
-    (should-not (valid-marker? "ab" "")))
-  (it "returns false if chosen marker is the same as opponent's marker"
-    (should-not (valid-marker? "a" "a"))))
 
 (describe "get-marker"
   (it "returns a player's marker if input is valid"

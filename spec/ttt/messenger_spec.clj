@@ -9,6 +9,10 @@
 (def easy-computer (make-player { :marker :o :role :easy-computer }))
 (def hard-computer (make-player { :marker :h :role :hard-computer }))
 (def game (create-game human human))
+(def easy-x-human (create-game easy-computer human))
+(def easy-x-easy (create-game easy-computer easy-computer))
+(def hard-x-human (create-game hard-computer human))
+(def hard-x-hard (create-game hard-computer hard-computer))
 
 (describe "number-of-spaces"
   (it "returns the number of padding spaces for an empty string"
@@ -70,19 +74,18 @@
                                                   easy-computer)))
   (it "returns winning message if human player won"
     (should (re-find #"You won\W*(.*)"
-                     (with-out-str (result-human-computer [:x :x :x
-                                                           :o :_ :o
-                                                           :o :x :o]
-                                                           human
-                                                           easy-computer)))))
-
+                     (result-human-computer [:x :x :x
+                                             :o :_ :o
+                                             :o :x :o]
+                                             human
+                                             easy-computer))))
   (it "returns 'you lost' message if human player lost"
     (should (re-find #"You lost\W*(.*)"
-                     (with-out-str (result-human-computer [:o :x :x
-                                                           :x :o :_
-                                                           :_ :_ :o]
-                                                           human
-                                                           easy-computer))))))
+                     (result-human-computer [:o :x :x
+                                             :x :o :_
+                                             :_ :_ :o]
+                                             human
+                                             easy-computer)))))
 
 (describe "result"
  (it "returns 'tie' the game ends ties"
@@ -102,10 +105,32 @@
                                                          :_ :_ :o]))))
 
 (describe "moved-to"
-  (it "returns empty string if player is human"
-    (should (empty? (moved-to human 1))))
-  (it "returns a message to where computer moved incremented by one"
-    (should-not (empty? (moved-to easy-computer 3)))))
+  (context ":easy-x-human"
+    (it "returns a message starting with 'You' if player is human"
+      (should= "You moved to 2\n"
+              (moved-to easy-x-human human 1)))
+    (it "returns a message starting with 'Easy-computer' if player is easy-computer"
+      (should= "Easy-computer moved to 2\n"
+               (moved-to easy-x-human easy-computer 1))))
+
+  (context ":hard-x-human"
+    (it "returns a message starting with 'You' if player is human"
+      (should= "You moved to 2\n"
+              (moved-to hard-x-human human 1)))
+    (it "returns a message starting with 'Hard-computer' if player is easy-computer"
+      (should= "Hard-computer moved to 2\n"
+                (moved-to hard-x-human hard-computer 1))))
+
+  (context "players with same role"
+    (it "returns message starting with 'Player [marker]' if player is human"
+      (should= "Player 'x' moved to 2\n"
+               (moved-to game human 1))))
+    (it "returns message starting with 'Player [marker]' if player is easy-computer"
+      (should= "Player 'o' moved to 3\n"
+               (moved-to easy-x-easy easy-computer 2)))
+    (it "returns message starting with 'Player [marker]' if player is easy-computer"
+      (should= "Player 'h' moved to 9\n"
+               (moved-to hard-x-hard hard-computer 8))))
 
 (describe "print-message"
   (around [it]
@@ -115,15 +140,15 @@
 
 (describe "not-a-valid-number"
   (it "explains that empty space is not a number"
-    (should= "Your choice is not valid. Empty spaces are not a number"
+    (should= "Your choice is not valid. Empty spaces are not a number\n"
              (not-a-valid-number "")))
   (it "explains that a letter input is not a number"
-    (should= "Your choice is not valid. 'a' is not a number"
+    (should= "Your choice is not valid. 'a' is not a number\n"
              (not-a-valid-number "a"))))
 
 (describe "not-a-valid-move"
   (it "explains that number is out of range"
-    (should= "Your choice is not valid. There is no position 12 in the board"
+    (should= "Your choice is not valid. There is no position 12 in the board\n"
              (not-a-valid-move 11))))
 
 (describe "ask-user-number"

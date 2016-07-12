@@ -27,15 +27,15 @@
   [board player spot]
   (assoc board spot (player/marker player)))
 
-(defn is-available?
+(defn is-spot-available?
   [board spot]
   (= empty-spot (board spot)))
 
-(defn is-full?
+(defn is-board-full?
   [board]
   (not-any? #(= empty-spot %) board))
 
-(defn is-empty?
+(defn is-board-empty?
   [board]
   (every? #(= empty-spot %) board))
 
@@ -48,7 +48,7 @@
 (defn is-valid-move?
   [board spot]
   (and (helpers/in-range? spot board-length)
-       (is-available? board spot)))
+       (is-spot-available? board spot)))
 
 (defn repeated?
   [board combo]
@@ -86,7 +86,7 @@
 
 (defn draw?
   [board]
-  (and (is-full? board)
+  (and (is-board-full? board)
        (not (winner-marker board))))
 
 (defn game-over?
