@@ -1,6 +1,7 @@
 (ns ttt.player-spec
   (:require [speclj.core :refer :all]
-            [ttt.player :refer :all])
+            [ttt.player :refer :all]
+            [ttt.board :as board])
   (:import [ttt.player Player]))
 
 (describe "marker"
@@ -58,3 +59,101 @@
   (it "returns a Player that has a :role attribute"
     (should= :hard-computer
              (:role (make-player { :role :hard-computer :marker "a" })))))
+
+(describe "winner-marker"
+  (let [human (make-player { :marker :x :role :human })
+       u (marker human)
+       easy-computer (make-player { :role :easy-computer :marker :e })
+       e (marker easy-computer)
+       _ board/empty-spot
+       empty-board (board/new-board)]
+    (it "returns nil if board is empty"
+      (should (nil? (winner-marker empty-board))))
+    (it "returns nil if there is no winner"
+      (should (nil? (winner-marker [u e u
+                                    e u e
+                                    e u e]))))
+    (it "returns the winner marker if there is one on rows"
+      (should= u (winner-marker [u u u
+                                 _ _ e
+                                 e e _])))
+    (it "returns the winner marker if there is one in second row"
+      (should= u (winner-marker [_ _ e
+                                 u u u
+                                 e e _])))
+    (it "returns the winner marker if there is one in column"
+      (should= u (winner-marker [u _ _
+                                 u e e
+                                 u _ _])))
+    (it "returns the winner marker if there is one in the second column"
+      (should= u (winner-marker [_ u _
+                                e u e
+                                e u _])))
+    (it "returns the winner marker if there is one in a diagonal"
+      (should= e (winner-marker [e u u
+                                 u e _
+                                 _ _ e])))
+    (it "returns the winner marker if there is one in the other diagonal"
+      (should= u (winner-marker [u _ u
+                                 e u e
+                                 u e _])))))
+
+(describe "winner-player"
+  (let [human (make-player { :marker :x :role :human })
+        u (marker human)
+        easy-computer (make-player { :role :easy-computer :marker :e })
+        e (marker easy-computer)
+        hard-computer (make-player { :role :hard-computer :marker :h })
+        h (marker hard-computer)
+        _ board/empty-spot]
+    (it "returns human player if human won the game"
+      (should= human (winner-player [u u u
+                                     e e _
+                                     e e _]
+                                     easy-computer
+                                     human)))
+    (it "should not return easy-computer player if human won the game"
+      (should-not (= easy-computer (winner-player [u u u
+                                                   e e _
+                                                   e e _]
+                                                   easy-computer
+                                                   human))))
+    (it "returns easy-computer player if it won the game"
+      (should= easy-computer  (winner-player [e u u
+                                              e _ u
+                                              e u _]
+                                              easy-computer
+                                              human)))
+    (it "returns hard-computer player if it won the game"
+      (should= hard-computer (winner-player [h h h
+                                             e e _
+                                             _ _ _]
+                                             hard-computer
+                                             easy-computer)))))
+
+(describe "is-winner-ai?"
+  (let [human (make-player { :marker :x :role :human })
+        u (marker human)
+        easy-computer (make-player { :role :easy-computer :marker :e })
+        e (marker easy-computer)
+        hard-computer (make-player { :role :hard-computer :marker :h })
+        h (marker hard-computer)
+        _ board/empty-spot]
+    (it "returns false if winner has :ai attribute false"
+      (should-not (is-winner-ai? [u e u
+                                  e u e
+                                  e e u]
+                                  human
+                                  easy-computer)))
+    (it "returns true if winner is easy-computer"
+      (should (is-winner-ai? [u u e
+                              e e e
+                              e e u]
+                              human
+                              easy-computer)))
+    (it "returns true if winner is hard-computer"
+      (should (is-winner-ai? [u u h
+                              h h h
+                              h h u]
+                              human
+                              hard-computer)))))

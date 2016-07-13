@@ -1,6 +1,5 @@
 (ns ttt.board
-  (:require [ttt.helpers :as helpers]
-            [ttt.player :as player]))
+  (:require [ttt.helpers :as helpers]))
 
 (def board-size 3)
 (def board-length (* board-size board-size))
@@ -24,8 +23,8 @@
   (vec (repeat board-length empty-spot)))
 
 (defn move
-  [board player spot]
-  (assoc board spot (player/marker player)))
+  [board marker spot]
+  (assoc board spot marker))
 
 (defn is-spot-available?
   [board spot]
@@ -63,33 +62,3 @@
 (defn winning-combo
   [board]
   (first (find-repetition board)))
-
-(defn winner-marker
-  [board]
-  (if (winning-combo board)
-    (let [combo (winning-combo board)]
-       (board (combo 0)))))
-
-(defn winner-player
-  [board first-player second-player]
-  (let [winner (winner-marker board)]
-    (cond
-      (= (player/marker first-player) winner) first-player
-      (= (player/marker second-player) winner) second-player
-      :else
-        false)))
-
-(defn is-winner-ai?
- [board first-player second-player]
- (let [winner (winner-player board first-player second-player)]
-   (player/is-ai? winner)))
-
-(defn draw?
-  [board]
-  (and (is-board-full? board)
-       (not (winner-marker board))))
-
-(defn game-over?
-  [board]
-  (or (draw? board)
-      (not (nil? (winning-combo board)))))

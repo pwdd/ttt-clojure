@@ -14,23 +14,6 @@
 (def hard-x-human (create-game hard-computer human))
 (def hard-x-hard (create-game hard-computer hard-computer))
 
-(describe "number-of-spaces"
-  (it "returns the number of padding spaces for an empty string"
-    (should= 60 (number-of-spaces 0 60)))
-  (it "returns the number of spaces if message length is even"
-    (should= 59 (number-of-spaces 2 60)))
-  (it "returns the number of spaces if message length is odd"
-    (should= 58 (number-of-spaces 3 60))))
-
-(describe "padding-spaces"
-  (it "returns an empty string if (/ message length 2.0) is equal to screen width"
-    (should= "" (padding-spaces (clojure.string/join (repeat 120 "a")))))
-  (it "returns a string with n repeated spaces"
-    (should= "   " (padding-spaces (clojure.string/join (repeat 114 "a")))))
-  (it "returns the right amount of spaces"
-    (should= 44
-             (count (padding-spaces "Please enter a number from 1-9: ")))))
-
 (describe "translate-keyword"
   (it "returns ' x '"
     (should= " x " (translate-keyword :x)))
@@ -132,12 +115,6 @@
       (should= "Player 'h' moved to 9\n"
                (moved-to hard-x-hard hard-computer 8))))
 
-(describe "print-message"
-  (around [it]
-    (with-out-str (it)))
-  (it "outputs a message to stdout"
-    (should= (str (padding-spaces "test message") "test message\r\n") (with-out-str (print-message "test message")))))
-
 (describe "not-a-valid-number"
   (it "explains that empty space is not a number"
     (should= "Your choice is not valid. Empty spaces are not a number\n"
@@ -150,26 +127,6 @@
   (it "explains that number is out of range"
     (should= "Your choice is not valid. There is no position 12 in the board\n"
              (not-a-valid-move 11))))
-
-(describe "ask-user-number"
-  (it "returns the user input"
-    (should= "1" (with-in-str "1" (ask-user-number))))
-  (it "trims out whitespaces from input"
-    (should= "1" (with-in-str "  1 " (ask-user-number)))))
-
-(describe "ask-player-marker"
-  (it "returns the user input"
-    (should= "x" (with-in-str "x" (ask-player-marker))))
-  (it "trims out whitespaces from input"
-    (should= "x" (with-in-str "  x " (ask-player-marker)))))
-
-(describe "ask-player-role"
-  (it "returns the user input"
-    (should= "h" (with-in-str "h" (ask-player-role))))
-  (it "trims out whitespaces from input"
-    (should= "h" (with-in-str "  h " (ask-player-role))))
-  (it "turns input into lowercase string"
-    (should= "h" (with-in-str "H" (ask-player-role)))))
 
 (describe "invalid-marker-msg"
   (it "explains that a word is an invalid input"
@@ -192,9 +149,3 @@
     (should= "hard" (stringify-role hard-computer)))
   (it "returns 'human' if player is human"
     (should= "human" (stringify-role human))))
-
-(describe "write-game-type"
-  (it "returns a keyword"
-    (should (keyword? (write-game-type "easy" "human"))))
-  (it "returns an alphabetically ordered keyword, does not matter the order of arguments"
-    (should= :easy-x-hard (write-game-type "hard" "easy"))))

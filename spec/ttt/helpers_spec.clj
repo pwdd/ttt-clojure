@@ -35,3 +35,9 @@
     (should-not (in-range? 9 8)))
   (it "returns true if 10 and if limit is 20"
      (should (in-range? 10 20))))
+
+(describe "write-game-type"
+  (it "returns a keyword"
+    (should (keyword? (write-game-type "easy" "human"))))
+  (it "returns an alphabetically ordered keyword, does not matter the order of arguments"
+    (should= :easy-x-hard (write-game-type "hard" "easy"))))

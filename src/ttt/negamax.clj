@@ -1,13 +1,10 @@
 (ns ttt.negamax
   (:require [ttt.board :as board]
-            [ttt.player :as player]))
+            [ttt.player :as player]
+            [ttt.rules :as rules]))
 
 (def start-depth 0)
 (def limit-depth 10)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;   Multimethod: board-value   ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmulti board-value (fn [player depth] (:role player)))
 
@@ -23,17 +20,13 @@
   [player depth]
   (- 10 depth))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;   Multimethod: board-analysis   ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defmulti board-analysis
   (fn [game board first-player second-player depth]
     (:type game)))
 
 (defmethod board-analysis :hard-x-hard
   [game board first-player second-player depth]
-  (let [winner (board/winner-player board first-player second-player)]
+  (let [winner (player/winner-player board first-player second-player)]
   (cond
     (= winner first-player) (- 10 depth)
     (= winner second-player) (- depth 10)
@@ -42,21 +35,19 @@
 
 (defmethod board-analysis :default
   [game board first-player second-player depth]
-  (let [winner (board/winner-player board first-player second-player)]
+  (let [winner (player/winner-player board first-player second-player)]
   (if winner
     (board-value winner depth)
     0)))
-
-;;;;;;;;;;;;;;;;;
-;;   Negamax   ;;
-;;;;;;;;;;;;;;;;;
 
 (declare negamax)
 
 (defn negamax-scores
   [game board current-player opponent depth]
   (let [spots (board/available-spots board)
-       new-boards (map #(board/move board current-player %) spots)]
+       new-boards (map #(board/move board
+                                    (player/marker current-player)
+                                    %) spots)]
     (map #(- (negamax game
                       %
                       opponent
@@ -65,7 +56,7 @@
 
 (defn negamax-score
   [game board current-player opponent depth]
-  (if (board/game-over? board)
+  (if (rules/game-over? board)
     (* (player/value current-player)
        (board-analysis game board current-player opponent depth))
     (apply max (negamax-scores game

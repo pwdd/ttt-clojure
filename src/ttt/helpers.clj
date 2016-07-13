@@ -19,3 +19,7 @@
 (defn in-range?
   [idx limit]
   (and (>= idx 0) (< idx limit)))
+
+(defn write-game-type
+  [first-name second-name]
+  (keyword (clojure.string/join "-x-"(sort [first-name second-name]))))

@@ -34,21 +34,13 @@
   (it "returns a Game with a type"
     (should (:type (create-game human hard-computer)))))
 
-(describe "get-marker"
-  (it "returns a player's marker if input is valid"
-    (should= "x" (with-in-str "x" (get-marker { :msg "select marker" })))))
-
-(describe "get-role"
-  (it "returns selected role of a player"
-    (should= "h" (with-in-str "h" (get-role "x")))))
-
-(describe "define-player"
-  (it "returns player with type 'human' and its marker"
-    (should= human
-             (with-in-str "x\nh" (define-player { :msg "set player" }))))
-  (it "returns player with type 'easy-computer' and its marker"
-    (should= easy-computer
-             (with-in-str "o\nec" (define-player { :msg "set player" }))))
-  (it "returns player with type 'hard-computer' and its marker"
-    (should= hard-computer
-             (with-in-str "h\nhc" (define-player { :msg "set player" })))))
+; (describe "define-player"
+;   (it "returns player with type 'human' and its marker"
+;     (should= human
+;              (with-in-str "x\nh" (define-player { :msg "set player" }))))
+;   (it "returns player with type 'easy-computer' and its marker"
+;     (should= easy-computer
+;              (with-in-str "o\nec" (define-player { :msg "set player" }))))
+;   (it "returns player with type 'hard-computer' and its marker"
+;     (should= hard-computer
+;              (with-in-str "h\nhc" (define-player { :msg "set player" })))))
