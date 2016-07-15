@@ -1,19 +1,18 @@
 (ns ttt.view)
 
-(def half-screen 60)
-(def screen-lines 5)
+(def half-screen-width 60)
+(def center-of-screen "[8;6H")
 
 ; TODO test
 (defn clear-screen
   []
   (print (str (char 27) "[2J"))
-  (print (str (char 27) "[;H"))
-  (print (clojure.string/join (repeat screen-lines "\n"))))
+  (print (str (char 27) center-of-screen)))
 
 (defn number-of-spaces
   [message-length]
   (let [half-message (int (Math/ceil (/ message-length 2.0)))]
-    (- half-screen half-message)))
+    (- half-screen-width half-message)))
 
 (defn padding-spaces
   [message]
