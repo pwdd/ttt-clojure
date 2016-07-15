@@ -4,7 +4,15 @@
             [ttt.messenger :as messenger]
             [ttt.view :as view]
             [ttt.prompt :as prompt]
-            [ttt.board :as board]))
+            [ttt.board :as board]
+            [ttt.input-validation :as input-validation]))
+
+(defn wrong-number-msg
+  [board input]
+  (if (integer? input)
+    (view/print-message (messenger/not-a-valid-move input))
+    (view/print-message (messenger/not-a-valid-number input)))
+    (view/print-message (messenger/stringify-board board)))
 
 (defmulti select-spot (fn [player & params] (:role player)))
 
@@ -12,17 +20,15 @@
   [player params]
   (view/print-message messenger/choose-a-number)
   (let [input (prompt/prompt :number)]
-    (if (helpers/is-int? input)
+    (if (input-validation/is-int? input)
       (let [valid-number (helpers/input-to-number input)]
         (if (board/is-valid-move? (:board params) valid-number)
           valid-number
           (do
-            (view/print-message (messenger/not-a-valid-move valid-number))
-            (view/print-message (messenger/stringify-board (:board params)))
+            (wrong-number-msg (:board params) valid-number)
             (recur player params))))
       (do
-        (view/print-message (messenger/not-a-valid-number input))
-        (view/print-message (messenger/stringify-board (:board params)))
+        (wrong-number-msg (:board params) input)
         (recur player params)))))
 
 (defmethod select-spot :easy-computer

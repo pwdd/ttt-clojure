@@ -1,4 +1,5 @@
-(ns ttt.input-validation)
+(ns ttt.input-validation
+  (:require [ttt.helpers :as helpers]))
 
 (def acceptable-human-player
   #{ "h" "human" "hum" })
@@ -32,3 +33,11 @@
  (and (= (count input) 1)
       (re-matches #"^[a-zA-Z]$" input)
       (not (= input opponent-marker))))
+
+(defn is-int?
+  [user-input]
+  (try
+    (Integer/parseInt (helpers/clean-string user-input))
+    true
+  (catch Exception e false
+    )))

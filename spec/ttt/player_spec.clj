@@ -157,3 +157,17 @@
                               h h u]
                               human
                               hard-computer)))))
+
+(describe "define-player"
+  (let [human (make-player { :marker "x" :role :human })
+        easy-computer (make-player { :role :easy-computer :marker "o" })
+        hard-computer (make-player { :role :hard-computer :marker "h" })]
+  (it "returns player with type 'human' and its marker"
+    (should= human
+             (define-player { :marker "x" :role "h" })))
+  (it "returns player with type 'easy-computer' and its marker"
+    (should= easy-computer
+             (define-player { :marker "o" :role "ec" })))
+  (it "returns player with type 'hard-computer' and its marker"
+    (should= hard-computer
+             (define-player { :marker "h" :role "hc" })))))

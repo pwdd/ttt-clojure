@@ -6,7 +6,7 @@
 (def start-depth 0)
 (def limit-depth 10)
 
-(defmulti board-value (fn [player depth] (:role player)))
+(defmulti board-value (fn [player depth] (player/role player)))
 
 (defmethod board-value :human
   [player depth]

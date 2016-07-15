@@ -1,18 +1,13 @@
 (ns ttt.negamax-spec
   (:require [speclj.core :refer :all]
             [ttt.negamax :refer :all]
-            [ttt.player :refer [make-player]]
-            [ttt.game :refer [create-game]]))
-
-(def easy-computer (make-player { :marker :e :role :easy-computer }))
-(def human (make-player { :marker :x :role :human }))
-(def hard-computer (make-player { :marker :o :role :hard-computer }))
-(def hard-computer-one (make-player { :marker :x :role :hard-computer }))
-
-(def human-hard (create-game human hard-computer))
-(def hard-hard (create-game hard-computer-one hard-computer))
+            [ttt.player :as player]
+            [ttt.game :as game]))
 
 (describe "board-value"
+  (let [easy-computer (player/make-player { :marker :e :role :easy-computer })
+        human (player/make-player { :marker :x :role :human })
+        hard-computer (player/make-player { :marker :o :role :hard-computer })]
   (context ":human"
     (it "returns depth - 10 if player is human"
       (should= -8 (board-value human 2))))
@@ -21,9 +16,12 @@
       (should= -8 (board-value easy-computer 2))))
   (context ":hard-computer"
     (it "returns depth + 10 if player is hard-computer"
-      (should= 8 (board-value hard-computer 2)))))
+      (should= 8 (board-value hard-computer 2))))))
 
 (describe "board-analysis :hard-x-hard"
+  (let [hard-computer (player/make-player { :marker :o :role :hard-computer })
+        hard-computer-one (player/make-player { :marker :x :role :hard-computer })
+        hard-hard (game/create-game :hard-computer-one :hard-computer)]
   (it "returns 0 if there is not winner"
     (should (zero? (board-analysis hard-hard
                                    [:_ :x :_
@@ -40,16 +38,22 @@
                                  hard-computer-one
                                  hard-computer
                                  2)))
-  (it "returns board value when the second player won"
-    (should= 8 (board-analysis human-hard
+  (it "returns board value when the opponent player won"
+    (should= -8 (board-analysis hard-hard
                                  [:o :x :_
                                   :x :o :_
                                   :_ :_ :o]
                                   hard-computer-one
                                   hard-computer
-                                  2))))
+                                  2)))))
 
 (describe "board-analysis :default"
+  (let [human (player/make-player { :marker :x :role :human })
+        easy-computer (player/make-player { :marker :o :role :easy-computer })
+        hard-computer (player/make-player { :marker :o :role :hard-computer })
+        hard-computer-one (player/make-player { :marker :x :role :hard-computer })
+        human-hard (game/create-game :human :hard-computer)
+        easy-hard (game/create-game :hard-computer :easy-computer)]
   (it "returns 0 if there is not winner"
     (should (zero? (board-analysis human-hard
                                    [:_ :x :_
@@ -67,7 +71,7 @@
                                  hard-computer
                                  2)))
   (it "returns board value when easy won"
-    (should= -8 (board-analysis human-hard
+    (should= -8 (board-analysis easy-hard
                                  [:e :o :_
                                   :o :e :_
                                   :_ :_ :e]
@@ -81,9 +85,12 @@
                                  :X :_ :_]
                                  human
                                  hard-computer
-                                 3))))
+                                 3)))))
 
 (describe "best-move"
+  (let [human (player/make-player { :marker :x :role :human })
+        hard-computer (player/make-player { :marker :o :role :hard-computer })
+        human-hard (game/create-game :human :hard-computer)]
   (it "returns spot that blocks opponent victory"
     (should= 8 (best-move human-hard
                           [:x :o :o
@@ -122,4 +129,4 @@
                            :_ :o :_]
                            hard-computer
                            human
-                           0))))
+                           0)))))

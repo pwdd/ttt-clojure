@@ -1,5 +1,4 @@
-(ns ttt.view
-  (:require [ttt.player :as player]))
+(ns ttt.view)
 
 (def half-screen 60)
 (def screen-lines 5)
@@ -12,11 +11,9 @@
   (print (clojure.string/join (repeat screen-lines "\n"))))
 
 (defn number-of-spaces
-  [message-length & [optional-half-screen]]
+  [message-length]
   (let [half-message (int (Math/ceil (/ message-length 2.0)))]
-    (if (not (nil? optional-half-screen))
-      (- optional-half-screen half-message)
-      (- half-screen half-message))))
+    (- half-screen half-message)))
 
 (defn padding-spaces
   [message]
@@ -41,8 +38,8 @@
 
 ; TODO test
 (defn make-board-disappear
-  [player]
-  (if (or (= :easy-computer (player/role player))
-          (= :hard-computer (player/role player)))
+  [player-role]
+  (if (or (= :easy-computer player-role)
+          (= :hard-computer player-role))
     (do (Thread/sleep 1000)
         (clear-screen))))

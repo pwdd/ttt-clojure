@@ -10,11 +10,11 @@
 
 (describe "number-of-spaces"
   (it "returns the number of padding spaces for an empty string"
-    (should= 60 (number-of-spaces 0 60)))
+    (should= 60 (number-of-spaces 0)))
   (it "returns the number of spaces if message length is even"
-    (should= 59 (number-of-spaces 2 60)))
+    (should= 59 (number-of-spaces 2)))
   (it "returns the number of spaces if message length is odd"
-    (should= 58 (number-of-spaces 3 60))))
+    (should= 58 (number-of-spaces 3))))
 
 (describe "padding-spaces"
   (it "returns an empty string if (/ message length 2.0) is equal to screen width"

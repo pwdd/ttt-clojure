@@ -8,16 +8,6 @@
   (it "lower-case entire string"
     (should= "abc" (clean-string "aBc"))))
 
-(describe "is-int?"
-  (it "returns true if argument is numeric string"
-    (should (is-int? "5")))
-  (it "returns true if argument is numeric string with whitespaces"
-    (should (is-int? "  1 ")))
-  (it "returns false if argument is not a numeric string"
-    (should-not (is-int? "a")))
-  (it "returns false if argument is a word"
-    (should-not (is-int? "parakeet"))))
-
 (describe "input-to-number"
   (it "returns integer 0 when input is string '1'"
     (should= 0 (input-to-number "1")))
@@ -35,6 +25,14 @@
     (should-not (in-range? 9 8)))
   (it "returns true if 10 and if limit is 20"
      (should (in-range? 10 20))))
+
+(describe "stringify-role"
+  (it "returns 'easy' if player is easy computer"
+    (should= "easy" (stringify-role :easy-computer)))
+  (it "returns 'hard' if player is hard computer"
+    (should= "hard" (stringify-role :hard-computer)))
+  (it "returns 'human' if player is human"
+    (should= "human" (stringify-role :human))))
 
 (describe "write-game-type"
   (it "returns a keyword"

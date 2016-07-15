@@ -15,15 +15,16 @@
            (= :human (player/role current-player)))
     (view/print-message (messenger/stringify-board board)))
 
-    (let [spot (spots/select-spot current-player {  :game game
-                                                    :board board
-                                                    :current-player current-player
-                                                    :opponent opponent
-                                                    :depth negamax/start-depth
-                                                    :board-length board/board-length })
+    (let [spot (spots/select-spot
+                  current-player {  :game game
+                                    :board board
+                                    :current-player current-player
+                                    :opponent opponent
+                                    :depth negamax/start-depth
+                                    :board-length board/board-length })
           game-board (board/move board (player/marker current-player) spot)]
 
-      (view/make-board-disappear current-player)
+      (view/make-board-disappear (:role current-player))
       (view/print-message (messenger/moved-to game current-player spot))
       (view/print-message (messenger/stringify-board game-board))
 
@@ -45,5 +46,5 @@
                                 :opponent-marker (:marker current-player-attributes) })
         current-player (player/define-player current-player-attributes)
         opponent (player/define-player opponent-attributes)
-        game (game/create-game current-player opponent)]
+        game (game/create-game (player/role current-player) (player/role opponent))]
     (game-loop game (board/new-board) current-player opponent)))

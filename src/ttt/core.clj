@@ -1,6 +1,5 @@
 (ns ttt.core
-  (:require [ttt.game-loop :as game-loop]
-            [ttt.prompt :as prompt]))
+  (:require [ttt.game-loop :as game-loop]))
 
 ; TODO test
 (defn -main

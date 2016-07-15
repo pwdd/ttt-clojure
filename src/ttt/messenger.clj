@@ -54,14 +54,6 @@
   [combo]
   (clojure.string/join ", " (map #(inc %) combo)))
 
-(defn stringify-role
-  [player]
-  (if (= :human (player/role player))
-    "human"
-    (let [role (name (player/role player))
-         limit (.indexOf role "-")]
-      (subs role 0 limit))))
-
 (def default-invalid-input "Your choice is not valid. ")
 
 (def invalid-role-options-msg
@@ -89,8 +81,12 @@
        "' won on positions "
        (stringify-combo (board/winning-combo board))))
 
-(defn result-human-computer
-  [board first-player second-player]
+(defmulti result
+  (fn [game & [board first-player second-player]]
+    (:player-roles game)))
+
+(defmethod result :computer-x-human
+  [game & [board first-player second-player]]
   (cond
     (rules/draw? board) "You tied\n"
     (player/is-winner-ai? board first-player second-player)
@@ -98,65 +94,33 @@
     :else
       (human-won board)))
 
-(defmulti result
-  (fn [game & [board first-player second-player]]
-    (:type game)))
-
-(defmethod result :easy-x-human
-  [game & [board first-player second-player]]
-  (result-human-computer board first-player second-player))
-
-(defmethod result :hard-x-human
-  [game & [board first-player second-player]]
-  (result-human-computer board first-player second-player))
-
 (defmethod result :default
   [game & [board first-player second-player]]
   (if (rules/draw? board)
     "The game tied"
     (default-win board)))
 
-(defn computer-human-moved-to
- [player spot]
- (if (player/is-ai? player)
-   (str (clojure.string/capitalize
-          (name (player/role player)))
-          " moved to "
-          (inc spot)
-          "\n")
-   (str "You moved to " (inc spot) "\n")))
+(defmulti moved-to
+  (fn [game player spot]
+    (:player-roles game)))
 
-(defn same-player-type-moved-to
-  [player spot]
+(defmethod moved-to :computer-x-human
+  [game player spot]
+  (if (player/is-ai? player)
+    (str (clojure.string/capitalize
+           (name (player/role player)))
+           " moved to "
+           (inc spot)
+           "\n")
+    (str "You moved to " (inc spot) "\n")))
+
+(defmethod moved-to :same-player-roles
+  [game player spot]
   (str "Player '"
        (name (player/marker player))
        "' moved to "
        (inc spot)
        "\n"))
-
-(defmulti moved-to
-  (fn [game player spot]
-    (:type game)))
-
-(defmethod moved-to :easy-x-human
-  [game player spot]
-  (computer-human-moved-to player spot))
-
-(defmethod moved-to :hard-x-human
-  [game player spot]
-  (computer-human-moved-to player spot))
-
-(defmethod moved-to :human-x-human
-  [game player spot]
-  (same-player-type-moved-to player spot))
-
-(defmethod moved-to :hard-x-hard
-  [game player spot]
-  (same-player-type-moved-to player spot))
-
-(defmethod moved-to :easy-x-easy
-  [game player spot]
-  (same-player-type-moved-to player spot))
 
 (defmethod moved-to :default
   [game player spot]
