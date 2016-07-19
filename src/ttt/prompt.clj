@@ -4,26 +4,17 @@
             [ttt.input-validation :as input-validation]
             [ttt.messenger :as messenger]))
 
-(defmulti prompt (fn [_] _))
-
-(defmethod prompt :default
-  [input-type]
-  (view/centralize-cursor)
-  (let [input (clojure.string/trim (read-line))]
-    (view/clear-screen)
-    input))
-
-(defmethod prompt :role
-  [input-type]
-  (view/centralize-cursor)
-  (let [role (helpers/clean-string (read-line))]
-    (view/clear-screen)
+(defn prompt
+  [clear-screen clean-input centralize-cursor ]
+  (centralize-cursor)
+  (let [role (clean-input (read-line))]
+    (clear-screen)
     role))
 
 (defn get-marker
   [{ :keys [msg opponent-marker] :or { opponent-marker "" } }]
   (view/print-message msg)
-  (let [marker (prompt :marker)]
+  (let [marker (prompt view/clear-screen clojure.string/trim view/centralize-cursor )]
     (if (input-validation/is-valid-marker? marker opponent-marker)
       marker
       (do
@@ -35,7 +26,7 @@
 (defn get-role
   [marker]
   (view/print-message (messenger/ask-role-msg marker))
-  (let [input (prompt :role)]
+  (let [input (prompt view/clear-screen helpers/clean-string view/centralize-cursor)]
     (if (input-validation/is-valid-role-selection? input)
       input
       (do

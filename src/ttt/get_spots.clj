@@ -12,14 +12,14 @@
   (if (integer? input)
     (view/print-message (messenger/not-a-valid-move input))
     (view/print-message (messenger/not-a-valid-number input)))
-    (view/print-message (messenger/stringify-board board)))
+  (view/print-message (messenger/stringify-board board)))
 
 (defmulti select-spot (fn [player & params] (:role player)))
 
 (defmethod select-spot :human
   [player params]
   (view/print-message messenger/choose-a-number)
-  (let [input (prompt/prompt :number)]
+  (let [input (prompt/prompt view/clear-screen clojure.string/trim view/centralize-cursor)]
     (if (input-validation/is-int? input)
       (let [valid-number (helpers/input-to-number input)]
         (if (board/is-valid-move? (:board params) valid-number)

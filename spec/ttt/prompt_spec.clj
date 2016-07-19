@@ -1,24 +1,44 @@
 (ns ttt.prompt-spec
   (:require [speclj.core :refer :all]
-            [ttt.prompt :refer :all]))
+            [ttt.prompt :refer :all]
+            [ttt.helpers :as helpers]
+            [ttt.view :as view]))
 
 (describe "prompt"
+  (around [it]
+      (with-redefs [view/clear-screen (fn [])
+                    view/centralize-cursor (fn [])]
+        (it)))
   (context ":default"
     (it "returns the user input when prompted to enter a marker"
-      (should= "x" (with-in-str "x" (prompt :marker))))
+      (should= "x" (with-in-str "x" (prompt view/clear-screen
+                                            clojure.string/trim
+                                            view/centralize-cursor))))
     (it "returns the user input when prompted to enter a number"
-      (should= "1" (with-in-str "1" (prompt :number))))
+      (should= "1" (with-in-str "1" (prompt view/clear-screen
+                                            clojure.string/trim
+                                            view/centralize-cursor))))
     (it "trims out whitespaces from input"
-      (should= "x" (with-in-str "  x " (prompt :marker))))
-  (context ":role"
+      (should= "x" (with-in-str "  x " (prompt view/clear-screen
+                                            clojure.string/trim
+                                            view/centralize-cursor)))))
+  (context "input will be the role of a player"
     (it "returns the user input when prompted to enter a player role"
-        (should= "h" (with-in-str "h" (prompt :role))))
+        (should= "h" (with-in-str "h" (prompt view/clear-screen
+                                              helpers/clean-string
+                                              view/centralize-cursor))))
       (it "trims out whitespaces from input"
-        (should= "h" (with-in-str "  h " (prompt :role))))
+        (should= "h" (with-in-str "  h " (prompt view/clear-screen
+                                                 helpers/clean-string
+                                                 view/centralize-cursor))))
       (it "turns input into lowercase string"
-        (should= "h" (with-in-str "H" (prompt :role)))))))
+        (should= "h" (with-in-str "H" (prompt view/clear-screen
+                                              helpers/clean-string
+                                              view/centralize-cursor))))))
 
 (describe "get-marker"
+  (around [it]
+    (with-out-str (it)))
   (it "returns a player's marker if input is valid"
     (should= "x" (with-in-str "x" (get-marker { :msg "select marker" }))))
   (it "recurs and keep asking for input until it is valid"
@@ -28,6 +48,8 @@
                    (get-marker { :msg "recur" :opponent-marker "x" })))))
 
 (describe "get-role"
+  (around [it]
+    (with-out-str (it)))
   (it "returns a player's role if input is valid"
     (should= "h" (with-in-str "h" (get-role { :msg "select role" }))))
   (it "recurs and keep asking for input until it is valid"
