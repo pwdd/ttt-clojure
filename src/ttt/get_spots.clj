@@ -1,5 +1,6 @@
 (ns ttt.get-spots
-  (:require [ttt.helpers :as helpers]
+  (:require [clojure.string :as string]
+            [ttt.helpers :as helpers]
             [ttt.negamax :as negamax]
             [ttt.messenger :as messenger]
             [ttt.view :as view]
@@ -19,7 +20,7 @@
 (defmethod select-spot :human
   [player params]
   (view/print-message messenger/choose-a-number)
-  (let [input (prompt/prompt view/clear-screen clojure.string/trim view/centralize-cursor)]
+  (let [input (prompt/prompt string/trim)]
     (if (input-validation/is-int? input)
       (let [valid-number (helpers/input-to-number input)]
         (if (board/is-valid-move? (:board params) valid-number)

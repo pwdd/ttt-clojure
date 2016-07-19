@@ -11,30 +11,18 @@
         (it)))
   (context ":default"
     (it "returns the user input when prompted to enter a marker"
-      (should= "x" (with-in-str "x" (prompt view/clear-screen
-                                            clojure.string/trim
-                                            view/centralize-cursor))))
+      (should= "x" (with-in-str "x" (prompt clojure.string/trim))))
     (it "returns the user input when prompted to enter a number"
-      (should= "1" (with-in-str "1" (prompt view/clear-screen
-                                            clojure.string/trim
-                                            view/centralize-cursor))))
+      (should= "1" (with-in-str "1" (prompt clojure.string/trim))))
     (it "trims out whitespaces from input"
-      (should= "x" (with-in-str "  x " (prompt view/clear-screen
-                                            clojure.string/trim
-                                            view/centralize-cursor)))))
+       (should= "x" (with-in-str "  x " (prompt clojure.string/trim)))))
   (context "input will be the role of a player"
     (it "returns the user input when prompted to enter a player role"
-        (should= "h" (with-in-str "h" (prompt view/clear-screen
-                                              helpers/clean-string
-                                              view/centralize-cursor))))
+        (should= "h" (with-in-str "h" (prompt helpers/clean-string))))
       (it "trims out whitespaces from input"
-        (should= "h" (with-in-str "  h " (prompt view/clear-screen
-                                                 helpers/clean-string
-                                                 view/centralize-cursor))))
+        (should= "h" (with-in-str "  h " (prompt helpers/clean-string))))
       (it "turns input into lowercase string"
-        (should= "h" (with-in-str "H" (prompt view/clear-screen
-                                              helpers/clean-string
-                                              view/centralize-cursor))))))
+        (should= "h" (with-in-str "H" (prompt helpers/clean-string))))))
 
 (describe "get-marker"
   (around [it]
