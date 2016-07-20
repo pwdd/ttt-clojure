@@ -4,19 +4,19 @@
             [ttt.player :as player]
             [ttt.game :as game]))
 
-(describe "board-value"
-  (let [easy-computer (player/make-player { :marker :e :role :easy-computer })
-        human (player/make-player { :marker :x :role :human })
-        hard-computer (player/make-player { :marker :o :role :hard-computer })]
-  (context ":human"
-    (it "returns depth - 10 if player is human"
-      (should= -8 (board-value human 2))))
-  (context ":easy-computer"
-    (it "returns depth - 10 if player is easy computer"
-      (should= -8 (board-value easy-computer 2))))
-  (context ":hard-computer"
-    (it "returns depth + 10 if player is hard-computer"
-      (should= 8 (board-value hard-computer 2))))))
+; (describe "board-value"
+;   (let [easy-computer (player/make-player { :marker :e :role :easy-computer })
+;         human (player/make-player { :marker :x :role :human })
+;         hard-computer (player/make-player { :marker :o :role :hard-computer })]
+;   (context ":human"
+;     (it "returns depth - 10 if player is human"
+;       (should= -8 (board-value human 2))))
+;   (context ":easy-computer"
+;     (it "returns depth - 10 if player is easy computer"
+;       (should= -8 (board-value easy-computer 2))))
+;   (context ":hard-computer"
+;     (it "returns depth + 10 if player is hard-computer"
+;       (should= 8 (board-value hard-computer 2))))))
 
 (describe "board-analysis :hard-x-hard"
   (let [hard-computer (player/make-player { :marker :o :role :hard-computer })

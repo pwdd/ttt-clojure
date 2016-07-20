@@ -4,21 +4,20 @@
             [ttt.rules :as rules]))
 
 (def start-depth 0)
-(def limit-depth 10)
 
-(defmulti board-value (fn [player depth] (player/role player)))
-
-(defmethod board-value :human
-  [player depth]
-  (- depth 10))
-
-(defmethod board-value :easy-computer
-  [player depth]
-  (- depth 10))
-
-(defmethod board-value :hard-computer
-  [player depth]
-  (- 10 depth))
+; (defmulti board-value (fn [player depth] (player/role player)))
+;
+; (defmethod board-value :human
+;   [player depth]
+;   (- depth 10))
+;
+; (defmethod board-value :easy-computer
+;   [player depth]
+;   (- depth 10))
+;
+; (defmethod board-value :hard-computer
+;   [player depth]
+;   (- 10 depth))
 
 (defmulti board-analysis
   (fn [game board first-player second-player depth]
@@ -37,7 +36,9 @@
   [game board first-player second-player depth]
   (let [winner (player/winner-player board first-player second-player)]
   (if winner
-    (board-value winner depth)
+    (if (= :hard-computer (player/role winner))
+      (- 10 depth)
+      (- depth 10))
     0)))
 
 (declare negamax)
