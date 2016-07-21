@@ -2,7 +2,8 @@
   (:require [ttt.board :as board]
             [ttt.player :as player]
             [ttt.helpers :as helpers]
-            [ttt.rules :as rules]))
+            [ttt.rules :as rules]
+            [clojure.string :as string]))
 
 (def separator "\n---|---|---\n")
 
@@ -43,16 +44,16 @@
 (defn stringify-board
   [board]
   (str
-    (clojure.string/join separator
+    (string/join separator
       (let [board (partition board/board-size
                              (map translate-keyword board))]
         (for [combo board]
-          (clojure.string/join "|" combo))))
+          (string/join "|" combo))))
     "\n"))
 
 (defn stringify-combo
   [combo]
-  (clojure.string/join ", " (map #(inc %) combo)))
+  (string/join ", " (map #(inc %) combo)))
 
 (def default-invalid-input "Your choice is not valid. ")
 
@@ -77,7 +78,7 @@
 (defn default-win
   [board]
   (str "Player '"
-       (name (player/winner-marker board))
+       (name (rules/winner-marker board))
        "' won on positions "
        (stringify-combo (board/winning-combo board))))
 
@@ -89,7 +90,7 @@
   [game & [board first-player second-player]]
   (cond
     (rules/draw? board) "You tied\n"
-    (player/is-winner-ai? board first-player second-player)
+    (rules/is-winner-ai? board first-player second-player)
       (human-lost board)
     :else
       (human-won board)))
@@ -107,7 +108,7 @@
 (defmethod moved-to :computer-x-human
   [game player spot]
   (if (player/is-ai? player)
-    (str (clojure.string/capitalize
+    (str (string/capitalize
            (name (player/role player)))
            " moved to "
            (inc spot)
@@ -124,7 +125,7 @@
 
 (defmethod moved-to :default
   [game player spot]
-  (str (clojure.string/capitalize
+  (str (string/capitalize
          (name (player/role player)))
        " moved to "
        (inc spot)

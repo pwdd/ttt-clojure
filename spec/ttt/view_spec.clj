@@ -28,13 +28,13 @@
                (padding-spaces (count "Please enter a number from 1-9: "))))))
 
 (describe "add-padding-spaces"
-  (let [test-string (string/join (repeat 40 "a"))]
+  (with test-string (string/join (repeat 40 "a")))
     (it "adds padding spaces to every line of a string"
       (should= (str "\n"
-                    (padding-spaces (count test-string))
-                    test-string
+                    (padding-spaces (count @test-string))
+                    @test-string
                     "\n"
-                    (padding-spaces (count test-string))
-                    test-string)
+                    (padding-spaces (count @test-string))
+                    @test-string)
                (add-padding-spaces
-                 (str test-string "\n" test-string))))))
+                 (str @test-string "\n" @test-string)))))

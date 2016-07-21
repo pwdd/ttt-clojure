@@ -7,7 +7,7 @@
 
 (defn board-analysis
   [board current-player opponent depth]
-  (let [winner (player/winner-player board current-player opponent)]
+  (let [winner (rules/winner-player board current-player opponent)]
     (cond
       (= winner current-player) (- 10 depth)
       (= winner opponent) (- depth 10)
