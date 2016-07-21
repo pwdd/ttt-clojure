@@ -7,8 +7,11 @@
     (should= 3 board-size)))
 
 (describe "board-length"
+  (around [it]
+    (with-redefs [board-size 4]
+      board-size))
   (it "has the default value of squared board-size"
-    (should= (* board-size board-size) board-length)))
+    (should= 16 board-length)))
 
 (describe "winning-combos"
   (it "holds all winning combination"
@@ -31,10 +34,9 @@
                (move [:x _ _ :o _ _ _ _ _] :x 5)))))
 
 (describe "is-spot-available?"
-  (let [_ empty-spot
-        empty-board (new-board)]
+  (let [_ empty-spot]
     (it "returns true when spot is not taken"
-        (should (is-spot-available? empty-board 0)))
+        (should (is-spot-available? [:x _ _ _ _ _ _ _ _] 1)))
      (it "returns false when spot is taken"
         (should-not (is-spot-available? [:x _ _ _ _ _ _ _ _] 0)))))
 
@@ -71,36 +73,36 @@
         empty-board (new-board)]
     (it "returns true if argument is in range when board is empty"
       (should (is-valid-move? empty-board 0)))
+    (it "returns false if number is bigger than board-length"
+      (should-not (is-valid-move? empty-board 10)))
     (it "returns true if argument is the index of one of the empty spots"
       (should (is-valid-move? [:x _ :x _ _ _ _ _ _] 3)))
     (it "returns false if spot is taken"
       (should-not (is-valid-move? [_ :x :x _ _ _ _ _ _] 1)))
-    (it "returns false if number is bigger than board-length"
-      (should-not (is-valid-move? empty-board 10)))
     (it "returns false if number is negative"
       (should-not (is-valid-move? empty-board -10)))))
 
-(describe "repeated?"
+(describe "repeated-markers?"
   (let [_ empty-spot
         empty-board (new-board)]
     (it "returns false if board is empty"
-      (should-not (repeated? empty-board [0 1 2])))
-    (it "returns false if there is no repetition on given indexes"
-      (should-not (repeated? [:x :o :x
-                              :o :x :o
-                              :o :x :x] [0 1 2])))
-    (it "returns true if there are repeated elements in a row"
-      (should (repeated? [:o :o :o
-                          :x  _  _
-                          :x :x  _] [0 1 2])))
-    (it "returns true if there are repeated elements in a diagonal"
-      (should (repeated? [:o _ :x
-                          :o :x _
-                          :x :o _] [2 4 6])))
-    (it "returns true if there are repeated elements in a column"
-      (should (repeated? [:o  _  :x
-                          :o  :x  _
-                          :o  :x  _] [0 3 6])))))
+      (should-not (repeated-markers? empty-board [0 1 2])))
+    (it "returns false if there is no repeated markers on given indexes"
+      (should-not (repeated-markers? [:x :o :x
+                                      :o :x :o
+                                      :o :x :x] [0 1 2])))
+    (it "returns true if there are repeated markers in a row"
+      (should (repeated-markers? [:o :o :o
+                                  :x  _  _
+                                  :x :x  _] [0 1 2])))
+    (it "returns true if there are repeated markers in a diagonal"
+      (should (repeated-markers? [:o _ :x
+                                  :o :x _
+                                  :x :o _] [2 4 6])))
+    (it "returns true if there are repeated markers in a column"
+      (should (repeated-markers? [:o  _  :x
+                                  :o  :x  _
+                                  :o  :x  _] [0 3 6])))))
 
 (describe "find-repetition"
   (let [_ empty-spot

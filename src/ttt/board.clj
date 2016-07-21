@@ -49,7 +49,7 @@
   (and (helpers/in-range? spot board-length)
        (is-spot-available? board spot)))
 
-(defn repeated?
+(defn repeated-markers?
   [board combo]
   (let [selected-combo (for [idx combo] (nth board idx))]
     (if (not-any? #{empty-spot} selected-combo)
@@ -57,7 +57,7 @@
 
 (defn find-repetition
   [board]
-  (filter #(repeated? board %) winning-combos))
+  (filter #(repeated-markers? board %) winning-combos))
 
 (defn winning-combo
   [board]

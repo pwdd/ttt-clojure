@@ -8,9 +8,9 @@
 (defn prompt
   [clean-input]
   (view/centralize-cursor)
-  (let [role (clean-input (read-line))]
+  (let [input (clean-input (read-line))]
     (view/clear-screen)
-    role))
+    input))
 
 (defn get-marker
   [{ :keys [msg opponent-marker] :or { opponent-marker "" } }]

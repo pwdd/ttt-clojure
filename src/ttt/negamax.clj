@@ -5,41 +5,14 @@
 
 (def start-depth 0)
 
-; (defmulti board-value (fn [player depth] (player/role player)))
-;
-; (defmethod board-value :human
-;   [player depth]
-;   (- depth 10))
-;
-; (defmethod board-value :easy-computer
-;   [player depth]
-;   (- depth 10))
-;
-; (defmethod board-value :hard-computer
-;   [player depth]
-;   (- 10 depth))
-
-(defmulti board-analysis
-  (fn [game board first-player second-player depth]
-    (:type game)))
-
-(defmethod board-analysis :hard-x-hard
-  [game board first-player second-player depth]
-  (let [winner (player/winner-player board first-player second-player)]
-  (cond
-    (= winner first-player) (- 10 depth)
-    (= winner second-player) (- depth 10)
-    :else
-      0)))
-
-(defmethod board-analysis :default
-  [game board first-player second-player depth]
-  (let [winner (player/winner-player board first-player second-player)]
-  (if winner
-    (if (= :hard-computer (player/role winner))
-      (- 10 depth)
-      (- depth 10))
-    0)))
+(defn board-analysis
+  [board current-player opponent depth]
+  (let [winner (player/winner-player board current-player opponent)]
+    (cond
+      (= winner current-player) (- 10 depth)
+      (= winner opponent) (- depth 10)
+      :else
+        0)))
 
 (declare negamax)
 
@@ -58,8 +31,7 @@
 (defn negamax-score
   [game board current-player opponent depth]
   (if (rules/game-over? board)
-    (* (player/value current-player)
-       (board-analysis game board current-player opponent depth))
+    (board-analysis board current-player opponent depth)
     (apply max (negamax-scores game
                                board
                                current-player

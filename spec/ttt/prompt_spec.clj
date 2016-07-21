@@ -26,7 +26,9 @@
 
 (describe "get-marker"
   (around [it]
-    (with-out-str (it)))
+    (with-redefs [view/clear-screen (fn [])
+                  view/centralize-cursor (fn [])]
+    (with-out-str (it))))
   (it "returns a player's marker if input is valid"
     (should= "x" (with-in-str "x" (get-marker { :msg "select marker" }))))
   (it "recurs and keep asking for input until it is valid"
@@ -37,13 +39,19 @@
 
 (describe "get-role"
   (around [it]
-    (with-out-str (it)))
+    (with-redefs [view/clear-screen (fn [])
+                  view/centralize-cursor (fn [])]
+    (with-out-str (it))))
   (it "returns a player's role if input is valid"
     (should= "h" (with-in-str "h" (get-role { :msg "select role" }))))
   (it "recurs and keep asking for input until it is valid"
     (should= "ec" (with-in-str "1\n#\n x\nec" (get-role { :msg "recur" })))))
 
 (describe "get-player-attributes"
+  (around [it]
+    (with-redefs [view/clear-screen (fn [])
+                  view/centralize-cursor (fn [])]
+    (with-out-str (it))))
   (let [attributes (with-in-str "x\nh"
                      (get-player-attributes { :msg "a player" }))]
     (it "returns a map with a key :marker"

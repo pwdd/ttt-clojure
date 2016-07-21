@@ -2,9 +2,14 @@
   (:require [speclj.core :refer :all]
             [ttt.get-spots :refer :all]
             [ttt.player :as player]
-            [ttt.board :as board]))
+            [ttt.board :as board]
+            [ttt.view :as view]))
 
 (describe "select-spot"
+  (around [it]
+    (with-redefs [view/clear-screen (fn [])
+                  view/centralize-cursor (fn [])]
+    (with-out-str (it))))
   (let [human (player/make-player { :role :human :marker :x })
         easy-computer (player/make-player { :role :easy-computer :marker :o })]
   (context ":human"
