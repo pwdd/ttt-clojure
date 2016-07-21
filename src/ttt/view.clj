@@ -1,9 +1,9 @@
-(ns ttt.view)
+(ns ttt.view
+  (:require [clojure.string :as string]))
 
 (def half-screen-width 60)
 (def center-of-screen "[8;6H")
 
-; TODO test
 (defn clear-screen
   []
   (print (str (char 27) "[2J"))
@@ -15,27 +15,25 @@
     (- half-screen-width half-message)))
 
 (defn padding-spaces
-  [message]
-  (clojure.string/join
-    (repeat (number-of-spaces (count message)) " ")))
+  [message-length]
+  (string/join
+    (repeat (number-of-spaces message-length) " ")))
 
 (defn add-padding-spaces
   [message]
   (str "\n"
-       (clojure.string/join "\n" (map
-                                    #(str (padding-spaces %) %)
-                                    (clojure.string/split-lines message)))))
+       (string/join "\n" (map
+                        #(str (padding-spaces (count %)) %)
+                        (string/split-lines message)))))
 
 (defn print-message
   [msg]
   (println (add-padding-spaces msg)))
 
-; TODO test
 (defn centralize-cursor
   []
-  (do (print (padding-spaces "")) (flush)))
+  (do (print (padding-spaces 0)) (flush)))
 
-; TODO test
 (defn make-board-disappear
   [player-role]
   (if (or (= :easy-computer player-role)

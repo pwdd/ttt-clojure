@@ -1,45 +1,36 @@
 (ns ttt.rules-spec
   (:require [speclj.core :refer :all]
             [ttt.rules :refer :all]
-            [ttt.player :as player]
             [ttt.board :as board]))
 
 (describe "draw?"
-  (let [human (player/make-player { :marker :x :role :human })
-        u (player/marker human)
-        easy-computer (player/make-player { :role :easy-computer :marker :e })
-        e (player/marker easy-computer)
-        _ board/empty-spot
+  (let [_ board/empty-spot
         empty-board (board/new-board)]
     (it "returns false if board is empty"
       (should-not (draw? empty-board)))
     (it "returns false if board is not full"
-      (should-not (draw? [u u u u u u u u _])))
+      (should-not (draw? [:x :x :x :x :x :x :x :x _])))
     (it "returns false if board is full and there is a winner"
-      (should-not (draw? [u e u
-                          e u e
-                          e e u])))
+      (should-not (draw? [:x :o :x
+                          :o :x :o
+                          :o :o :x])))
     (it "returns true if board is full and there is no winner"
-      (should (draw? [u e u
-                      e u e
-                      e u e])))))
+      (should (draw? [:x :o :x
+                      :o :x :o
+                      :o :x :o])))))
 
 (describe "game-over?"
-  (let [human (player/make-player { :marker :x :role :human })
-        u (player/marker human)
-        easy-computer (player/make-player { :role :easy-computer :marker :e })
-        e (player/marker easy-computer)
-        _ board/empty-spot
+  (let [_ board/empty-spot
         empty-board (board/new-board)]
     (it "returns false if board is empty"
       (should-not (game-over? empty-board)))
     (it "returns false if only some spots are taken"
-      (should-not (game-over? [u e _ _ _ u _ _ e])))
+      (should-not (game-over? [:x :o _ _ _ :x _ _ :o])))
     (it "returns true if there is a draw"
-      (should (game-over? [u e u
-                           e u e
-                           e u e])))
+      (should (game-over? [:x :o :x
+                           :o :x :o
+                           :o :x :o])))
     (it "returns true if there is a winner"
-      (should (game-over? [u u u
-                           e _ e
-                           e u e])))))
+      (should (game-over? [:x :x :x
+                           :o  _ :o
+                           :o :x :o])))))

@@ -4,5 +4,4 @@
 ; TODO test
 (defn -main
   []
-  (game-loop/play)
-  )
+  (game-loop/play))

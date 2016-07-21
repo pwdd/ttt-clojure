@@ -1,12 +1,13 @@
 (ns ttt.view-spec
   (:require [speclj.core :refer :all]
-            [ttt.view :refer :all]))
+            [ttt.view :refer :all]
+            [clojure.string :as string]))
 
 (describe "print-message"
   (around [it]
     (with-out-str (it)))
   (it "outputs a message to stdout"
-    (should= (str "\n" (padding-spaces "test message") "test message\r\n") (with-out-str (print-message "test message")))))
+    (should= (str "\n" (padding-spaces (count "test message")) "test message\r\n") (with-out-str (print-message "test message")))))
 
 (describe "number-of-spaces"
   (it "returns the number of padding spaces for an empty string"
@@ -18,21 +19,22 @@
 
 (describe "padding-spaces"
   (it "returns an empty string if (/ message length 2.0) is equal to screen width"
-    (should= "" (padding-spaces (clojure.string/join (repeat 120 "a")))))
+    (should= "" (padding-spaces 120)))
   (it "returns a string with n repeated spaces"
-    (should= "   " (padding-spaces (clojure.string/join (repeat 114 "a")))))
+    (should= (string/join (repeat 3 " ")) (padding-spaces 114)))
   (it "returns the right amount of spaces"
     (should= 44
-             (count (padding-spaces "Please enter a number from 1-9: ")))))
+             (count
+               (padding-spaces (count "Please enter a number from 1-9: "))))))
 
 (describe "add-padding-spaces"
-  (let [test-string (clojure.string/join (repeat 40 "a"))]
+  (let [test-string (string/join (repeat 40 "a"))]
     (it "adds padding spaces to every line of a string"
       (should= (str "\n"
-                    (padding-spaces test-string)
+                    (padding-spaces (count test-string))
                     test-string
                     "\n"
-                    (padding-spaces test-string)
+                    (padding-spaces (count test-string))
                     test-string)
                (add-padding-spaces
                  (str test-string "\n" test-string))))))
