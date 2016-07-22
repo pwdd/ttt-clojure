@@ -6,7 +6,8 @@
             [ttt.messenger :as messenger]))
 
 (defn prompt
-  [clean-input]
+  [clean-input msg]
+  (view/print-message msg)
   (view/centralize-cursor)
   (let [input (clean-input (read-line))]
     (view/clear-screen)
@@ -14,8 +15,7 @@
 
 (defn get-marker
   [{ :keys [msg opponent-marker] :or { opponent-marker "" } }]
-  (view/print-message msg)
-  (let [marker (prompt string/trim)]
+  (let [marker (prompt string/trim msg)]
     (if (input-validation/is-valid-marker? marker opponent-marker)
       marker
       (do
@@ -26,8 +26,7 @@
 
 (defn get-role
   [marker]
-  (view/print-message (messenger/ask-role-msg marker))
-  (let [input (prompt helpers/clean-string)]
+  (let [input (prompt helpers/clean-string (messenger/ask-role-msg marker))]
     (if (input-validation/is-valid-role-selection? input)
       input
       (do

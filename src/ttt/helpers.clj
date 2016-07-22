@@ -1,8 +1,9 @@
-(ns ttt.helpers)
+(ns ttt.helpers
+  (:require [clojure.string :as string]))
 
 (defn clean-string
   [str]
-  (clojure.string/lower-case (clojure.string/trim str)))
+  (string/lower-case (string/trim str)))
 
 (defn input-to-number
   [user-input]
@@ -22,4 +23,4 @@
 
 (defn write-game-type
   [first-name second-name]
-  (keyword (clojure.string/join "-x-"(sort [first-name second-name]))))
+  (keyword (string/join "-x-"(sort [first-name second-name]))))

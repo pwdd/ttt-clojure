@@ -19,8 +19,7 @@
 
 (defmethod select-spot :human
   [player params]
-  (view/print-message messenger/choose-a-number)
-  (let [input (prompt/prompt string/trim)]
+  (let [input (prompt/prompt string/trim messenger/choose-a-number)]
     (if (input-validation/is-int? input)
       (let [valid-number (helpers/input-to-number input)]
         (if (board/is-valid-move? (:board params) valid-number)
