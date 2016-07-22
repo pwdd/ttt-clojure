@@ -9,6 +9,11 @@
             [ttt.rules :as rules]
             [ttt.prompt :as prompt]))
 
+(def height 24)
+(def final-msg-lines 9)
+(def flush-down
+  (clojure.string/join (repeat (/ (- height final-msg-lines) 2) "\n")))
+
 (defn game-loop
   [game board current-player opponent]
   (if (and (board/is-board-empty? board)
@@ -35,6 +40,7 @@
 
 (defn play
   []
+  (view/clear-screen)
   (view/print-message messenger/welcome)
   (view/print-message messenger/instructions)
   (view/print-message messenger/board-representation)
@@ -47,4 +53,5 @@
         current-player (player/define-player current-player-attributes)
         opponent (player/define-player opponent-attributes)
         game (game/create-game (player/role current-player) (player/role opponent))]
-    (game-loop game (board/new-board) current-player opponent)))
+    (game-loop game (board/new-board) current-player opponent))
+    (println flush-down))
