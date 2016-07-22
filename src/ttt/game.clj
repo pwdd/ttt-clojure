@@ -1,17 +1,25 @@
 (ns ttt.game
-  (require [ttt.board :as board]
-           [ttt.user :as player]
-           [ttt.messenger :as messenger]))
+  (:require [ttt.helpers :as helpers]))
 
-(def first-player :x)
-(def second-player :o)
+(defrecord Game [type player-roles])
 
-; TODO test
-(defn play
-  [board current-player opponent]
-  (let [input (player/get-valid-input board)
-        game-board (board/move board current-player input)]
-    (println (messenger/print-board game-board))
-    (if (board/game-over? game-board current-player opponent)
-      (println (messenger/result game-board current-player opponent))
-      (recur game-board opponent current-player))))
+(defn game-type
+  [first-player second-player]
+  (let [first-name (helpers/stringify-role first-player)
+        second-name (helpers/stringify-role second-player)]
+    (helpers/write-game-type first-name second-name)))
+
+(defn game-players-roles
+  [first-player-role second-player-role]
+  (cond
+    (= first-player-role second-player-role) :same-player-roles
+    (and (some #{:human} [first-player-role second-player-role])
+         (not (every? #{:human} [first-player-role second-player-role])))
+      :computer-x-human
+    :else
+      :computer-x-computer))
+
+(defn create-game
+  [first-player-role second-player-role]
+  (->Game (game-type first-player-role second-player-role)
+          (game-players-roles first-player-role second-player-role)))

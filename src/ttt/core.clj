@@ -1,11 +1,7 @@
 (ns ttt.core
-  (:require [ttt.board :as board]
-            [ttt.messenger :as messenger]
-            [ttt.game :as game]))
+  (:require [ttt.game-loop :as game-loop]))
 
+; TODO test
 (defn -main
   []
-  (println messenger/instructions)
-  (println messenger/board-representation)
-  (game/play (board/new-board) game/first-player game/second-player)
-  )
+  (game-loop/play))
