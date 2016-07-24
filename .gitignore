@@ -3,6 +3,7 @@
 /classes
 /checkouts
 /target
+/dev-resources
 pom.xml
 questions.md
 .nrepl-port
@@ -12,3 +13,6 @@ questions.md
 .lein-failures
 .lein-plugins
 .lein-repl-history
+.DS_Store
+/src/.DS_Store
+/src/ttt/.DS_Store
