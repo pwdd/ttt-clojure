@@ -1,7 +1,14 @@
 (ns ttt.view
-  (:require [clojure.string :as string]))
+  (:require [clojure.string :as string]
+             [clojure.java.shell :as sh]))
 
-(def half-screen-width 60)
+(defn get-console-width
+  []
+  (if (not (= "Windows" (System/getProperty "os.name")))
+    (->> (sh/sh "/bin/sh" "-c" "stty -a < /dev/tty") :out (re-find #"(\d+) columns") second)
+    120))
+
+(def half-screen-width (/ (Integer/parseInt (get-console-width)) 2))
 (def center-of-screen "[8;6H")
 
 (defn clear-screen
