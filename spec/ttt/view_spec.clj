@@ -7,9 +7,11 @@
   (around [it]
     (with-out-str (it)))
   (it "outputs a message to stdout"
-    (should= (str "\n" (padding-spaces (count "test message")) "test message\r\n") (with-out-str (print-message "test message")))))
+    (should= (str "\n" (padding-spaces (count "test message")) "test message\n") (with-out-str (print-message "test message")))))
 
 (describe "number-of-spaces"
+  (around [it]
+    (with-redefs [half-screen-width 60]))
   (it "returns the number of padding spaces for an empty string"
     (should= 60 (number-of-spaces 0)))
   (it "returns the number of spaces if message length is even"
@@ -18,6 +20,8 @@
     (should= 58 (number-of-spaces 3))))
 
 (describe "padding-spaces"
+  (around [it]
+    (with-redefs [half-screen-width 60]))
   (it "returns an empty string if (/ message length 2.0) is equal to screen width"
     (should= "" (padding-spaces 120)))
   (it "returns a string with n repeated spaces"
