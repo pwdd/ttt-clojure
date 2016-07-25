@@ -54,4 +54,5 @@
         opponent (player/define-player opponent-attributes)
         game (game/create-game (player/role current-player) (player/role opponent))]
     (game-loop game (board/new-board) current-player opponent))
-    (println flush-down))
+    (println flush-down)
+    (System/exit 0))
