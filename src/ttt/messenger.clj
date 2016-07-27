@@ -14,6 +14,10 @@
 
 (def instructions "The board is represented like the following:\n")
 
+(def new-or-saved-msg (str "Would you like to (1) restart your saved game "
+                           "or (2) start a new game? "
+                           "Please enter 1 or 2:"))
+
 (def role-options-msg
   "Please type H (human), EC (easy computer) or HC (hard computer): ")
 
@@ -162,3 +166,9 @@
       (str default-invalid-input "This marker is taken by the first player.")
     :else
       (str default-invalid-input "Only a letter from 'a' to 'z' is valid.")))
+
+(defn current-player-is
+  [current-player-marker]
+  (str "Current player is playing with '"
+       current-player-marker
+       "'"))

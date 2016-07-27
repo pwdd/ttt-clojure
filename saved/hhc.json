@@ -1,0 +1,11 @@
+{
+  "board": ["x" "-" "-" "-" "h" "-" "-" "-" "-"],
+  "current-player": {
+    "marker": "x",
+    "role": "human"
+  },
+  "opponent": {
+    "marker": "h",
+    "role": "hard-computer"
+  }
+}

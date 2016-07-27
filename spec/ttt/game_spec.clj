@@ -1,7 +1,9 @@
 (ns ttt.game-spec
   (:require [speclj.core :refer :all]
             [ttt.game :refer :all]
-            [ttt.player :refer [make-player]])
+            [clojure.java.io :as io]
+            [ttt.file-reader :as file-reader]
+            )
   (:import [ttt.game Game]))
 
 (describe "game-type"
@@ -44,3 +46,41 @@
     (should (:type (create-game :human :hard-computer))))
   (it "returns a Game with player-roles attribute"
     (should (:player-roles (create-game :human :hard-computer)))))
+
+(describe "game-setup"
+  (context "setup-resumed-game"
+    (around [it]
+      (with-redefs [file-reader/directory (io/file "test-files")]
+      (it)))
+    (with data (game-setup "1" "hh.json"))
+    (it "returns a map"
+      (should (map? @data)))
+    (it "returns a map with a key :game"
+      (should (@data :game)))
+    (it "returns a map with a key :board"
+      (should (@data :board)))
+    (it "returns a map with a key :current-player"
+      (should (@data :current-player)))
+    (it "returns a map with a key :opponent"
+      (should (@data :opponent))))
+
+  (context "setup-regular-game"
+    (around [it]
+      (with-out-str (it)))
+    (with data (with-in-str "x\nec\no\nec" (setup-regular-game "first" "second")))
+    (it "returns a map"
+      (should (map? @data)))
+    (it "returns a map with key :game"
+      (should (@data :game)))
+    (it "returns a map with a key :current-player"
+      (should (@data :current-player)))
+    (it "returns a map with a key :opponent"
+      (should (@data :opponent)))))
+
+(describe "human-makes-first-move?"
+  (it "returns false if player is not :human"
+    (should-not (human-makes-first-move? true :easy-computer)))
+  (it "returns false if it is not the first move of the game"
+    (should-not (human-makes-first-move? false :human)))
+  (it "returns true if it is the first move and player is :human"
+    (should (human-makes-first-move? true :human))))

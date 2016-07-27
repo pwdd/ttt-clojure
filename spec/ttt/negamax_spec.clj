@@ -51,41 +51,35 @@
   (with _ board/empty-spot)
   (with human (player/make-player { :marker :x :role :human }))
   (with hard-computer (player/make-player { :marker :o :role :hard-computer }))
-  (with human-hard (game/create-game :human :hard-computer))
   (it "returns spot that blocks opponent victory"
-    (should= 8 (best-move @human-hard
-                          [:x :o :o
+    (should= 8 (best-move [:x :o :o
                            :o :x :x
                            @_ @_ @_]
                            @hard-computer
                            @human
                            start-depth)))
   (it "returns spot that makes computer win instead of blocking opponent"
-    (should= 0 (best-move @human-hard
-                          [@_ :o :o
+    (should= 0 (best-move [@_ :o :o
                            @_ :x :x
                            :x :x :o]
                            @hard-computer
                            @human
                            start-depth)))
   (it "avoids opponent to create an invincible situation"
-    (should (or (= 2 (best-move @human-hard
-                                [:o @_ @_
+    (should (or (= 2 (best-move [:o @_ @_
                                  @_ :x @_
                                  @_ @_ :x]
                                  @hard-computer
                                  @human
                                  start-depth))
-                (= 6 (best-move @human-hard
-                                [:o @_ @_
+                (= 6 (best-move [:o @_ @_
                                  @_ :x @_
                                  @_ @_ :x]
                                  @hard-computer
                                  @human
                                  start-depth)))))
   (it "blocks opponent from winning"
-    (should= 6 (best-move @human-hard
-                          [:o :x :x
+    (should= 6 (best-move [:o :x :x
                            @_ :x @_
                            @_ :o @_]
                            @hard-computer

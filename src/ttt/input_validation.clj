@@ -5,10 +5,10 @@
   #{ "h" "human" "hum" })
 
 (def acceptable-easy-computer
-  #{ "ec" "easy computer" "easycomputer" "easy"})
+  #{ "ec" "easy computer" "easycomputer" "easy" "easy-computer"})
 
 (def acceptable-hard-computer
-  #{ "hc" "hard computer" "hardcomputer" "hard" "difficult"})
+  #{ "hc" "hard computer" "hardcomputer" "hard" "difficult" "hard-computer"})
 
 (defn is-acceptable-as-human-player?
   [role]
@@ -41,3 +41,7 @@
     true
   (catch Exception e false
     )))
+
+(defn is-valid-new-or-saved?
+  [user-input]
+  (or (= user-input "1") (= user-input "2")))

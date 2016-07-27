@@ -1,0 +1,11 @@
+{
+  "board": ["x" "-" "o" "-" "-" "-" "-" "-" "-"],
+  "current-player": {
+    "marker": "x",
+    "role": "human"
+  },
+  "opponent": {
+    "marker": "o",
+    "role": "human"
+  }
+}

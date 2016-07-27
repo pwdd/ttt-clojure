@@ -38,3 +38,13 @@
   (let [marker (get-marker { :msg msg :opponent-marker opponent-marker })
         role (get-role marker)]
     { :marker marker :role role }))
+
+(defn get-new-or-saved
+  []
+  (let [type-of-game (prompt string/trim messenger/new-or-saved-msg)]
+    (if (or (= type-of-game "1")
+            (= type-of-game "2"))
+      type-of-game
+      (do
+        (view/print-message messenger/default-invalid-input)
+        (recur)))))

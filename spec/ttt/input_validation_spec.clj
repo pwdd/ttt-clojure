@@ -59,3 +59,15 @@
     (should-not (is-int? "a")))
   (it "returns false if argument is a word"
     (should-not (is-int? "parakeet"))))
+
+(describe "is-valid-new-or-saved?"
+  (it "returns false if input is a letter"
+    (should-not (is-valid-new-or-saved? "a")))
+  (it "returns false if input is '0'"
+    (should-not (is-valid-new-or-saved? "0")))
+  (it "returns false if input has more than one letter"
+    (should-not (is-valid-new-or-saved? "12")))
+  (it "returns true if input is '1'"
+    (should (is-valid-new-or-saved? "1")))
+  (it "returns true if input is '2'"
+    (should (is-valid-new-or-saved? "2"))))

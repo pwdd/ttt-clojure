@@ -37,8 +37,7 @@
 
 (defmethod select-spot :hard-computer
   [player params]
-  (negamax/best-move (:game params)
-                     (:board params)
+  (negamax/best-move (:board params)
                      (:current-player params)
                      (:opponent params)
                      (:depth params)))

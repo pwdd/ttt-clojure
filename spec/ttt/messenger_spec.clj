@@ -142,3 +142,9 @@
     (should= (str default-invalid-input
                   "This marker is taken by the first player.")
              (invalid-marker-msg "x" "x"))))
+
+(describe "current-player-is"
+  (it "returns a string containing 'x'"
+    (should (re-find #"'x'" (current-player-is "x"))))
+  (it "returns a string containing 'a'"
+    (should (re-find #"'a'" (current-player-is "a")))))

@@ -49,3 +49,13 @@
       (should= "x" (:marker (with-in-str "x\nh" (get-player-attributes { :msg "" })))))
     (it "returns a map with the second input associate with :role key"
       (should= "h" (:role (with-in-str "x\nh" (get-player-attributes { :msg "" }))))))
+
+(describe "get-new-or-saved"
+  (around [it]
+    (with-out-str (it)))
+  (it "returns 1 if user chose saved game"
+    (should= "1" (with-in-str "1" (get-new-or-saved))))
+  (it "returns 2 if user chose new game"
+    (should= "2" (with-in-str "2" (get-new-or-saved))))
+  (it "recurs if input is neither '1' nor '2'"
+    (should= "1" (with-in-str "3\n-1\na\n11\n1" (get-new-or-saved)))))
