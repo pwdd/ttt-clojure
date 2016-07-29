@@ -39,3 +39,15 @@
     (should (keyword? (write-game-type "easy" "human"))))
   (it "returns an alphabetically ordered keyword, does not matter the order of arguments"
     (should= :easy-x-hard (write-game-type "hard" "easy"))))
+
+(describe "clean-filenames"
+  (with filenames ["abc.json" "def.json" "something-something.json"])
+  (it "returns a collection of strings"
+    (should (and (coll? (clean-filenames @filenames))
+                 (every? string? @filenames))))
+  (it "returns a collection that contains 'abc'"
+    (should (some #{"abc"} (clean-filenames @filenames))))
+  (it "returns a collection that contains 'def'"
+    (should (some #{"def"} (clean-filenames @filenames))))
+  (it "returns a collections of strings that do not have file extension"
+    (should= [] (filter #(re-find #"\." %) (clean-filenames @filenames)))))

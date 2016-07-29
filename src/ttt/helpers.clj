@@ -24,3 +24,7 @@
 (defn write-game-type
   [first-name second-name]
   (keyword (string/join "-x-"(sort [first-name second-name]))))
+
+(defn clean-filenames
+  [filenames]
+  (map #(subs % 0 (.indexOf % ".")) filenames))
