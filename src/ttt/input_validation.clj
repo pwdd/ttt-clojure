@@ -45,3 +45,7 @@
 (defn is-valid-new-or-saved?
   [user-input]
   (or (= user-input "1") (= user-input "2")))
+
+(defn is-valid-filename?
+  [user-input filenames]
+  (some #(= user-input %) filenames))

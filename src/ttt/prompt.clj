@@ -48,3 +48,10 @@
       (do
         (view/print-message messenger/default-invalid-input)
         (recur)))))
+
+(defn choose-a-file
+  [filenames]
+  (let [chosen-file (prompt helpers/clean-string messenger/choose-a-file-msg)]
+    (if (input-validation/is-valid-filename? chosen-file filenames)
+      chosen-file
+      (recur filenames))))

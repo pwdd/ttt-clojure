@@ -59,3 +59,14 @@
     (should= "2" (with-in-str "2" (get-new-or-saved))))
   (it "recurs if input is neither '1' nor '2'"
     (should= "1" (with-in-str "3\n-1\na\n11\n1" (get-new-or-saved)))))
+
+(describe "choose-a-file"
+  (around [it]
+    (with-out-str (it)))
+  (with filenames ["hh" "hec" "hchc"])
+  (it "returns 'hh' if user chose such a file"
+    (should= "hh" (with-in-str "hh" (choose-a-file @filenames))))
+  (it "returns 'hec' if user chose such a file"
+    (should= "hec" (with-in-str "hec" (choose-a-file @filenames))))
+  (it "recurs and returns the right filename"
+    (should= "hh" (with-in-str "a\n1\n\nHH" (choose-a-file @filenames)))))

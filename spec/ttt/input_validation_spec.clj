@@ -71,3 +71,10 @@
     (should (is-valid-new-or-saved? "1")))
   (it "returns true if input is '2'"
     (should (is-valid-new-or-saved? "2"))))
+
+(describe "is-valid-filename?"
+  (with filenames ["hh" "hchc" "a-filename"])
+  (it "returns false if input is not in the argument array"
+    (should-not (is-valid-filename? "a" @filenames)))
+  (it "returns true if input is in argument array"
+    (should (is-valid-filename? "hchc" @filenames))))

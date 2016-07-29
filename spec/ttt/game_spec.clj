@@ -2,8 +2,7 @@
   (:require [speclj.core :refer :all]
             [ttt.game :refer :all]
             [clojure.java.io :as io]
-            [ttt.file-reader :as file-reader]
-            )
+            [ttt.file-reader :as file-reader])
   (:import [ttt.game Game]))
 
 (describe "game-type"

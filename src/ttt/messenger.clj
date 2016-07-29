@@ -172,3 +172,5 @@
   (str "Current player is playing with '"
        current-player-marker
        "'"))
+
+(def choose-a-file-msg "Enter the name of the saved game you wanna play:")
