@@ -50,8 +50,8 @@
   (context "setup-resumed-game"
     (around [it]
       (with-redefs [file-reader/directory (io/file "test-files")]
-      (it)))
-    (with data (game-setup "1" "hh.json"))
+      (with-out-str (it))))
+    (with data (with-in-str "hh" (game-setup "1")))
     (it "returns a map"
       (should (map? @data)))
     (it "returns a map with a key :game"
@@ -66,7 +66,7 @@
   (context "setup-regular-game"
     (around [it]
       (with-out-str (it)))
-    (with data (with-in-str "x\nec\no\nec" (setup-regular-game "first" "second")))
+    (with data (with-in-str "x\nec\no\nec" (game-setup "2" "first" "second")))
     (it "returns a map"
       (should (map? @data)))
     (it "returns a map with key :game"

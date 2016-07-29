@@ -45,8 +45,10 @@
       :saved false}))
 
 (defn setup-resumed-game
-  [filename]
-  (let [data (reader/saved-data filename)
+  []
+  (let [files (reader/names (reader/filenames (reader/files)))
+        filename (prompt/choose-a-file files)
+        data (reader/saved-data (str filename ".json"))
         current-player-attributes (data :current-player-data)
         opponent-attributes (data :opponent-data)
         current-player (player/define-player current-player-attributes)
@@ -58,13 +60,15 @@
       :opponent opponent
       :game game
       :board board
-      :saved true}))
+      :saved true
+      :filename "hh.json"}))
+
 
 (defn game-setup
-  [game-selection & [filename msg-first-player-attr msg-second-player-attr]]
+  [game-selection & [msg-first-player-attr msg-second-player-attr]]
   (if (reader/is-there-any-file?)
     (if (= game-selection "1")
-      (setup-resumed-game filename)
+      (setup-resumed-game)
       (setup-regular-game msg-first-player-attr msg-second-player-attr))
     (setup-regular-game msg-first-player-attr msg-second-player-attr)))
 

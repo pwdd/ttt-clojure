@@ -174,3 +174,7 @@
        "'"))
 
 (def choose-a-file-msg "Enter the name of the saved game you wanna play:")
+
+(defn display-files-list
+  [files-list]
+  (string/join ", " files-list))

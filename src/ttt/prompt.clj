@@ -51,6 +51,8 @@
 
 (defn choose-a-file
   [filenames]
+  (view/print-message "These are the saved files:")
+  (view/print-message (messenger/display-files-list filenames))
   (let [chosen-file (prompt helpers/clean-string messenger/choose-a-file-msg)]
     (if (input-validation/is-valid-filename? chosen-file filenames)
       chosen-file

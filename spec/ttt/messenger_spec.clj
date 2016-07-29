@@ -148,3 +148,11 @@
     (should (re-find #"'x'" (current-player-is "x"))))
   (it "returns a string containing 'a'"
     (should (re-find #"'a'" (current-player-is "a")))))
+
+(describe "display-files-list"
+  (it "returns an empty string if collection is empty"
+    (should= "" (display-files-list [])))
+  (it "returns the string of the only element in a collection"
+    (should= "abc" (display-files-list ["abc"])))
+  (it "returns a string with all the elements from a collection"
+    (should= "abc, def, foo" (display-files-list ["abc" "def" "foo"]))))

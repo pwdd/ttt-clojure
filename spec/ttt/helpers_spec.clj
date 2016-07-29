@@ -49,5 +49,7 @@
     (should (some #{"abc"} (clean-filenames @filenames))))
   (it "returns a collection that contains 'def'"
     (should (some #{"def"} (clean-filenames @filenames))))
+  (it "returns a collection that contains 'something-something'"
+    (should (some #{"something-something"} (clean-filenames @filenames))))
   (it "returns a collections of strings that do not have file extension"
     (should= [] (filter #(re-find #"\." %) (clean-filenames @filenames)))))

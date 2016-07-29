@@ -11,10 +11,8 @@
             [ttt.prompt :as prompt]
             [ttt.file-reader :as reader]))
 
-
-
 (defn game-loop
-  [{ :keys [game board current-player opponent saved first-screen]
+  [{ :keys [game board current-player opponent saved first-screen filename]
      :or { board (board/new-board)
            first-screen true }}]
 
@@ -55,11 +53,11 @@
   (view/print-message messenger/instructions)
   (view/print-message messenger/board-representation)
 
-  (let [game-selection (prompt/get-new-or-saved)]
-    (game-loop (game/game-setup game-selection
-                                "hchc.json"
-                                messenger/ask-first-marker-msg
-                                messenger/ask-second-marker-msg)))
+  (let [game-selection (prompt/get-new-or-saved)
+        setup (game/game-setup game-selection
+                               messenger/ask-first-marker-msg
+                               messenger/ask-second-marker-msg)]
+    (game-loop setup))
 
   (println view/flush-down)
   (System/exit 0))
