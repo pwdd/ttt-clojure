@@ -1,6 +1,7 @@
 (ns ttt.board-spec
   (:require [speclj.core :refer :all]
-            [ttt.board :refer :all]))
+            [ttt.board :refer :all]
+            [clojure.set :as set]))
 
 (describe "board-size"
   (it "has a default size"
@@ -13,15 +14,58 @@
   (it "has the default value of squared board-size"
     (should= 16 board-length)))
 
-(describe "winning-combos"
-  (it "holds all winning combination"
-    (should= 8 (count winning-combos))))
-
 (describe "new-board"
-  (it "is a vector of empty spots"
+  (it "returns a vector"
+    (should (vector? (new-board))))
+  (it "returns a vector of empty spots"
     (should (every? #{empty-spot} (new-board))))
-  (it "has length equal to board-length"
+  (it "returns a vector with length equal to board-length"
     (should (= board-length (count (new-board))))))
+
+(describe "board-rows"
+  (it "returns a collection that contains [0 1 2]"
+    (should (some #(= [0 1 2] %) (board-rows))))
+  (it "returns a collection that contains [3 4 5]"
+    (should (some #(= [3 4 5] %) (board-rows))))
+  (it "returns a collection that contains [6 7 8]"
+    (should (some #(= [6 7 8] %) (board-rows)))))
+
+(describe "board-columns"
+  (it "returns a collection that contains [0 3 6]"
+    (should (some #(= [0 3 6] %) (board-columns))))
+  (it "returns a collection that contains [1 4 7]"
+    (should (some #(= [1 4 7] %) (board-columns))))
+  (it "returns a collection that contains [2 5 8]"
+    (should (some #(= [2 5 8] %) (board-columns)))))
+
+(describe "diagonals"
+  (context "forward"
+    (it "returns indexes of diagonal forward"
+      (should= [0 4 8] (diagonals 0 inc))))
+
+  (context "backward"
+    (it "retuns indexes of the diagonal backward"
+      (should= [2 4 6] (diagonals (dec board-size) dec)))))
+
+(describe "board-diagonals"
+  (it "returns a collection that contains [0 4 8]"
+    (should (some #(= [0 4 8] %) (board-diagonals))))
+  (it "returns a collection that contains [6 7 8]"
+    (should (some #(= [2 4 6] %) (board-diagonals))))
+  (it "has only two elements"
+    (should= 2 (count (board-diagonals)))))
+
+(describe "winning-positions"
+  (it "returns a collections with length 8"
+    (should= 8 (count (winning-positions))))
+  (it "returns a collection that contains board rows"
+    (should (set/subset? #{[0 1 2] [3 4 5] [6 7 8]}
+                         (set (winning-positions)))))
+  (it "returns a collection that contains board columns"
+    (should (set/subset? #{[0 3 6] [1 4 7] [2 5 8]}
+                          (set (winning-positions)))))
+  (it "returns a collection that contains board diagonals"
+    (should (set/subset? #{[0 4 8] [2 4 6]} (set (winning-positions))))))
 
 (describe "move"
   (with _ empty-spot)
@@ -29,25 +73,15 @@
   (it "sets a value to an empty board"
     (should= [:x @_ @_ @_ @_ @_ @_ @_ @_]
              (move @empty-board :x 0)))
-  (it "sets a spot on a board with some spots already taken"
+  (it "sets a value in a given position after game has started"
     (should= [:x @_ @_ :o @_ :x @_ @_ @_]
              (move [:x @_ @_ :o @_ @_ @_ @_ @_] :x 5))))
 
-(describe "is-spot-available?"
-  (with _ empty-spot)
-  (it "returns true when spot is not taken"
-      (should (is-spot-available? [:x @_ @_ @_ @_ @_ @_ @_ @_] 1)))
-   (it "returns false when spot is taken"
-      (should-not (is-spot-available? [:x @_ @_ @_ @_ @_ @_ @_ @_] 0))))
-
 (describe "is-board-full?"
   (with _ empty-spot)
-  (with empty-board (new-board))
-  (it "returns false if board is empty"
-    (should-not (is-board-full? @empty-board)))
-  (it "returns true if board is full"
+  (it "returns true if there is no empty spots"
     (should (is-board-full? (vec (repeat board-length :x)))))
-  (it "returns false if there is any spot available"
+  (it "returns false if there is any empty spot"
     (should-not (is-board-full? [:x :o :x :o @_ :x :x :o]))))
 
 (describe "is-board-empty?"
@@ -55,31 +89,44 @@
   (with empty-board (new-board))
   (it "returns true if board has only empty spots"
     (should (is-board-empty? @empty-board)))
-  (it "returns false if any spot is taken"
+  (it "returns false if any spot has any marker"
     (should-not (is-board-empty? [@_ @_ @_ @_ @_ :x @_ @_ @_]))))
+
+(describe "is-spot-available?"
+  (with _ empty-spot)
+  (it "returns true if spot is in range and board is empty"
+    (should (is-spot-available? (new-board) 1)))
+  (it "returns true if spot has an empty spot"
+    (should (is-spot-available? [@_ @_ @_
+                                 @_ :x :x
+                                 :o :o @_] 1)))
+  (it "returns false if spot has a marker"
+    (should-not (is-spot-available? [@_ @_ @_
+                                     @_ :x :x
+                                     :o :o @_] 4))))
 
 (describe "available-spots"
   (with _ empty-spot)
   (with full-board (vec (repeat board-length :x)))
-  (it "returns a collection containing the index of the only available spot"
+  (it "returns a collection containing the index of the only empty spot"
     (should= '(8) (available-spots [:x :x :x :x :x :x :x :x @_])))
-  (it "returns a collection containing the indexes of all available spots"
+  (it "returns a collection containing the indexes of all empty spots"
     (should= '(0 1 8) (available-spots [@_ @_ :x :x :x :x :x :x @_])))
-  (it "returns an empty collection if no spot is available"
+  (it "returns an empty collection if no empty spot"
     (should= '() (available-spots @full-board))))
 
 (describe "is-valid-move?"
   (with _ empty-spot)
   (with empty-board (new-board))
-  (it "returns true if argument is in range when board is empty"
+  (it "returns true if spot is in range and board is empty"
     (should (is-valid-move? @empty-board 0)))
-  (it "returns false if number is bigger than board-length"
+  (it "returns false if spot is bigger than board-length"
     (should-not (is-valid-move? @empty-board 10)))
-  (it "returns true if argument is the index of one of the empty spots"
+  (it "returns true if spot is the index of one of the empty spots"
     (should (is-valid-move? [:x @_ :x @_ @_ @_ @_ @_ @_] 3)))
   (it "returns false if spot is taken"
     (should-not (is-valid-move? [@_ :x :x @_ @_ @_ @_ @_ @_] 1)))
-  (it "returns false if number is negative"
+  (it "returns false if spot is negative"
     (should-not (is-valid-move? @empty-board -10))))
 
 (describe "repeated-markers?"

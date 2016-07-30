@@ -5,30 +5,41 @@
 (def board-length (* board-size board-size))
 (def empty-spot :_)
 
-(def winning-combos [
-                     [0 1 2]
-                     [3 4 5]
-                     [6 7 8]
-
-                     [0 3 6]
-                     [1 4 7]
-                     [2 5 8]
-
-                     [0 4 8]
-                     [2 4 6]
-                    ])
-
 (defn new-board
   []
   (vec (repeat board-length empty-spot)))
 
+(defn board-rows
+  []
+  (partition board-size (range board-length)))
+
+(defn board-columns
+  []
+  (apply map vector (board-rows)))
+
+(defn diagonals
+  [start-column next-column]
+  (loop [row 0
+        column start-column
+        diagonal []]
+    (if (>= row board-size)
+      diagonal
+      (recur (inc row)
+             (next-column column)
+             (conj diagonal
+               (get-in (mapv vec (board-rows)) [row column]))))))
+
+(defn board-diagonals
+  []
+  [(diagonals 0 inc) (diagonals (dec board-size) dec)])
+
+(defn winning-positions
+  []
+  (mapv vec (concat (concat (board-rows) (board-columns)) (board-diagonals))))
+
 (defn move
   [board marker spot]
   (assoc board spot marker))
-
-(defn is-spot-available?
-  [board spot]
-  (= empty-spot (board spot)))
 
 (defn is-board-full?
   [board]
@@ -37,6 +48,10 @@
 (defn is-board-empty?
   [board]
   (every? #(= empty-spot %) board))
+
+(defn is-spot-available?
+  [board spot]
+  (= empty-spot (board spot)))
 
 (defn available-spots
   [board]
@@ -57,7 +72,7 @@
 
 (defn find-repetition
   [board]
-  (filter #(repeated-markers? board %) winning-combos))
+  (filter #(repeated-markers? board %) (winning-positions)))
 
 (defn winning-combo
   [board]
