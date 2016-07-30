@@ -1,49 +1,48 @@
 (ns ttt.negamax
   (:require [ttt.board :as board]
-            [ttt.player :as player]
             [ttt.rules :as rules]))
 
 (def start-depth 0)
 
 (defn board-analysis
-  [board current-player opponent depth]
-  (let [winner (rules/winner-player board current-player opponent)]
-    (cond
-      (= winner current-player) (- 10 depth)
-      (= winner opponent) (- depth 10)
-      :else
-        0)))
+  [board current-player-marker opponent-marker depth]
+  (if (rules/draw? board)
+    0
+    (let [winner (rules/winner-marker board)]
+      (if (= winner current-player-marker)
+        (- 10 depth)
+        (- depth 10)))))
 
 (declare negamax)
 
-(defn negamax-scores
-  [board current-player opponent depth]
+(defn scores
+  [board current-player-marker opponent-marker depth]
   (let [spots (board/available-spots board)
        new-boards (map #(board/move board
-                                    (player/marker current-player)
-                                    %) spots)]
+                                    %
+                                    current-player-marker) spots)]
     (map #(- (negamax %
-                      opponent
-                      current-player
+                      opponent-marker
+                      current-player-marker
                       (inc depth))) new-boards)))
 
 (defn negamax-score
-  [board current-player opponent depth]
+  [board current-player-marker opponent-marker depth]
   (if (rules/game-over? board)
-    (board-analysis board current-player opponent depth)
-    (apply max (negamax-scores board
-                               current-player
-                               opponent
-                               depth))))
+    (board-analysis board current-player-marker opponent-marker depth)
+    (apply max (scores board
+                       current-player-marker
+                       opponent-marker
+                       depth))))
 
 (def negamax (memoize negamax-score))
 
 (defn best-move
-  [board current-player opponent depth]
+  [board current-player-marker opponent-marker depth]
   (if (board/is-board-empty? board)
     4
     (let [spots (board/available-spots board)
-         scores (negamax-scores board current-player opponent depth)
+         scores (scores board current-player-marker opponent-marker depth)
          max-value (apply max scores)
          best (.indexOf scores max-value)]
       (nth spots best))))

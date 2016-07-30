@@ -26,13 +26,13 @@
 
   (let [spot (spots/select-spot current-player
                                 { :board board
-                                  :current-player current-player
-                                  :opponent opponent
+                                  :current-player (player/marker current-player)
+                                  :opponent (player/marker opponent)
                                   :depth negamax/start-depth
                                   :board-length board/board-length })
-        game-board (board/move board (player/marker current-player) spot)]
+        game-board (board/move board spot (player/marker current-player))]
 
-    (view/make-board-disappear (:role current-player))
+    (view/make-board-disappear (player/role current-player))
     (view/print-message (messenger/moved-to game current-player spot))
     (view/print-message (messenger/stringify-board game-board))
 

@@ -38,7 +38,7 @@
   (mapv vec (concat (concat (board-rows) (board-columns)) (board-diagonals))))
 
 (defn move
-  [board marker spot]
+  [board spot marker]
   (assoc board spot marker))
 
 (defn is-board-full?

@@ -42,8 +42,7 @@
 (defn get-new-or-saved
   []
   (let [type-of-game (prompt string/trim messenger/new-or-saved-msg)]
-    (if (or (= type-of-game "1")
-            (= type-of-game "2"))
+    (if (input-validation/is-valid-new-or-saved? type-of-game)
       type-of-game
       (do
         (view/print-message messenger/default-invalid-input)

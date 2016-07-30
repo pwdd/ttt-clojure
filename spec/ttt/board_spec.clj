@@ -72,10 +72,10 @@
   (with empty-board (new-board))
   (it "sets a value to an empty board"
     (should= [:x @_ @_ @_ @_ @_ @_ @_ @_]
-             (move @empty-board :x 0)))
+             (move @empty-board 0 :x)))
   (it "sets a value in a given position after game has started"
     (should= [:x @_ @_ :o @_ :x @_ @_ @_]
-             (move [:x @_ @_ :o @_ @_ @_ @_ @_] :x 5))))
+             (move [:x @_ @_ :o @_ @_ @_ @_ @_] 5 :x))))
 
 (describe "is-board-full?"
   (with _ empty-spot)
