@@ -1,5 +1,6 @@
 (ns ttt.input-validation
-  (:require [ttt.helpers :as helpers]))
+  (:require [ttt.helpers :as helpers]
+            [ttt.board :as board]))
 
 (def acceptable-human-player
   #{ "h" "human" "hum" })
@@ -41,6 +42,11 @@
     true
   (catch Exception e false
     )))
+
+(defn is-valid-move-input?
+  [board user-input]
+  (and (is-int? user-input)
+       (board/is-valid-move? board (helpers/input-to-number user-input))))
 
 (defn is-valid-new-or-saved?
   [user-input]

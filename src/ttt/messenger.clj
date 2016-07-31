@@ -3,6 +3,7 @@
             [ttt.player :as player]
             [ttt.helpers :as helpers]
             [ttt.rules :as rules]
+            [ttt.input-validation :as input-validation]
             [clojure.string :as string]))
 
 (def separator "\n---|---|---\n")
@@ -153,6 +154,12 @@
            " in the board\n")
     :else
       (str default-invalid-input "The position is taken\n")))
+
+(defn wrong-number-msg
+  [board input]
+  (if (input-validation/is-int? input)
+    (not-a-valid-move (helpers/input-to-number input))
+    (not-a-valid-number input)))
 
 (defn invalid-marker-msg
   [input opponent-marker]

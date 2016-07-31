@@ -1,6 +1,7 @@
 (ns ttt.input-validation-spec
   (:require [speclj.core :refer :all]
-            [ttt.input-validation :refer :all]))
+            [ttt.input-validation :refer :all]
+            [ttt.board :as board]))
 
 (describe "is-acceptable-as-human-player?"
   (it "returns false if input is empty"
@@ -28,11 +29,11 @@
     (should (every? is-acceptable-as-hard-computer? acceptable-hard-computer))))
 
 (describe "is-valid-role-selection?"
-  (let [acceptable-roles (clojure.set/union acceptable-human-player
+  (with acceptable-roles (clojure.set/union acceptable-human-player
                                             acceptable-easy-computer
-                                            acceptable-hard-computer)]
+                                            acceptable-hard-computer)
   (it "only accepts whitelisted strings as valid input"
-    (should (every? is-valid-role-selection? acceptable-roles)))
+    (should (every? is-valid-role-selection? @acceptable-roles)))
   (it "does not accept any other string"
     (should-not (is-valid-role-selection? "a")))))
 
@@ -59,6 +60,15 @@
     (should-not (is-int? "a")))
   (it "returns false if argument is a word"
     (should-not (is-int? "parakeet"))))
+
+(describe "is-valid-move-input?"
+  (with _ board/empty-spot)
+  (it "returns false if input is not an integer string"
+    (should-not (is-valid-move-input? [@_ @_ :o :x :x :o @_ @_ @_] "a")))
+  (it "returns true if input is an integer and is a valid move"
+    (should (is-valid-move-input? [@_ @_ :o :x :x :o @_ @_ @_] "1")))
+  (it "returns false if spot has a marker"
+    (should-not (is-valid-move-input? [@_ @_ :o :x :x :o @_ @_ @_] "3"))))
 
 (describe "is-valid-new-or-saved?"
   (it "returns false if input is a letter"

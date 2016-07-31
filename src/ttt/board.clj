@@ -20,8 +20,8 @@
 (defn diagonals
   [start-column next-column]
   (loop [row 0
-        column start-column
-        diagonal []]
+         column start-column
+         diagonal []]
     (if (>= row board-size)
       diagonal
       (recur (inc row)
