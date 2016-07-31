@@ -97,11 +97,16 @@
     (should (some #{"hh.json" "hchc.json"} (filenames (files))))))
 
 (describe "names"
-  (around [it]
-    (with-redefs [directory (io/file "test-files")]
-      (it)))
-  (it "returns a collection containing only filenames without extension"
-    (should (some #{"hh" "hchc"} (names (filenames (files)))))))
+  (with list-of-files ["abc.json" "def.json" "something-something.json"])
+  (it "returns a collection of strings"
+    (should (and (coll? (names @list-of-files))
+                 (every? string? @list-of-files))))
+  (it "returns a collection that contains 'abc'"
+    (should (some #{"abc"} (names @list-of-files))))
+  (it "returns a collection that contains 'something-something'"
+    (should (some #{"something-something"} (names @list-of-files))))
+  (it "returns a collections of strings that do not have file extension"
+    (should= [] (filter #(re-find #"\." %) (names @list-of-files)))))
 
 (describe "is-there-any-file?"
   (it "returns false if there are not any files in default directory"

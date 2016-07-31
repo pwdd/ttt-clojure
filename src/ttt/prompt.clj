@@ -55,4 +55,6 @@
   (let [chosen-file (prompt helpers/clean-string messenger/choose-a-file-msg)]
     (if (input-validation/is-valid-filename? chosen-file filenames)
       chosen-file
-      (recur filenames))))
+      (do
+        (view/print-message messenger/default-invalid-input)
+        (recur filenames)))))

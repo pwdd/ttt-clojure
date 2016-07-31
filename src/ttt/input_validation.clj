@@ -54,4 +54,4 @@
 
 (defn is-valid-filename?
   [user-input filenames]
-  (some #(= user-input %) filenames))
+  (some #{user-input} filenames))
