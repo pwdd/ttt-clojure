@@ -38,7 +38,7 @@
                 :opponent-marker (:marker current-player-attributes) })
         current-player (player/define-player current-player-attributes)
         opponent (player/define-player opponent-attributes)
-        game (create-game (player/role current-player) (player/role opponent))]
+        game (create-game (:role current-player) (:role opponent))]
     { :current-player current-player
       :opponent opponent
       :game game
@@ -53,8 +53,8 @@
         opponent-attributes (data :opponent-data)
         current-player (player/define-player current-player-attributes)
         opponent (player/define-player opponent-attributes)
-        game (create-game (player/role current-player)
-                               (player/role opponent))
+        game (create-game (:role current-player)
+                               (:role opponent))
         board (data :board-data)]
     { :current-player current-player
       :opponent opponent

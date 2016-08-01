@@ -2,7 +2,7 @@
   (:require [ttt.board :as board]
             [ttt.player :as player]
             [ttt.helpers :as helpers]
-            [ttt.rules :as rules]
+            [ttt.evaluate-game :as evaluate-game]
             [ttt.input-validation :as input-validation]
             [clojure.string :as string]))
 
@@ -83,7 +83,7 @@
 (defn default-win
   [board]
   (str "Player '"
-       (name (rules/winner-marker board))
+       (name (evaluate-game/winner-marker board))
        "' won on positions "
        (stringify-combo (board/winning-combo board))))
 
@@ -94,15 +94,15 @@
 (defmethod result :computer-x-human
   [game & [board first-player second-player]]
   (cond
-    (rules/draw? board) "You tied\n"
-    (rules/is-winner-ai? board first-player second-player)
+    (evaluate-game/draw? board) "You tied\n"
+    (evaluate-game/is-winner-ai? board first-player second-player)
       (human-lost board)
     :else
       (human-won board)))
 
 (defmethod result :default
   [game & [board first-player second-player]]
-  (if (rules/draw? board)
+  (if (evaluate-game/draw? board)
     "The game tied"
     (default-win board)))
 
@@ -112,9 +112,9 @@
 
 (defmethod moved-to :computer-x-human
   [game player spot]
-  (if (player/is-ai? player)
+  (if (player/is-ai? (:role player))
     (str (string/capitalize
-           (name (player/role player)))
+           (name (:role player)))
            " moved to "
            (inc spot)
            "\n")
@@ -123,7 +123,7 @@
 (defmethod moved-to :same-player-roles
   [game player spot]
   (str "Player '"
-       (name (player/marker player))
+       (name (:marker player))
        "' moved to "
        (inc spot)
        "\n"))
@@ -131,7 +131,7 @@
 (defmethod moved-to :default
   [game player spot]
   (str (string/capitalize
-         (name (player/role player)))
+         (name (:role player)))
        " moved to "
        (inc spot)
        "\n"))

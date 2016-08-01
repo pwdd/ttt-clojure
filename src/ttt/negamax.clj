@@ -1,14 +1,14 @@
 (ns ttt.negamax
   (:require [ttt.board :as board]
-            [ttt.rules :as rules]))
+            [ttt.evaluate-game :as evaluate-game]))
 
 (def start-depth 0)
 
 (defn board-analysis
   [board current-player-marker opponent-marker depth]
-  (if (rules/draw? board)
+  (if (evaluate-game/draw? board)
     0
-    (let [winner (rules/winner-marker board)]
+    (let [winner (evaluate-game/winner-marker board)]
       (if (= winner current-player-marker)
         (- 10 depth)
         (- depth 10)))))
@@ -28,7 +28,7 @@
 
 (defn negamax-score
   [board current-player-marker opponent-marker depth]
-  (if (rules/game-over? board)
+  (if (evaluate-game/game-over? board)
     (board-analysis board current-player-marker opponent-marker depth)
     (apply max (scores board
                        current-player-marker

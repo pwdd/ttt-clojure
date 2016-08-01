@@ -28,22 +28,6 @@
     (it "returns a map with nested keys opponent.marker"
       (should (get-in @file-content ["opponent" "role"]))))
 
-(describe "data-from-file"
-  (around [it]
-    (with-redefs [directory (io/file "test-files")]
-      (it)))
-  (with json-data (read-file "hh.json"))
-  (it "returns the array representing the board"
-    (should= ["x" "-" "o"
-              "-" "-" "-"
-              "-" "-" "-"] (data-from-file @json-data "board")))
-  (it "returns the map representing the current-player"
-    (should= { "role" "human" "marker" "x" }
-             (data-from-file @json-data "current-player")))
-  (it "returns the map representing the opponent"
-    (should= { "marker" "o" "role" "human" }
-             (data-from-file @json-data "opponent"))))
-
 (describe "convert-to-board-data"
   (with _ board/empty-spot)
   (it "takes a string representing an empty spot returns empty-spot keyword"
