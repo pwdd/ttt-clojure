@@ -65,10 +65,9 @@
 
 (defn game-setup
   [game-selection & [msg-first-player-attr msg-second-player-attr]]
-  (if (reader/is-there-any-file?)
-    (if (= game-selection "1")
-      (setup-resumed-game)
-      (setup-regular-game msg-first-player-attr msg-second-player-attr))
+  (if (and (reader/is-there-any-file?)
+           (= game-selection "1"))
+    (setup-resumed-game)
     (setup-regular-game msg-first-player-attr msg-second-player-attr)))
 
 (defn human-makes-first-move?
