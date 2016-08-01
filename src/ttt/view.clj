@@ -23,8 +23,7 @@
 
 (defn number-of-spaces
   [message-length]
-  (let [half-message (int (Math/ceil (/ message-length 2.0)))]
-    (- half-screen-width half-message)))
+  (- half-screen-width (/ message-length 2)))
 
 (defn padding-spaces
   [message-length]
