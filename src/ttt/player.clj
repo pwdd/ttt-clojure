@@ -8,10 +8,6 @@
   [player]
   (:marker player))
 
-(defn value
-  [player]
-  (:value player))
-
 (defn is-ai?
   [player]
   (:ai player))
