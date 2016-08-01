@@ -7,6 +7,11 @@
   (if (board/winning-combo board)
     (let [combo (board/winning-combo board)]
        (board (combo 0)))))
+ ; Don't need to invoke `board/winning-combo` twice
+ ; (defn winner-marker
+ ;   [board]
+ ;   (let [combo (board/winning-combo board)]
+ ;     (if combo (board (combo 0)))))
 
 (defn winner-player
   [board first-player second-player]

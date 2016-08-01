@@ -20,10 +20,12 @@
     (let [role (name player-role)
          limit (.indexOf role "-")]
       (subs role 0 limit))))
+; This doesn't strike me as a general-purpose method, and should probably go in game.clj
 
 (defn write-game-type
   [first-name second-name]
   (keyword (string/join "-x-"(sort [first-name second-name]))))
+; This one too
 
 (defn clean-filenames
   [filenames]

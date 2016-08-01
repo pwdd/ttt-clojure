@@ -55,3 +55,4 @@
                 (= 6 (best-move [:x @_ @_
                                   @_ :o @_
                                   @_ @_ :o] :x :o start-depth))))))
+    ; 5 and 7 would also be equally valid moves

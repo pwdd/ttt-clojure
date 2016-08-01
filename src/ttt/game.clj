@@ -22,6 +22,12 @@
       :computer-x-human
     :else
       :computer-x-computer))
+; I still think you can eliminate the need for to track game type at all, if you rely solely on the
+; player `role` attribute throughout your project. This set of attributes:
+;    :keys [game board current-player opponent saved first-screen filename]
+; resembles more what I usually see a `game`-level data structure representing.
+; Also a game's `type` and `player-roles` seem to be representing very similar things, and are
+; potentially redundant.
 
 (defn create-game
   [first-player-role second-player-role]
@@ -71,7 +77,16 @@
       (setup-resumed-game)
       (setup-regular-game msg-first-player-attr msg-second-player-attr))
     (setup-regular-game msg-first-player-attr msg-second-player-attr)))
+; You can collapse those conditionals into one
+; e.g.
+; (if (and (reader/is-there-any-file?) (= game-selection "1"))
 
 (defn human-makes-first-move?
   [first-screen player-role]
   (and first-screen (= :human player-role)))
+; The existence of this function, the fact that you care about this special case, says to me that
+; there's a missed opportunity for polymorphic behavior somewhere. Ideally your game logic can
+; treat all game types, all combinations of different players, the same. The idea would be to have
+; a single set of functions that do different things depending on the given player. For example,
+; your `select-spot` does this pretty well - returning a spot no matter the type of the given
+; player.

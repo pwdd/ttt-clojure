@@ -61,3 +61,27 @@
 
   (println view/flush-down)
   (System/exit 0))
+
+; This is hard to avoid, but the `game-loop` function is one I would have nightmares about having to
+; change. You might be able to make things a bit easier to follow if you can extract various steps
+; of the game loop into smaller, well-named functions. As you do that, you may find that you can
+; think of a better home for the extracted sub-function, and then move that function to become
+; part of the public interface of one of your other modules.
+
+; In general, it might benefit you to take a step back and think about what the simplest, most
+; abstract game loop might look like. Perhaps something like:
+
+; fn play ->
+;   set-up-game
+;   loop game-loop
+;   wrap-up-game
+
+; fn game-loop ->
+;   show-game-state
+;   get-move
+;   make-move
+
+; and think about how you can start extracting things to get to that level of simplicity. The more
+; that you're able to pull out of here and instead consider to be part of the functionality of
+; distinct, independent modules of your app - the simpler this code will get and the easier
+; everything will be to test.

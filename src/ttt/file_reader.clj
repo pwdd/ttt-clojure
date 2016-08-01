@@ -13,6 +13,8 @@
 (defn data-from-file
   [json-data key]
   (json-data key))
+; As far as I can tell, this function does nothing useful. You might as well use the
+; `json-data` function directly.
 
 (defn convert-to-board-data
   [string]
@@ -35,7 +37,7 @@
   (let [file-data (read-file filename)]
     {
       :current-player-data
-        (build-player-from-file (data-from-file file-data "current-player"))
+        (build-player-from-file (file-data "current-player"))
       :opponent-data
         (build-player-from-file (data-from-file file-data "opponent"))
       :board-data

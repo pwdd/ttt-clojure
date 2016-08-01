@@ -13,10 +13,15 @@
       board-size))
   (it "has the default value of squared board-size"
     (should= 16 board-length)))
+; I think it would be a good goal to avoid the need to use `with-redefs` in your tests. The less you
+; have to do this, the more flexible your code will likely be. Look into the strategy of dependency
+; injection I told you about earlier.
 
 (describe "new-board"
   (it "returns a vector"
     (should (vector? (new-board))))
+; Ideally, your code would depend very on whether the board is a vector or not. Unless there was
+; some extrinsic reason why the board has to be a vector, I'd avoid writing a test for it.
   (it "returns a vector of empty spots"
     (should (every? #{empty-spot} (new-board))))
   (it "returns a vector with length equal to board-length"
@@ -29,6 +34,11 @@
     (should (some #(= [3 4 5] %) (board-rows))))
   (it "returns a collection that contains [6 7 8]"
     (should (some #(= [6 7 8] %) (board-rows)))))
+; This is very coupled to the implementation of the board as well. If you were to change the size or
+; represent it using another data structure, these tests would basically have to be rewritten. It
+; might be better to just test that the fn returns <board-size> # of rows, and each row has
+; <board-size> elements. It might be even better to create a board with marks, and assert that the
+; marks at the spots in the returned rows match up to the rows in the created board.
 
 (describe "board-columns"
   (it "returns a collection that contains [0 3 6]"
@@ -66,6 +76,16 @@
                           (set (winning-positions)))))
   (it "returns a collection that contains board diagonals"
     (should (set/subset? #{[0 4 8] [2 4 6]} (set (winning-positions))))))
+; So all the testing of rows, cols, diags, wining positions, it's testing things at a pretty low
+; level. Outside of checking if the game has been won and which player won, basically nothing will
+; use these functions. You can test those functions, and so long as those work correctly, you don't
+; care about these ones. We should probably have a longer chat about this in person. But the short
+; answer is the more you can avoid testing the hidden functions that are exclusively used by a
+; of higher-level functions -- instead testing those higher-level functions -- the better. You'll
+; write fewer tests and they'll break less often. You could also think of it as, when something
+; goes wrong, in an ideal scenario, only one test fails. Multiple tests covering a single point of
+; failure is redundant and leads to unnecessary extra work of maintaining them. This is a hard
+; concept to practice, and I'm still getting the hang of it.
 
 (describe "move"
   (with _ empty-spot)
@@ -76,6 +96,11 @@
   (it "sets a value in a given position after game has started"
     (should= [:x @_ @_ :o @_ :x @_ @_ @_]
              (move [:x @_ @_ :o @_ @_ @_ @_ @_] 5 :x))))
+; It's impressive what you figured out using `with` and `@` to get things to work in place of using
+; a `let`. I've never used those functions before. You could probably avoid the need for these
+; functions if you restrict your use of `let` to individual tests, and define things for use
+; across multiple tests using the ordinary `def` and `defn`. I'd have to ask someone with more
+; experience whether it is necessarily any worse to do what you're doing now though. 
 
 (describe "is-board-full?"
   (with _ empty-spot)

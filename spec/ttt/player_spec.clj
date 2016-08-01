@@ -25,6 +25,7 @@
     (should= -1 (value @easy-computer)))
   (it "returns the value associated with a hard-computer player"
     (should= 1 (value @hard-computer))))
+  ; I don't think anything uses value
 
 (describe "is-ai?"
   (with human (make-player { :role :human :marker :x }))
@@ -61,15 +62,20 @@
              (:role (make-player { :role :hard-computer :marker "a" })))))
 
 (describe "define-player"
+
   (with human (make-player { :marker "x" :role :human }))
   (with easy-computer (make-player { :role :easy-computer :marker "o" }))
   (with hard-computer (make-player { :role :hard-computer :marker "h" }))
+
   (it "returns player with type 'human' and its marker"
     (should= @human
              (define-player { :marker "x" :role "h" })))
+
   (it "returns player with type 'easy-computer' and its marker"
     (should= @easy-computer
              (define-player { :marker "o" :role "ec" })))
+
   (it "returns player with type 'hard-computer' and its marker"
     (should= @hard-computer
              (define-player { :marker "h" :role "hc" }))))
+; Don't be afraid to space things out with newlines if they make things easier to read, like above

@@ -36,6 +36,7 @@
                        depth))))
 
 (def negamax (memoize negamax-score))
+; This is cool :) I did not know about clojure's `memoize` function.
 
 (defn best-move
   [board current-player-marker opponent-marker depth]
@@ -46,3 +47,5 @@
          max-value (apply max scores)
          best (.indexOf scores max-value)]
       (nth spots best))))
+; This isn't something I have a 100% solid opinion on, but my thought is that you probably shouldn't
+; define something within a let block unless it's used more than once.
