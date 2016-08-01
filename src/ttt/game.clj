@@ -60,8 +60,7 @@
       :opponent opponent
       :game game
       :board board
-      :saved true
-      :filename "hh.json"}))
+      :saved true}))
 
 
 (defn game-setup
