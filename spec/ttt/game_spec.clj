@@ -5,40 +5,6 @@
             [ttt.file-reader :as file-reader])
   (:import [ttt.game Game]))
 
-(describe "stringify-role"
-  (it "returns 'easy' if player is easy computer"
-    (should= "easy" (stringify-role :easy-computer)))
-  (it "returns 'hard' if player is hard computer"
-    (should= "hard" (stringify-role :hard-computer)))
-  (it "returns 'human' if player is human"
-    (should= "human" (stringify-role :human))))
-
-(describe "write-game-type"
-  (it "returns a keyword"
-    (should (keyword? (write-game-type "easy" "human"))))
-  (it "returns an alphabetically ordered keyword, does not matter the order of arguments"
-    (should= :easy-x-hard (write-game-type "hard" "easy"))))
-
-(describe "game-type"
-  (it "returns :human-x-human if game is human vs human"
-    (should= :human-x-human (game-type :human :human)))
-  (it "returns :hard-x-hard if game is hard-computer vs hard-computer"
-    (should= :hard-x-hard (game-type :hard-computer :hard-computer)))
-  (it "returns :easy-x-easy if game is easy-computer vs easy-computer"
-    (should= :easy-x-easy (game-type :easy-computer :easy-computer)))
-  (it "returns :hard-x-human if game is human vs hard-computer"
-    (should= :hard-x-human (game-type :human :hard-computer)))
-  (it "returns :hard-x-human if game is hard-computer vs human"
-    (should= :hard-x-human (game-type :hard-computer :human)))
-  (it "returns :easy-x-human if game is human vs easy-computer"
-    (should= :easy-x-human (game-type :human :easy-computer)))
-  (it "returns :easy-x-human if game is easy-computer vs human"
-    (should= :easy-x-human (game-type :easy-computer :human)))
-  (it "returns :easy-x-hard if game is easy-computer vs hard-computer"
-    (should= :easy-x-hard (game-type :easy-computer :hard-computer)))
-  (it "returns :easy-x-hard if game is hard-computer vs easy-computer"
-    (should= :easy-x-hard (game-type :hard-computer :easy-computer))))
-
 (describe "game-players-roles"
   (it "returns :same-player-roles if players are both :human"
     (should= :same-player-roles (game-players-roles :human :human)))
@@ -55,8 +21,6 @@
 (describe "create-game"
   (it "returns an instance of a Game"
     (should (instance? Game (create-game :human :easy-computer))))
-  (it "returns a Game with a type"
-    (should (:type (create-game :human :hard-computer))))
   (it "returns a Game with player-roles attribute"
     (should (:player-roles (create-game :human :hard-computer)))))
 

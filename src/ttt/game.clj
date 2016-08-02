@@ -6,25 +6,7 @@
             [ttt.file-reader :as reader]
             [ttt.view :as view]))
 
-(defrecord Game [type player-roles])
-
-(defn stringify-role
-  [player-role]
-  (if (= :human player-role)
-    "human"
-    (let [role (name player-role)
-         limit (.indexOf role "-")]
-      (subs role 0 limit))))
-
-(defn write-game-type
-  [first-name second-name]
-  (keyword (string/join "-x-"(sort [first-name second-name]))))
-
-(defn game-type
-  [first-player second-player]
-  (let [first-name (stringify-role first-player)
-        second-name (stringify-role second-player)]
-    (write-game-type first-name second-name)))
+(defrecord Game [player-roles])
 
 (defn game-players-roles
   [first-player-role second-player-role]
@@ -38,8 +20,7 @@
 
 (defn create-game
   [first-player-role second-player-role]
-  (->Game (game-type first-player-role second-player-role)
-          (game-players-roles first-player-role second-player-role)))
+  (->Game (game-players-roles first-player-role second-player-role)))
 
 (defn setup-regular-game
   [msg-first-player-attr msg-second-player-attr]
