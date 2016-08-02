@@ -8,7 +8,49 @@
             [ttt.player :as player]
             [ttt.evaluate-game :as evaluate-game]
             [ttt.prompt :as prompt]
-            [ttt.file-reader :as reader]))
+            [ttt.file-reader :as reader]
+            [ttt.input-validation :as input-validation]
+            [ttt.file-reader :as file-reader]))
+
+(def file-extension ".json")
+
+(defn setup-regular-game
+  [msg-first-attr msg-second-attr]
+  (let [current-player-attr (prompt/get-player-attributes { :msg msg-first-attr })
+        opponent-attr (prompt/get-player-attributes { :msg msg-second-attr
+                                                      :opponent-marker (:marker current-player-attr) })
+        current-player (player/define-player current-player-attr)
+        opponent (player/define-player opponent-attr)
+        game (game/create-game (:role current-player) (:role opponent))]
+    { :current-player current-player
+      :opponent opponent
+      :game game
+      :saved false}))
+
+(defn setup-resumed-game
+  []
+  (let [files (reader/names (reader/filenames (reader/files)))
+        filename (prompt/choose-a-file files)
+        data (reader/saved-data (str filename file-extension))
+        current-player-attributes (data :current-player-data)
+        opponent-attributes (data :opponent-data)
+        current-player (player/define-player current-player-attributes)
+        opponent (player/define-player opponent-attributes)
+        game (game/create-game (:role current-player)
+                               (:role opponent))
+        board (data :board-data)]
+    { :current-player current-player
+      :opponent opponent
+      :game game
+      :board board
+      :saved true}))
+
+(defn game-setup
+  [game-selection & [msg-first-player-attr msg-second-player-attr]]
+  (if (and (reader/is-there-any-file?)
+           (= game-selection input-validation/saved-game-option))
+    (setup-resumed-game)
+    (setup-regular-game msg-first-player-attr msg-second-player-attr)))
 
 (defn first-view-msgs
   []
@@ -70,9 +112,9 @@
 (defn setup
   []
   (let [game-selection (prompt/get-new-or-saved)]
-    (game/game-setup game-selection
-                     messenger/ask-first-marker-msg
-                     messenger/ask-second-marker-msg)))
+    (game-setup game-selection
+                messenger/ask-first-marker-msg
+                messenger/ask-second-marker-msg)))
 
 (defn clean-and-exit
   []
