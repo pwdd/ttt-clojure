@@ -12,9 +12,7 @@
   (let [winner (winner-marker board)]
     (cond
       (= (:marker first-player) winner) (:role first-player)
-      (= (:marker second-player) winner) (:role second-player)
-      :else
-        false)))
+      (= (:marker second-player) winner) (:role second-player))))
 
 (defn is-winner-ai?
  [board first-player second-player]
