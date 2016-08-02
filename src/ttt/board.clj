@@ -11,27 +11,18 @@
 
 (defn board-rows
   []
-  (partition board-size (range board-length)))
+  (mapv vec (partition board-size (range board-length))))
 
 (defn board-columns
   []
-  (apply map vector (board-rows)))
-
-(defn diagonals
-  [start-column next-column]
-  (loop [row 0
-         column start-column
-         diagonal []]
-    (if (>= row board-size)
-      diagonal
-      (recur (inc row)
-             (next-column column)
-             (conj diagonal
-               (get-in (mapv vec (board-rows)) [row column]))))))
+  (apply mapv vector (board-rows)))
 
 (defn board-diagonals
   []
-  [(diagonals 0 inc) (diagonals (dec board-size) dec)])
+  (let [forward (map-indexed vector (range board-size))
+        backward (map-indexed vector (reverse (range board-size)))]
+    [(mapv #(get-in (board-rows) %) forward)
+     (mapv #(get-in (board-rows) %) backward)]))
 
 (defn winning-positions
   []

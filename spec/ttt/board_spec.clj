@@ -10,53 +10,21 @@
   (it "returns a collection with length equal to board-length"
     (should (= board-length (count (new-board))))))
 
-(describe "board-rows"
-  (it "returns a collection with size equals to board-size"
-    (should (= board-size (count (board-rows)))))
-
-  (it "returns a collection in which each element has size equals to board-size"
-    (should (every? #(= board-size (count %)) (board-rows)))))
-
-(describe "board-columns"
-  (it "returns a collection with size equals to board-size"
-    (should (= board-size (count (board-columns)))))
-
-  (it "returns a collection in which each element has size equals to board-size"
-    (should (every? #(= board-size (count %)) (board-columns)))))
-
-(describe "diagonals"
-  (context "forward"
-    (it "returns indexes of diagonal forward"
-      (should= [0 4 8] (diagonals 0 inc))))
-
-  (context "backward"
-    (it "retuns indexes of the diagonal backward"
-      (should= [2 4 6] (diagonals (dec board-size) dec)))))
-
-(describe "board-diagonals"
-  (it "returns a collection that contains [0 4 8]"
-    (should (some #(= [0 4 8] %) (board-diagonals))))
-
-  (it "returns a collection that contains [6 7 8]"
-    (should (some #(= [2 4 6] %) (board-diagonals))))
-
-  (it "has only two elements"
-    (should= 2 (count (board-diagonals)))))
-
 (describe "winning-positions"
   (it "returns a collections with length 8"
     (should= 8 (count (winning-positions))))
 
-  (it "returns a collection that contains board rows"
-    (should (set/subset? #{[0 1 2] [3 4 5] [6 7 8]}
-                         (set (winning-positions)))))
+  (it "contains board-rows"
+    (should (set/subset? (set (board-rows)) (set (winning-positions)))))
 
-  (it "returns a collection that contains board columns"
-    (should (set/subset? #{[0 3 6] [1 4 7] [2 5 8]}
-                          (set (winning-positions)))))
+  (it "contains board-columns"
+    (should (set/subset? (set (board-columns)) (set (winning-positions)))))
 
-  (it "returns a collection that contains board diagonals"
-    (should (set/subset? #{[0 4 8] [2 4 6]} (set (winning-positions))))))
+  (it "contains board-diagonals"
+    (should (set/subset? (set (board-diagonals)) (set (winning-positions)))))
+
+  (it "returns a collection in which each element has size equals to board-size"
+    (should (every? #(= board-size (count %)) (winning-positions)))))
 
 (describe "move"
 

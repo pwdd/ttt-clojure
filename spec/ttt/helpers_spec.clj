@@ -25,17 +25,3 @@
     (should-not (in-range? 9 8)))
   (it "returns true if 10 and if limit is 20"
      (should (in-range? 10 20))))
-
-(describe "stringify-role"
-  (it "returns 'easy' if player is easy computer"
-    (should= "easy" (stringify-role :easy-computer)))
-  (it "returns 'hard' if player is hard computer"
-    (should= "hard" (stringify-role :hard-computer)))
-  (it "returns 'human' if player is human"
-    (should= "human" (stringify-role :human))))
-
-(describe "write-game-type"
-  (it "returns a keyword"
-    (should (keyword? (write-game-type "easy" "human"))))
-  (it "returns an alphabetically ordered keyword, does not matter the order of arguments"
-    (should= :easy-x-hard (write-game-type "hard" "easy"))))

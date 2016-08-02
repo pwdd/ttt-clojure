@@ -1,6 +1,5 @@
 (ns ttt.player
-  (:require [ttt.helpers :as helpers]
-            [ttt.input-validation :as input-validation]))
+  (:require [ttt.input-validation :as input-validation]))
 
 (defrecord Player [marker role])
 

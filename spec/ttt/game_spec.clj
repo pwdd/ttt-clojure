@@ -5,6 +5,20 @@
             [ttt.file-reader :as file-reader])
   (:import [ttt.game Game]))
 
+(describe "stringify-role"
+  (it "returns 'easy' if player is easy computer"
+    (should= "easy" (stringify-role :easy-computer)))
+  (it "returns 'hard' if player is hard computer"
+    (should= "hard" (stringify-role :hard-computer)))
+  (it "returns 'human' if player is human"
+    (should= "human" (stringify-role :human))))
+
+(describe "write-game-type"
+  (it "returns a keyword"
+    (should (keyword? (write-game-type "easy" "human"))))
+  (it "returns an alphabetically ordered keyword, does not matter the order of arguments"
+    (should= :easy-x-hard (write-game-type "hard" "easy"))))
+
 (describe "game-type"
   (it "returns :human-x-human if game is human vs human"
     (should= :human-x-human (game-type :human :human)))

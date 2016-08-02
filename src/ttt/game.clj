@@ -1,5 +1,6 @@
 (ns ttt.game
-  (:require [ttt.helpers :as helpers]
+  (:require [clojure.string :as string]
+            [ttt.helpers :as helpers]
             [ttt.prompt :as prompt]
             [ttt.player :as player]
             [ttt.file-reader :as reader]
@@ -7,11 +8,23 @@
 
 (defrecord Game [type player-roles])
 
+(defn stringify-role
+  [player-role]
+  (if (= :human player-role)
+    "human"
+    (let [role (name player-role)
+         limit (.indexOf role "-")]
+      (subs role 0 limit))))
+
+(defn write-game-type
+  [first-name second-name]
+  (keyword (string/join "-x-"(sort [first-name second-name]))))
+
 (defn game-type
   [first-player second-player]
-  (let [first-name (helpers/stringify-role first-player)
-        second-name (helpers/stringify-role second-player)]
-    (helpers/write-game-type first-name second-name)))
+  (let [first-name (stringify-role first-player)
+        second-name (stringify-role second-player)]
+    (write-game-type first-name second-name)))
 
 (defn game-players-roles
   [first-player-role second-player-role]

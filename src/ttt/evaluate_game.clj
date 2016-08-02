@@ -4,9 +4,8 @@
 
 (defn winner-marker
   [board]
-  (if (board/winning-combo board)
-    (let [combo (board/winning-combo board)]
-       (board (combo 0)))))
+  (if-let [combo (board/winning-combo board)]
+    (board (combo 0))))
 
 (defn winner-role
   [board first-player second-player]

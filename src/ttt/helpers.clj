@@ -12,19 +12,3 @@
 (defn in-range?
   [idx limit]
   (and (>= idx 0) (< idx limit)))
-
-(defn stringify-role
-  [player-role]
-  (if (= :human player-role)
-    "human"
-    (let [role (name player-role)
-         limit (.indexOf role "-")]
-      (subs role 0 limit))))
-
-(defn write-game-type
-  [first-name second-name]
-  (keyword (string/join "-x-"(sort [first-name second-name]))))
-
-(defn clean-filenames
-  [filenames]
-  (map #(subs % 0 (.indexOf % ".")) filenames))
