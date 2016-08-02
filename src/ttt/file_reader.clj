@@ -10,10 +10,6 @@
   [filename]
   (json/read-str (slurp (str directory "/" filename))))
 
-(defn data-from-file
-  [json-data key]
-  (json-data key))
-
 (defn convert-to-board-data
   [string]
   (if (= string "-")
@@ -35,11 +31,11 @@
   (let [file-data (read-file filename)]
     {
       :current-player-data
-        (build-player-from-file (data-from-file file-data "current-player"))
+        (build-player-from-file (file-data "current-player"))
       :opponent-data
-        (build-player-from-file (data-from-file file-data "opponent"))
+        (build-player-from-file (file-data "opponent"))
       :board-data
-        (build-board-from-file (data-from-file file-data "board"))
+        (build-board-from-file (file-data "board"))
     }))
 
 (defn files

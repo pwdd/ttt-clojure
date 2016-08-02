@@ -38,7 +38,7 @@
                 :opponent-marker (:marker current-player-attributes) })
         current-player (player/define-player current-player-attributes)
         opponent (player/define-player opponent-attributes)
-        game (create-game (player/role current-player) (player/role opponent))]
+        game (create-game (:role current-player) (:role opponent))]
     { :current-player current-player
       :opponent opponent
       :game game
@@ -53,8 +53,8 @@
         opponent-attributes (data :opponent-data)
         current-player (player/define-player current-player-attributes)
         opponent (player/define-player opponent-attributes)
-        game (create-game (player/role current-player)
-                               (player/role opponent))
+        game (create-game (:role current-player)
+                               (:role opponent))
         board (data :board-data)]
     { :current-player current-player
       :opponent opponent
@@ -65,10 +65,9 @@
 
 (defn game-setup
   [game-selection & [msg-first-player-attr msg-second-player-attr]]
-  (if (reader/is-there-any-file?)
-    (if (= game-selection "1")
-      (setup-resumed-game)
-      (setup-regular-game msg-first-player-attr msg-second-player-attr))
+  (if (and (reader/is-there-any-file?)
+           (= game-selection "1"))
+    (setup-resumed-game)
     (setup-regular-game msg-first-player-attr msg-second-player-attr)))
 
 (defn human-makes-first-move?

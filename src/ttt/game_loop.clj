@@ -7,7 +7,7 @@
             [ttt.negamax :as negamax]
             [ttt.get-spots :as spots]
             [ttt.player :as player]
-            [ttt.rules :as rules]
+            [ttt.evaluate-game :as evaluate-game]
             [ttt.prompt :as prompt]
             [ttt.file-reader :as reader]))
 
@@ -16,27 +16,27 @@
      :or { board (board/new-board)
            first-screen true }}]
 
-  (if (game/human-makes-first-move? first-screen (player/role current-player))
+  (if (game/human-makes-first-move? first-screen (:role current-player))
     (do
       (if saved
         (view/print-message
           (messenger/current-player-is
-            (player/marker current-player))))
+            (:marker current-player))))
       (view/print-message (messenger/stringify-board board))))
 
   (let [spot (spots/select-spot current-player
                                 { :board board
-                                  :current-player (player/marker current-player)
-                                  :opponent (player/marker opponent)
+                                  :current-player (:marker current-player)
+                                  :opponent (:marker opponent)
                                   :depth negamax/start-depth
                                   :board-length board/board-length })
-        game-board (board/move board spot (player/marker current-player))]
+        game-board (board/move board spot (:marker current-player))]
 
-    (view/make-board-disappear (player/role current-player))
+    (view/make-board-disappear (:role current-player))
     (view/print-message (messenger/moved-to game current-player spot))
     (view/print-message (messenger/stringify-board game-board))
 
-    (if (rules/game-over? game-board)
+    (if (evaluate-game/game-over? game-board)
       (view/print-message
         (messenger/result game game-board current-player opponent))
       (recur {:game game

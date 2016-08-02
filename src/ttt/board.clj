@@ -35,7 +35,7 @@
 
 (defn winning-positions
   []
-  (mapv vec (concat (concat (board-rows) (board-columns)) (board-diagonals))))
+  (mapv vec (concat (board-rows) (board-columns) (board-diagonals))))
 
 (defn move
   [board spot marker]
@@ -55,9 +55,7 @@
 
 (defn available-spots
   [board]
-  (map first
-    (filter #(= empty-spot (second %))
-      (map-indexed vector board))))
+  (keep-indexed #(if (= empty-spot %2) %1) board))
 
 (defn is-valid-move?
   [board spot]
@@ -66,14 +64,12 @@
 
 (defn repeated-markers?
   [board combo]
-  (let [selected-combo (for [idx combo] (nth board idx))]
-    (if (not-any? #{empty-spot} selected-combo)
+  (let [selected-combo (mapv board combo)]
+    (if (not (= empty-spot (first selected-combo)))
       (apply = selected-combo))))
-
-(defn find-repetition
-  [board]
-  (filter #(repeated-markers? board %) (winning-positions)))
 
 (defn winning-combo
   [board]
-  (first (find-repetition board)))
+  (->> (winning-positions)
+       (filter #(repeated-markers? board %))
+       (first)))

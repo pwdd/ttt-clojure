@@ -1,4 +1,4 @@
-(ns ttt.rules
+(ns ttt.evaluate-game
   (:require [ttt.player :as player]
             [ttt.board :as board]))
 
@@ -8,19 +8,18 @@
     (let [combo (board/winning-combo board)]
        (board (combo 0)))))
 
-(defn winner-player
+(defn winner-role
   [board first-player second-player]
   (let [winner (winner-marker board)]
     (cond
-      (= (player/marker first-player) winner) first-player
-      (= (player/marker second-player) winner) second-player
+      (= (:marker first-player) winner) (:role first-player)
+      (= (:marker second-player) winner) (:role second-player)
       :else
         false)))
 
 (defn is-winner-ai?
  [board first-player second-player]
- (let [winner (winner-player board first-player second-player)]
-   (player/is-ai? winner)))
+ (player/is-ai? (winner-role board first-player second-player)))
 
 (defn draw?
   [board]
