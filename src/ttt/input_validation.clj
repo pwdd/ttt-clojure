@@ -11,6 +11,9 @@
 (def acceptable-hard-computer
   #{ "hc" "hard computer" "hardcomputer" "hard" "difficult" "hard-computer"})
 
+(def saved-game-option "1")
+(def new-game-option "2")
+
 (defn is-acceptable-as-human-player?
   [role]
   (contains? acceptable-human-player role))
@@ -50,7 +53,7 @@
 
 (defn is-valid-new-or-saved?
   [user-input]
-  (or (= user-input "1") (= user-input "2")))
+  (or (= user-input saved-game-option) (= user-input new-game-option)))
 
 (defn is-valid-filename?
   [user-input filenames]

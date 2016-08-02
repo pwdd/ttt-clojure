@@ -17,6 +17,7 @@
 (describe "define-player"
   (it "returns an instance of Player"
     (should (instance? Player (define-player { :marker "x" :role "h" }))))
+
   (it "returns player with role ':human' and its marker"
     (should= :human
              (:role (define-player { :marker "x" :role "h" }))))

@@ -1,10 +1,10 @@
 (ns ttt.messenger
-  (:require [ttt.board :as board]
+  (:require [clojure.string :as string]
+            [ttt.board :as board]
             [ttt.player :as player]
             [ttt.helpers :as helpers]
             [ttt.evaluate-game :as evaluate-game]
-            [ttt.input-validation :as input-validation]
-            [clojure.string :as string]))
+            [ttt.input-validation :as input-validation]))
 
 (def separator "\n---|---|---\n")
 
@@ -46,15 +46,18 @@
     (str " " (name k) " ")
     "   "))
 
+(defn join-combo
+  [string-combo]
+  (string/join "|" string-combo))
+
+(defn translate-board
+  [board]
+  (let [board-string (partition board/board-size (map translate-keyword board))]
+    (map join-combo board-string)))
+
 (defn stringify-board
   [board]
-  (str
-    (string/join separator
-      (let [board (partition board/board-size
-                             (map translate-keyword board))]
-        (for [combo board]
-          (string/join "|" combo))))
-    "\n"))
+  (str (string/join separator (translate-board board)) "\n"))
 
 (defn stringify-combo
   [combo]
@@ -120,7 +123,7 @@
            "\n")
     (str "You moved to " (inc spot) "\n")))
 
-(defmethod moved-to :same-player-roles
+(defmethod moved-to :same-roles
   [game player spot]
   (str "Player '"
        (name (:marker player))

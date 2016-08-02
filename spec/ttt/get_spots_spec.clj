@@ -4,8 +4,10 @@
             [ttt.board :as board]))
 
 (describe "select-spot"
+
   (around [it]
     (with-out-str (it)))
+
   (with _ board/empty-spot)
   (with human { :role :human :marker :x })
   (with easy-computer { :role :easy-computer :marker :o })
