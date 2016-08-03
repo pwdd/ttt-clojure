@@ -22,8 +22,8 @@
 
 (defn clear-screen
   []
-  (print (str (char 27) "[2J"))
-  (print (str (char 27) center-of-screen)))
+  (let [escape (char 27)]
+    (print (str escape "[2J" escape center-of-screen))))
 
 (defn number-of-spaces
   [message-length]
@@ -31,15 +31,15 @@
 
 (defn padding-spaces
   [message-length]
-  (string/join
-    (repeat (number-of-spaces message-length) " ")))
+  (string/join (repeat (number-of-spaces message-length) " ")))
 
 (defn add-padding-spaces
   [message]
-  (str "\n"
-       (string/join "\n" (map
-                        #(str (padding-spaces (count %)) %)
-                        (string/split-lines message)))))
+  (->> message
+       string/split-lines
+       (map #(str (padding-spaces (count %)) %))
+       (string/join "\n")
+       (str "\n")))
 
 (defn print-message
   [msg]
