@@ -36,8 +36,7 @@
 
   (it "returns the right amount of spaces"
     (should= 44
-             (count
-               (padding-spaces (count "Please enter a number from 1-9: "))))))
+             (count (padding-spaces (count "Please enter a number from 1-9: "))))))
 
 (describe "add-padding-spaces"
 
@@ -50,5 +49,4 @@
                   "\n"
                   (padding-spaces (count @test-string))
                   @test-string)
-             (add-padding-spaces
-               (str @test-string "\n" @test-string)))))
+             (add-padding-spaces (str @test-string "\n" @test-string)))))

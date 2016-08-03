@@ -3,13 +3,13 @@
             [ttt.board :as board]))
 
 (def acceptable-human-player
-  #{ "h" "human" "hum" })
+  #{"h" "human" "hum"})
 
 (def acceptable-easy-computer
-  #{ "ec" "easy computer" "easycomputer" "easy" "easy-computer"})
+  #{"ec" "easy computer" "easycomputer" "easy" "easy-computer"})
 
 (def acceptable-hard-computer
-  #{ "hc" "hard computer" "hardcomputer" "hard" "difficult" "hard-computer"})
+  #{"hc" "hard computer" "hardcomputer" "hard" "difficult" "hard-computer"})
 
 (def saved-game-option "1")
 (def new-game-option "2")
@@ -43,8 +43,7 @@
   (try
     (Integer/parseInt (helpers/clean-string user-input))
     true
-  (catch Exception e false
-    )))
+  (catch Exception e false)))
 
 (defn is-valid-move-input?
   [board user-input]

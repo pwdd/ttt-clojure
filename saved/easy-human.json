@@ -3,9 +3,9 @@
   "current-player": {
     "marker": "x",
     "role": "easy"
-  },
+ },
   "opponent": {
     "marker": "o",
     "role": "human"
-  }
+ }
 }

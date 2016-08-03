@@ -67,10 +67,10 @@
 
 (describe "build-player-from-file"
 
-  (with player { "role" "hard-computer" "marker" "o" })
+  (with player {"role" "hard-computer" "marker" "o"})
 
   (it "turns a map with string keys into a map with keywords keys"
-    (should= { :marker "o" :role "hard-computer" }
+    (should= {:marker "o" :role "hard-computer"}
              (build-player-from-file @player))))
 
 (describe "saved-data"

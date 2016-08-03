@@ -20,7 +20,7 @@
   (it "returns the winner marker if there is one on rows"
     (should= :x (winner-marker [:x :x :x
                                 @_ @_ :o
-                               :o :o @_])))
+                                :o :o @_])))
 
   (it "returns the winner marker if there is one in second row"
     (should= :x (winner-marker [@_ @_ :o
@@ -55,29 +55,29 @@
     (should= :human (winner-role [:x :x :x
                                   :e :e @_
                                   :e :e @_]
-                                  { :marker :x :role :human }
-                                  { :marker :e :role :easy-computer })))
+                                  {:marker :x :role :human}
+                                  {:marker :e :role :easy-computer})))
 
   (it "should not return :easy-computer if :human won the game"
     (should-not (= :easy-computer (winner-role [:x :x :x
-                                                  :e :e @_
-                                                  :e :e @_]
-                                                  { :role :easy-computer :marker :e }
-                                                  { :role :human :marker :x }))))
+                                                :e :e @_
+                                                :e :e @_]
+                                                {:role :easy-computer :marker :e}
+                                                {:role :human :marker :x}))))
 
   (it "returns :easy-computer if it won the game"
     (should= :easy-computer  (winner-role [:e :x :x
                                            :e @_ :x
                                            :e :x @_]
-                                           { :role :easy-computer :marker :e }
-                                           { :role :human :marker :x })))
+                                           {:role :easy-computer :marker :e}
+                                           {:role :human :marker :x})))
 
   (it "returns :hard-computer if it won the game"
     (should= :hard-computer (winner-role [:h :h :h
                                           :e :e @_
                                           @_ @_ @_]
-                                          { :role :hard-computer :marker :h }
-                                          { :role :easy-computer :marker :e}))))
+                                          {:role :hard-computer :marker :h}
+                                          {:role :easy-computer :marker :e}))))
 
 (describe "is-winner-ai?"
   (with _ board/empty-spot)
@@ -85,20 +85,20 @@
     (should-not (is-winner-ai? [:x :e :x
                                 :e :x :e
                                 :e :e :x]
-                                { :marker :x :role :human }
-                                { :role :easy-computer :marker :e })))
+                                {:marker :x :role :human}
+                                {:role :easy-computer :marker :e})))
   (it "returns true if winner is easy-computer"
     (should (is-winner-ai? [:x :x :e
                             :e :e :e
                             :e :e :x]
-                            { :marker :x :role :human }
-                            { :role :easy-computer :marker :e })))
+                            {:marker :x :role :human}
+                            {:role :easy-computer :marker :e})))
   (it "returns true if winner is hard-computer"
     (should (is-winner-ai? [:x :x :h
                             :h :h :h
                             :h :h :x]
-                            { :marker :x :role :human }
-                            { :role :easy-computer :marker :e }))))
+                            {:marker :x :role :human}
+                            {:role :easy-computer :marker :e}))))
 
 (describe "draw?"
   (with _ board/empty-spot)

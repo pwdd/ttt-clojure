@@ -21,10 +21,8 @@
        new-boards (map #(board/move board
                                     %
                                     current-player-marker) spots)]
-    (map #(- (negamax %
-                      opponent-marker
-                      current-player-marker
-                      (inc depth))) new-boards)))
+    (map #(- (negamax % opponent-marker current-player-marker (inc depth)))
+         new-boards)))
 
 (defn negamax-score
   [board current-player-marker opponent-marker depth]

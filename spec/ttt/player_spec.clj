@@ -16,16 +16,16 @@
 
 (describe "define-player"
   (it "returns an instance of Player"
-    (should (instance? Player (define-player { :marker "x" :role "h" }))))
+    (should (instance? Player (define-player {:marker "x" :role "h"}))))
 
   (it "returns player with role ':human' and its marker"
     (should= :human
-             (:role (define-player { :marker "x" :role "h" }))))
+             (:role (define-player {:marker "x" :role "h"}))))
 
   (it "returns player with role ':easy-computer' and its marker"
     (should= :easy-computer
-             (:role (define-player { :marker "o" :role "ec" }))))
+             (:role (define-player {:marker "o" :role "ec"}))))
 
   (it "returns player with role ':hard-computer' and its marker"
     (should= :hard-computer
-             (:role (define-player { :marker "h" :role "hc" })))))
+             (:role (define-player {:marker "h" :role "hc"})))))

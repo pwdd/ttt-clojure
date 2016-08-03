@@ -70,12 +70,14 @@
   (it "returns true if spot has an empty spot"
     (should (is-spot-available? [@_ @_ @_
                                  @_ :x :x
-                                 :o :o @_] 1)))
+                                 :o :o @_]
+                                 1)))
 
   (it "returns false if spot has a marker"
     (should-not (is-spot-available? [@_ @_ @_
                                      @_ :x :x
-                                     :o :o @_] 4))))
+                                     :o :o @_]
+                                     4))))
 
 (describe "available-spots"
 
@@ -122,22 +124,26 @@
   (it "returns false if there is no repeated markers on given indexes"
     (should-not (repeated-markers? [:x :o :x
                                     :o :x :o
-                                    :o :x :x] [0 1 2])))
+                                    :o :x :x]
+                                    [0 1 2])))
 
   (it "returns true if there are repeated markers in a row"
     (should (repeated-markers? [:o :o :o
                                 :x @_ @_
-                                :x :x @_] [0 1 2])))
+                                :x :x @_]
+                                [0 1 2])))
 
   (it "returns true if there are repeated markers in a diagonal"
     (should (repeated-markers? [:o @_ :x
                                 :o :x @_
-                                :x :o @_] [2 4 6])))
+                                :x :o @_]
+                                [2 4 6])))
 
   (it "returns true if there are repeated markers in a column"
     (should (repeated-markers? [:o @_ :x
                                 :o :x @_
-                                :o :x @_] [0 3 6]))))
+                                :o :x @_]
+                                [0 3 6]))))
 
 (describe "winning-combo"
 

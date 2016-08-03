@@ -22,21 +22,16 @@
 
 (defn build-player-from-file
   [player-from-file]
-  (into { }
+  (into {}
     (for [[k v] player-from-file]
       [(keyword k) v])))
 
 (defn saved-data
   [filename]
   (let [file-data (read-file filename)]
-    {
-      :current-player-data
-        (build-player-from-file (file-data "current-player"))
-      :opponent-data
-        (build-player-from-file (file-data "opponent"))
-      :board-data
-        (build-board-from-file (file-data "board"))
-    }))
+    {:current-player-data (build-player-from-file (file-data "current-player"))
+     :opponent-data (build-player-from-file (file-data "opponent"))
+     :board-data (build-board-from-file (file-data "board"))}))
 
 (defn files
   []

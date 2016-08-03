@@ -44,27 +44,27 @@
 
     (it "returns a message saying that the game ends ties"
       (should= "The game tied" (result @game
-                                      [:x :o :x
-                                       :o :x :o
-                                       :o :x :o])))
+                                       [:x :o :x
+                                        :o :x :o
+                                        :o :x :o])))
 
     (it "returns a message that has the marker 'x' and the winning positions"
       (should= "Player 'x' won on positions 1, 2, 3" (result @game
-                                                          [:x :x :x
-                                                           :o :_ :o
-                                                           :o :x :o])))
+                                                             [:x :x :x
+                                                              :o :_ :o
+                                                              :o :x :o])))
 
     (it "returns a message that has the marker 'o' and the winning positions"
       (should= "Player 'o' won on positions 1, 5, 9" (result @game
-                                                          [:o :x :x
-                                                           :x :o :_
-                                                           :_ :_ :o]))))
+                                                             [:o :x :x
+                                                              :x :o :_
+                                                              :_ :_ :o]))))
 
   (context ":computer-x-human"
 
     (with game (game/create-game :human :easy-computer))
-    (with human { :marker :x :role :human })
-    (with easy-computer { :marker :o :role :easy-computer })
+    (with human {:marker :x :role :human})
+    (with easy-computer {:marker :o :role :easy-computer})
 
     (it "returns tied message if the game ties"
       (should= "You tied\n" (result @game
@@ -94,9 +94,9 @@
 
 (describe "moved-to"
 
-  (with human { :marker :x :role :human })
-  (with easy-computer { :marker :o :role :easy-computer })
-  (with hard-computer { :marker :h :role :hard-computer })
+  (with human {:marker :x :role :human})
+  (with easy-computer {:marker :o :role :easy-computer})
+  (with hard-computer {:marker :h :role :hard-computer})
   (with human-x-human (game/create-game :human :human))
   (with easy-x-human (game/create-game :easy-computer :human))
   (with easy-x-easy (game/create-game :easy-computer :easy-computer))
@@ -136,13 +136,11 @@
 
 (describe "not-a-valid-move"
   (it "explains that number is out of range"
-    (should= (str default-invalid-input
-                  "There is no position 12 in the board\n")
+    (should= (str default-invalid-input "There is no position 12 in the board\n")
              (not-a-valid-move 11)))
 
   (it "explains that a position is taken"
-    (should= (str default-invalid-input
-                  "The position is taken\n")
+    (should= (str default-invalid-input "The position is taken\n")
               (not-a-valid-move 2))))
 
 (describe "invalid-marker-msg"

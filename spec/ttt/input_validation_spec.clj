@@ -1,7 +1,8 @@
 (ns ttt.input-validation-spec
   (:require [speclj.core :refer :all]
             [ttt.input-validation :refer :all]
-            [ttt.board :as board]))
+            [ttt.board :as board]
+            [clojure.set :as set]))
 
 (describe "is-acceptable-as-human-player?"
   (it "returns false if input is empty"
@@ -36,9 +37,9 @@
 
 (describe "is-valid-role-selection?"
 
-  (with acceptable-roles (clojure.set/union acceptable-human-player
-                                            acceptable-easy-computer
-                                            acceptable-hard-computer)
+  (with acceptable-roles (set/union acceptable-human-player
+                                    acceptable-easy-computer
+                                    acceptable-hard-computer)
 
   (it "only accepts whitelisted strings as valid input"
     (should (every? is-valid-role-selection? @acceptable-roles)))
