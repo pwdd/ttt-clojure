@@ -4,12 +4,16 @@
 
 (defn get-console-width
   []
-  (if (not (= "Windows" (System/getProperty "os.name")))
-    (->> (sh/sh "/bin/sh" "-c" "stty -a < /dev/tty")
-         :out (re-find #"(\d+) columns") second)
-    120))
+  (->> (sh/sh "/bin/sh" "-c" "stty -a < /dev/tty")
+        :out (re-find #"(\d+) columns") second))
 
-(def half-screen-width (/ (Integer/parseInt (get-console-width)) 2))
+(defn get-half-screen-width
+  []
+  (if (re-find #"Win(.*)" (System/getProperty "os.name"))
+    40
+    (/ (Integer/parseInt (get-console-width)) 2)))
+
+(def half-screen-width (get-half-screen-width))
 (def center-of-screen "[8;6H")
 (def height 24)
 (def final-msg-lines 9)
