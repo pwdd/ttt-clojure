@@ -9,5 +9,5 @@
             :uberjar {:aot :all}}
   :plugins [[speclj "3.3.1"]]
   :test-paths ["spec"]
-  :main ^:skip-aot ttt.core
+  :main ^:skip-aot ttt.main
   :target-path "target/%s")
