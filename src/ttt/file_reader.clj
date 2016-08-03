@@ -26,12 +26,18 @@
     (for [[k v] player-from-file]
       [(keyword k) v])))
 
+(defn build-from-file
+  [field-name]
+  (if (= field-name "board")
+    build-board-from-file
+    build-player-from-file))
+
 (defn saved-data
   [filename]
   (let [file-data (read-file filename)]
-    {:current-player-data (build-player-from-file (file-data "current-player"))
-     :opponent-data (build-player-from-file (file-data "opponent"))
-     :board-data (build-board-from-file (file-data "board"))}))
+    (zipmap [:current-player-data :opponent-data :board-data]
+            (mapv #((build-from-file %) (file-data %))
+            ["current-player" "opponent" "board"]))))
 
 (defn files
   []
