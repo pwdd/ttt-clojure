@@ -6,7 +6,7 @@
 
   Project uses:
     - Leiningen 2.6.1
-    - Clojure 1.7.0-RC2
+    - Clojure 1.8.0
 
 - Running the tests:
 
