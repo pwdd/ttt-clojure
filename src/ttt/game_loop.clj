@@ -6,53 +6,128 @@
             [ttt.negamax :as negamax]
             [ttt.get-spots :as spots]
             [ttt.player :as player]
-            [ttt.rules :as rules]
-            [ttt.prompt :as prompt]))
+            [ttt.evaluate-game :as evaluate-game]
+            [ttt.prompt :as prompt]
+            [ttt.file-reader :as reader]
+            [ttt.input-validation :as input-validation]
+            [ttt.file-reader :as file-reader]))
 
-(def height 24)
-(def final-msg-lines 9)
-(def flush-down
-  (clojure.string/join (repeat (/ (- height final-msg-lines) 2) "\n")))
+(def file-extension ".json")
 
-(defn game-loop
-  [game board current-player opponent]
-  (if (and (board/is-board-empty? board)
-           (= :human (player/role current-player)))
-    (view/print-message (messenger/stringify-board board)))
+(defn setup-regular-game
+  [msg-first-attr msg-second-attr]
+  (let [current-player-attr (prompt/get-player-attributes { :msg msg-first-attr })
+        opponent-attr (prompt/get-player-attributes { :msg msg-second-attr
+                                                      :opponent-marker (:marker current-player-attr) })
+        current-player (player/define-player current-player-attr)
+        opponent (player/define-player opponent-attr)
+        game (game/create-game (:role current-player) (:role opponent))]
+    { :current-player current-player
+      :opponent opponent
+      :game game
+      :saved false}))
 
-    (let [spot (spots/select-spot current-player
-                                  { :game game
-                                    :board board
-                                    :current-player current-player
-                                    :opponent opponent
-                                    :depth negamax/start-depth
-                                    :board-length board/board-length })
-          game-board (board/move board (player/marker current-player) spot)]
+(defn setup-resumed-game
+  []
+  (let [files (reader/names (reader/filenames (reader/files)))
+        filename (prompt/choose-a-file files)
+        data (reader/saved-data (str filename file-extension))
+        current-player-attributes (data :current-player-data)
+        opponent-attributes (data :opponent-data)
+        current-player (player/define-player current-player-attributes)
+        opponent (player/define-player opponent-attributes)
+        game (game/create-game (:role current-player)
+                               (:role opponent))
+        board (data :board-data)]
+    { :current-player current-player
+      :opponent opponent
+      :game game
+      :board board
+      :saved true}))
 
-      (view/make-board-disappear (:role current-player))
-      (view/print-message (messenger/moved-to game current-player spot))
-      (view/print-message (messenger/stringify-board game-board))
+(defn game-setup
+  [game-selection & [msg-first-player-attr msg-second-player-attr]]
+  (if (= game-selection input-validation/saved-game-option)
+    (setup-resumed-game)
+    (setup-regular-game msg-first-player-attr msg-second-player-attr)))
 
-      (if (rules/game-over? game-board)
-        (view/print-message
-          (messenger/result game game-board current-player opponent))
-        (recur game game-board opponent current-player))))
-
-(defn play
+(defn first-view-msgs
   []
   (view/clear-screen)
   (view/print-message messenger/welcome)
   (view/print-message messenger/instructions)
-  (view/print-message messenger/board-representation)
+  (view/print-message messenger/board-representation))
 
-  (let [current-player-attributes (prompt/get-player-attributes
-                                    { :msg messenger/ask-first-marker-msg })
-        opponent-attributes (prompt/get-player-attributes
-                              { :msg messenger/ask-second-marker-msg
-                                :opponent-marker (:marker current-player-attributes) })
-        current-player (player/define-player current-player-attributes)
-        opponent (player/define-player opponent-attributes)
-        game (game/create-game (player/role current-player) (player/role opponent))]
-    (game-loop game (board/new-board) current-player opponent))
-    (println flush-down)
-    (System/exit 0))
+(defn initial-view-of-board
+  [first-screen saved player board]
+  (when (game/human-makes-first-move? first-screen (:role player))
+    (if saved
+      (view/print-message (messenger/current-player-is (:marker player))))
+    (view/print-message (messenger/stringify-board board))))
+
+(defn display-new-board-info
+  [game board current-player spot]
+  (view/make-board-disappear (:role current-player))
+  (view/print-message (messenger/moved-to game current-player spot))
+  (view/print-message (messenger/stringify-board board)))
+
+(defn make-a-move
+  [board current-player opponent]
+  (spots/select-spot current-player
+                   { :board board
+                     :current-player (:marker current-player)
+                     :opponent (:marker opponent)
+                     :depth negamax/start-depth
+                     :board-length board/board-length }))
+
+(defn game-over-msg
+  [game board current-player opponent]
+  (view/print-message (messenger/result game
+                                        board
+                                        current-player
+                                        opponent)))
+
+(defn game-loop
+  [{ :keys [game board current-player opponent saved first-screen]
+     :or { board (board/new-board)
+           first-screen true }}]
+
+  (initial-view-of-board first-screen saved current-player board)
+
+  (let [spot (make-a-move board current-player opponent)
+        game-board (board/move board spot (:marker current-player))]
+
+    (display-new-board-info game game-board current-player spot)
+
+    (if (evaluate-game/game-over? game-board)
+      (game-over-msg game game-board current-player opponent)
+      (recur { :game game
+               :board game-board
+               :opponent current-player
+               :current-player opponent
+               :saved saved
+               :first-screen false }))))
+
+(defn game-selection
+  []
+  (if (reader/is-there-any-file?)
+    (prompt/get-new-or-saved)
+    input-validation/new-game-option))
+
+(defn setup
+  []
+  (let [selection (game-selection)]
+    (game-setup selection
+                messenger/ask-first-marker-msg
+                messenger/ask-second-marker-msg)))
+
+(defn clean-and-exit
+  []
+  (println view/flush-down)
+  (System/exit 0))
+
+(defn play
+  []
+  (first-view-msgs)
+  (game-loop (setup))
+  (clean-and-exit))

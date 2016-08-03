@@ -1,15 +1,24 @@
 (ns ttt.view
   (:require [clojure.string :as string]
-             [clojure.java.shell :as sh]))
+            [clojure.java.shell :as sh]))
 
 (defn get-console-width
   []
-  (if (not (= "Windows" (System/getProperty "os.name")))
-    (->> (sh/sh "/bin/sh" "-c" "stty -a < /dev/tty") :out (re-find #"(\d+) columns") second)
-    120))
+  (->> (sh/sh "/bin/sh" "-c" "stty -a < /dev/tty")
+        :out (re-find #"(\d+) columns") second))
 
-(def half-screen-width (/ (Integer/parseInt (get-console-width)) 2))
+(defn get-half-screen-width
+  []
+  (if (re-find #"Win(.*)" (System/getProperty "os.name"))
+    40
+    (/ (Integer/parseInt (get-console-width)) 2)))
+
+(def half-screen-width (get-half-screen-width))
 (def center-of-screen "[8;6H")
+(def height 24)
+(def final-msg-lines 9)
+(def flush-down
+  (string/join (repeat (/ (- height final-msg-lines) 2) "\n")))
 
 (defn clear-screen
   []
@@ -18,8 +27,7 @@
 
 (defn number-of-spaces
   [message-length]
-  (let [half-message (int (Math/ceil (/ message-length 2.0)))]
-    (- half-screen-width half-message)))
+  (- half-screen-width (/ message-length 2)))
 
 (defn padding-spaces
   [message-length]

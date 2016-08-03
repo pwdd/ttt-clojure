@@ -1,25 +1,28 @@
-(ns ttt.game
-  (:require [ttt.helpers :as helpers]))
+(ns ttt.game)
 
-(defrecord Game [type player-roles])
+(defrecord Game [player-roles])
 
-(defn game-type
-  [first-player second-player]
-  (let [first-name (helpers/stringify-role first-player)
-        second-name (helpers/stringify-role second-player)]
-    (helpers/write-game-type first-name second-name)))
+(defn same-roles?
+  [first-player-role second-player-role]
+  (= first-player-role second-player-role))
+
+(defn computer-x-human?
+  [first-player-role second-player-role]
+  (and (some #{:human} [first-player-role second-player-role])
+       (not (every? #{:human} [first-player-role second-player-role]))))
 
 (defn game-players-roles
   [first-player-role second-player-role]
   (cond
-    (= first-player-role second-player-role) :same-player-roles
-    (and (some #{:human} [first-player-role second-player-role])
-         (not (every? #{:human} [first-player-role second-player-role])))
-      :computer-x-human
+    (same-roles? first-player-role second-player-role) :same-roles
+    (computer-x-human? first-player-role second-player-role) :computer-x-human
     :else
       :computer-x-computer))
 
 (defn create-game
   [first-player-role second-player-role]
-  (->Game (game-type first-player-role second-player-role)
-          (game-players-roles first-player-role second-player-role)))
+  (->Game (game-players-roles first-player-role second-player-role)))
+
+(defn human-makes-first-move?
+  [first-screen player-role]
+  (and first-screen (= :human player-role)))

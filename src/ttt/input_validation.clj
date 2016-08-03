@@ -1,14 +1,18 @@
 (ns ttt.input-validation
-  (:require [ttt.helpers :as helpers]))
+  (:require [ttt.helpers :as helpers]
+            [ttt.board :as board]))
 
 (def acceptable-human-player
   #{ "h" "human" "hum" })
 
 (def acceptable-easy-computer
-  #{ "ec" "easy computer" "easycomputer" "easy"})
+  #{ "ec" "easy computer" "easycomputer" "easy" "easy-computer"})
 
 (def acceptable-hard-computer
-  #{ "hc" "hard computer" "hardcomputer" "hard" "difficult"})
+  #{ "hc" "hard computer" "hardcomputer" "hard" "difficult" "hard-computer"})
+
+(def saved-game-option "1")
+(def new-game-option "2")
 
 (defn is-acceptable-as-human-player?
   [role]
@@ -41,3 +45,16 @@
     true
   (catch Exception e false
     )))
+
+(defn is-valid-move-input?
+  [board user-input]
+  (and (is-int? user-input)
+       (board/is-valid-move? board (helpers/input-to-number user-input))))
+
+(defn is-valid-new-or-saved?
+  [user-input]
+  (or (= user-input saved-game-option) (= user-input new-game-option)))
+
+(defn is-valid-filename?
+  [user-input filenames]
+  (some #{user-input} filenames))

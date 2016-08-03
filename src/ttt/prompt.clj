@@ -38,3 +38,23 @@
   (let [marker (get-marker { :msg msg :opponent-marker opponent-marker })
         role (get-role marker)]
     { :marker marker :role role }))
+
+(defn get-new-or-saved
+  []
+  (let [type-of-game (prompt string/trim messenger/new-or-saved-msg)]
+    (if (input-validation/is-valid-new-or-saved? type-of-game)
+      type-of-game
+      (do
+        (view/print-message messenger/default-invalid-input)
+        (recur)))))
+
+(defn choose-a-file
+  [filenames]
+  (view/print-message "These are the saved files:")
+  (view/print-message (messenger/display-files-list filenames))
+  (let [chosen-file (prompt helpers/clean-string messenger/choose-a-file-msg)]
+    (if (input-validation/is-valid-filename? chosen-file filenames)
+      chosen-file
+      (do
+        (view/print-message messenger/default-invalid-input)
+        (recur filenames)))))

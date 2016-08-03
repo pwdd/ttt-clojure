@@ -5,30 +5,32 @@
 (def board-length (* board-size board-size))
 (def empty-spot :_)
 
-(def winning-combos [
-                     [0 1 2]
-                     [3 4 5]
-                     [6 7 8]
-
-                     [0 3 6]
-                     [1 4 7]
-                     [2 5 8]
-
-                     [0 4 8]
-                     [2 4 6]
-                    ])
-
 (defn new-board
   []
   (vec (repeat board-length empty-spot)))
 
-(defn move
-  [board marker spot]
-  (assoc board spot marker))
+(defn board-rows
+  []
+  (mapv vec (partition board-size (range board-length))))
 
-(defn is-spot-available?
-  [board spot]
-  (= empty-spot (board spot)))
+(defn board-columns
+  []
+  (apply mapv vector (board-rows)))
+
+(defn board-diagonals
+  []
+  (let [forward (map-indexed vector (range board-size))
+        backward (map-indexed vector (reverse (range board-size)))]
+    [(mapv #(get-in (board-rows) %) forward)
+     (mapv #(get-in (board-rows) %) backward)]))
+
+(defn winning-positions
+  []
+  (mapv vec (concat (board-rows) (board-columns) (board-diagonals))))
+
+(defn move
+  [board spot marker]
+  (assoc board spot marker))
 
 (defn is-board-full?
   [board]
@@ -38,11 +40,13 @@
   [board]
   (every? #(= empty-spot %) board))
 
+(defn is-spot-available?
+  [board spot]
+  (= empty-spot (board spot)))
+
 (defn available-spots
   [board]
-  (map first
-    (filter #(= empty-spot (second %))
-      (map-indexed vector board))))
+  (keep-indexed #(if (= empty-spot %2) %1) board))
 
 (defn is-valid-move?
   [board spot]
@@ -51,14 +55,12 @@
 
 (defn repeated-markers?
   [board combo]
-  (let [selected-combo (for [idx combo] (nth board idx))]
-    (if (not-any? #{empty-spot} selected-combo)
+  (let [selected-combo (mapv board combo)]
+    (if (not (= empty-spot (first selected-combo)))
       (apply = selected-combo))))
-
-(defn find-repetition
-  [board]
-  (filter #(repeated-markers? board %) winning-combos))
 
 (defn winning-combo
   [board]
-  (first (find-repetition board)))
+  (->> (winning-positions)
+       (filter #(repeated-markers? board %))
+       (first)))

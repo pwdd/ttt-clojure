@@ -8,27 +8,16 @@
             [ttt.board :as board]
             [ttt.input-validation :as input-validation]))
 
-(defn wrong-number-msg
-  [board input]
-  (if (integer? input)
-    (view/print-message (messenger/not-a-valid-move input))
-    (view/print-message (messenger/not-a-valid-number input)))
-  (view/print-message (messenger/stringify-board board)))
-
 (defmulti select-spot (fn [player & params] (:role player)))
 
 (defmethod select-spot :human
   [player params]
   (let [input (prompt/prompt string/trim messenger/choose-a-number)]
-    (if (input-validation/is-int? input)
-      (let [valid-number (helpers/input-to-number input)]
-        (if (board/is-valid-move? (:board params) valid-number)
-          valid-number
-          (do
-            (wrong-number-msg (:board params) valid-number)
-            (recur player params))))
+    (if (input-validation/is-valid-move-input? (:board params) input)
+      (helpers/input-to-number input)
       (do
-        (wrong-number-msg (:board params) input)
+        (view/print-message (messenger/wrong-number-msg (:board params) input))
+        (view/print-message (messenger/stringify-board (:board params)))
         (recur player params)))))
 
 (defmethod select-spot :easy-computer
@@ -37,8 +26,7 @@
 
 (defmethod select-spot :hard-computer
   [player params]
-  (negamax/best-move (:game params)
-                     (:board params)
+  (negamax/best-move (:board params)
                      (:current-player params)
                      (:opponent params)
                      (:depth params)))

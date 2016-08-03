@@ -1,9 +1,10 @@
 (ns ttt.messenger
-  (:require [ttt.board :as board]
+  (:require [clojure.string :as string]
+            [ttt.board :as board]
             [ttt.player :as player]
             [ttt.helpers :as helpers]
-            [ttt.rules :as rules]
-            [clojure.string :as string]))
+            [ttt.evaluate-game :as evaluate-game]
+            [ttt.input-validation :as input-validation]))
 
 (def separator "\n---|---|---\n")
 
@@ -13,6 +14,10 @@
        "   |------------------------|"))
 
 (def instructions "The board is represented like the following:\n")
+
+(def new-or-saved-msg (str "Would you like to (1) restart a saved game "
+                           "or (2) start a new game? "
+                           "Please enter 1 or 2:"))
 
 (def role-options-msg
   "Please type H (human), EC (easy computer) or HC (hard computer): ")
@@ -41,15 +46,18 @@
     (str " " (name k) " ")
     "   "))
 
+(defn join-combo
+  [string-combo]
+  (string/join "|" string-combo))
+
+(defn translate-board
+  [board]
+  (let [board-string (partition board/board-size (map translate-keyword board))]
+    (map join-combo board-string)))
+
 (defn stringify-board
   [board]
-  (str
-    (string/join separator
-      (let [board (partition board/board-size
-                             (map translate-keyword board))]
-        (for [combo board]
-          (string/join "|" combo))))
-    "\n"))
+  (str (string/join separator (translate-board board)) "\n"))
 
 (defn stringify-combo
   [combo]
@@ -78,7 +86,7 @@
 (defn default-win
   [board]
   (str "Player '"
-       (name (rules/winner-marker board))
+       (name (evaluate-game/winner-marker board))
        "' won on positions "
        (stringify-combo (board/winning-combo board))))
 
@@ -89,15 +97,15 @@
 (defmethod result :computer-x-human
   [game & [board first-player second-player]]
   (cond
-    (rules/draw? board) "You tied\n"
-    (rules/is-winner-ai? board first-player second-player)
+    (evaluate-game/draw? board) "You tied\n"
+    (evaluate-game/is-winner-ai? board first-player second-player)
       (human-lost board)
     :else
       (human-won board)))
 
 (defmethod result :default
   [game & [board first-player second-player]]
-  (if (rules/draw? board)
+  (if (evaluate-game/draw? board)
     "The game tied"
     (default-win board)))
 
@@ -107,18 +115,18 @@
 
 (defmethod moved-to :computer-x-human
   [game player spot]
-  (if (player/is-ai? player)
+  (if (player/is-ai? (:role player))
     (str (string/capitalize
-           (name (player/role player)))
+           (name (:role player)))
            " moved to "
            (inc spot)
            "\n")
     (str "You moved to " (inc spot) "\n")))
 
-(defmethod moved-to :same-player-roles
+(defmethod moved-to :same-roles
   [game player spot]
   (str "Player '"
-       (name (player/marker player))
+       (name (:marker player))
        "' moved to "
        (inc spot)
        "\n"))
@@ -126,7 +134,7 @@
 (defmethod moved-to :default
   [game player spot]
   (str (string/capitalize
-         (name (player/role player)))
+         (name (:role player)))
        " moved to "
        (inc spot)
        "\n"))
@@ -150,6 +158,12 @@
     :else
       (str default-invalid-input "The position is taken\n")))
 
+(defn wrong-number-msg
+  [board input]
+  (if (input-validation/is-int? input)
+    (not-a-valid-move (helpers/input-to-number input))
+    (not-a-valid-number input)))
+
 (defn invalid-marker-msg
   [input opponent-marker]
   (cond
@@ -162,3 +176,15 @@
       (str default-invalid-input "This marker is taken by the first player.")
     :else
       (str default-invalid-input "Only a letter from 'a' to 'z' is valid.")))
+
+(defn current-player-is
+  [current-player-marker]
+  (str "Current player is playing with '"
+       current-player-marker
+       "'"))
+
+(def choose-a-file-msg "Enter the name of the saved game you wanna play:")
+
+(defn display-files-list
+  [files-list]
+  (string/join ", " files-list))
