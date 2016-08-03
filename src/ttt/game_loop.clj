@@ -47,8 +47,7 @@
 
 (defn game-setup
   [game-selection & [msg-first-player-attr msg-second-player-attr]]
-  (if (and (reader/is-there-any-file?)
-           (= game-selection input-validation/saved-game-option))
+  (if (= game-selection input-validation/saved-game-option)
     (setup-resumed-game)
     (setup-regular-game msg-first-player-attr msg-second-player-attr)))
 
@@ -109,10 +108,16 @@
                :saved saved
                :first-screen false }))))
 
+(defn game-selection
+  []
+  (if (reader/is-there-any-file?)
+    (prompt/get-new-or-saved)
+    input-validation/new-game-option))
+
 (defn setup
   []
-  (let [game-selection (prompt/get-new-or-saved)]
-    (game-setup game-selection
+  (let [selection (game-selection)]
+    (game-setup selection
                 messenger/ask-first-marker-msg
                 messenger/ask-second-marker-msg)))
 
