@@ -1,6 +1,6 @@
 (ns ttt.game-loop-spec
   (:require [speclj.core :refer :all]
-            [ttt.game-loop :refer :all]
+            [ttt.game-loop :as game-loop]
             [clojure.java.io :as io]
             [ttt.file-reader :as file-reader]
             [ttt.input-validation :as input-validation]))
@@ -13,7 +13,7 @@
       (with-redefs [file-reader/directory (io/file "test-files")]
       (with-out-str (it))))
 
-    (with data (with-in-str "hh" (game-setup "1")))
+    (with data (with-in-str "hh" (game-loop/game-setup "1")))
 
     (it "returns a map"
       (should (map? @data)))
@@ -35,7 +35,7 @@
     (around [it]
       (with-out-str (it)))
 
-    (with data (with-in-str "x\nec\no\nec" (game-setup "2" "first" "second")))
+    (with data (with-in-str "x\nec\no\nec" (game-loop/game-setup "2" "first" "second")))
 
     (it "returns a map"
       (should (map? @data)))
@@ -56,14 +56,10 @@
   (it "calls prompt to get option if game is new or saved if there is saved files"
     (with-redefs [file-reader/directory (io/file "test-files")]
       (should= input-validation/saved-game-option
-               (with-in-str "1" (game-selection)))
+               (with-in-str "1" (game-loop/game-selection)))
       (should= input-validation/new-game-option
-               (with-in-str "2" (game-selection)))))
+               (with-in-str "2" (game-loop/game-selection)))))
 
   (it "returns default selection for new game if there is no saved files"
     (with-redefs [file-reader/directory (io/file "test-files/empty-dir")]
-      (should= "2" (game-selection)))))
-
-(describe "play"
-  (it "runs the game"
-    (should-not-throw (Exception.))))
+      (should= "2" (game-loop/game-selection)))))

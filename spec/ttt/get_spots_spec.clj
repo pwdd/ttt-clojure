@@ -1,6 +1,6 @@
 (ns ttt.get-spots-spec
   (:require [speclj.core :refer :all]
-            [ttt.get-spots :refer :all]
+            [ttt.get-spots :as spots]
             [ttt.board :as board]))
 
 (describe "select-spot"
@@ -14,13 +14,13 @@
 
   (context ":human"
     (it "returns an integer"
-      (should= 0 (with-in-str "1" (select-spot @human {:board (board/new-board)}))))
+      (should= 0 (with-in-str "1" (spots/select-spot @human {:board (board/new-board)}))))
 
     (it "returns an integer that numeric string minus one"
-      (should= 3 (with-in-str "4" (select-spot @human {:board (board/new-board)})))))
+      (should= 3 (with-in-str "4" (spots/select-spot @human {:board (board/new-board)})))))
 
   (context ":easy-computer"
     (with spots (board/available-spots [:x @_ :o @_ :o @_ @_ :x :o :o]))
     (it "returns a random index from the available-spots"
-      (should (some #{(select-spot @easy-computer {:board [:x @_ :o @_ :o @_ @_ :x :o]})}
+      (should (some #{(spots/select-spot @easy-computer {:board [:x @_ :o @_ :o @_ @_ :x :o]})}
                     @spots)))))
