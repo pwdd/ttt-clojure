@@ -7,7 +7,7 @@
 (def directory (io/file "saved"))
 
 (defn read-file
-  [filename]
+  [filename directory]
   (json/read-str (slurp (str directory "/" filename))))
 
 (defn convert-to-board-data
@@ -33,14 +33,14 @@
     build-player-from-file))
 
 (defn saved-data
-  [filename]
-  (let [file-data (read-file filename)]
+  [filename directory]
+  (let [file-data (read-file filename directory)]
     (zipmap [:current-player-data :opponent-data :board-data]
             (mapv #((build-from-file %) (file-data %))
             ["current-player" "opponent" "board"]))))
 
 (defn files
-  []
+  [directory]
   (filter #(.isFile %) (file-seq directory)))
 
 (defn filenames
@@ -52,5 +52,5 @@
   (map #(subs % 0 (.indexOf % ".")) filenames))
 
 (defn is-there-any-file?
-  []
-  (not (empty? (files))))
+  [directory]
+  (not (empty? (files directory))))

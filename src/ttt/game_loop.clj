@@ -28,10 +28,10 @@
      :saved false}))
 
 (defn setup-resumed-game
-  []
-  (let [files (reader/names (reader/filenames (reader/files)))
+  [directory]
+  (let [files (reader/names (reader/filenames (reader/files directory)))
         filename (prompt/choose-a-file files)
-        data (reader/saved-data (str filename file-extension))
+        data (reader/saved-data (str filename file-extension) directory)
         current-player-attributes (data :current-player-data)
         opponent-attributes (data :opponent-data)
         current-player (player/define-player current-player-attributes)
@@ -46,9 +46,9 @@
      :saved true}))
 
 (defn game-setup
-  [game-selection & [msg-first-player-attr msg-second-player-attr]]
+  [game-selection directory & [msg-first-player-attr msg-second-player-attr]]
   (if (= game-selection input-validation/saved-game-option)
-    (setup-resumed-game)
+    (setup-resumed-game directory)
     (setup-regular-game msg-first-player-attr msg-second-player-attr)))
 
 (defn first-view-msgs
@@ -109,15 +109,16 @@
               :first-screen false}))))
 
 (defn game-selection
-  []
-  (if (reader/is-there-any-file?)
+  [directory]
+  (if (reader/is-there-any-file? directory)
     (prompt/get-new-or-saved)
     input-validation/new-game-option))
 
 (defn setup
   []
-  (let [selection (game-selection)]
+  (let [selection (game-selection file-reader/directory)]
     (game-setup selection
+                file-reader/directory
                 messenger/ask-first-marker-msg
                 messenger/ask-second-marker-msg)))
 

@@ -6,11 +6,7 @@
 
 (describe "read-file"
 
-  (around [it]
-    (with-redefs [file-reader/directory (io/file "test-files")]
-      (it)))
-
-    (with file-content (file-reader/read-file "hh.json"))
+    (with file-content (file-reader/read-file "hh.json" (io/file "test-files")))
 
     (it "returns a collection"
       (should (coll? @file-content)))
@@ -73,36 +69,30 @@
 
 (describe "saved-data"
 
-  (around [it]
-    (with-redefs [file-reader/directory (io/file "test-files")]
-      (it)))
-
   (it "returns a map with :current-player-data key"
-    (should ((file-reader/saved-data "hh.json") :current-player-data)))
+    (should ((file-reader/saved-data "hh.json" (io/file "test-files"))
+            :current-player-data)))
 
   (it "returns a map with :opponent-data key"
-    (should ((file-reader/saved-data "hh.json") :opponent-data)))
+    (should ((file-reader/saved-data "hh.json" (io/file "test-files"))
+            :opponent-data)))
 
   (it "returns a map with :board key"
-    (should ((file-reader/saved-data "hh.json") :board-data))))
+    (should ((file-reader/saved-data "hh.json" (io/file "test-files"))
+            :board-data))))
 
 (describe "files"
   (it "returns an empty collection if directory has not files"
-    (with-redefs [file-reader/directory (io/file "test-files/empty-dir")]
-      (should (empty? (file-reader/files)))))
+    (should (empty? (file-reader/files (io/file "test-files/empty-dir")))))
 
   (it "returns a collection with file objects"
-    (with-redefs [file-reader/directory (io/file "test-files")]
-      (should= 2 (count (file-reader/files))))))
+      (should= 2 (count (file-reader/files (io/file "test-files"))))))
 
 (describe "filenames"
 
-  (around [it]
-    (with-redefs [file-reader/directory (io/file "test-files")]
-      (it)))
-
   (it "returns a collection containing only the names of the files in a directory"
-    (should (some #{"hh.json" "hchc.json"} (file-reader/filenames (file-reader/files))))))
+    (should (some #{"hh.json" "hchc.json"}
+                  (file-reader/filenames (file-reader/files (io/file "test-files")))))))
 
 (describe "names"
 
@@ -123,9 +113,7 @@
 
 (describe "is-there-any-file?"
   (it "returns false if there are not any files in default directory"
-    (with-redefs [file-reader/directory (io/file "test-files/empty-dir")]
-      (should-not (file-reader/is-there-any-file?))))
+    (should-not (file-reader/is-there-any-file? (io/file "test-files/empty-dir"))))
 
   (it "returns true if there are files in default directory"
-    (with-redefs [file-reader/directory (io/file "test-files")]
-    (should (file-reader/is-there-any-file?)))))
+    (should (file-reader/is-there-any-file? (io/file "test-files")))))

@@ -10,7 +10,7 @@
 
 (def welcome
   (str "   |------------------------|\n"
-       "  ---| Welcome to Tic Tac Toe |---\n"
+       "   ---| Welcome to Tic Tac Toe |---\n"
        "   |------------------------|"))
 
 (def instructions "The board is represented like the following:\n")
