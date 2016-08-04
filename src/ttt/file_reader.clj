@@ -37,7 +37,7 @@
   (let [file-data (read-file filename directory)]
     (zipmap [:current-player-data :opponent-data :board-data]
             (mapv #((build-from-file %) (file-data %))
-            ["current-player" "opponent" "board"]))))
+                  ["current-player" "opponent" "board"]))))
 
 (defn files
   [directory]
