@@ -169,3 +169,17 @@
 (defn display-files-list
   [files-list]
   (string/join ", " files-list))
+
+(defn board-after-invalid-input
+  [board input]
+  (str (wrong-number-msg board input) (stringify-board board)))
+
+(def show-saved-files-msg "These are the saved files:")
+
+(defn list-saved-files
+  [filenames]
+  (str show-saved-files-msg
+       "\n"
+       (display-files-list filenames)
+       "\n"
+       choose-a-file-msg))

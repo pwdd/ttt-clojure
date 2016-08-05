@@ -20,10 +20,8 @@
     (if (input-validation/is-valid-marker? marker opponent-marker)
       marker
       (do
-        (view/print-message
-          (messenger/invalid-marker-msg marker opponent-marker))
-        (recur {:msg msg
-                 :opponent-marker opponent-marker})))))
+        (view/print-message (messenger/invalid-marker-msg marker opponent-marker))
+        (recur {:msg msg :opponent-marker opponent-marker})))))
 
 (defn get-role
   [marker]
@@ -51,9 +49,7 @@
 
 (defn choose-a-file
   [filenames]
-  (view/print-message "These are the saved files:")
-  (view/print-message (messenger/display-files-list filenames))
-  (let [chosen-file (prompt helpers/clean-string messenger/choose-a-file-msg)]
+  (let [chosen-file (prompt helpers/clean-string (messenger/list-saved-files filenames))]
     (if (input-validation/is-valid-filename? chosen-file filenames)
       chosen-file
       (do
@@ -62,10 +58,10 @@
 
 (defmethod select-spot :human
   [player params]
-  (let [input (prompt string/trim messenger/choose-a-number)]
-    (if (input-validation/is-valid-move-input? (:board params) input)
+  (let [input (prompt string/trim messenger/choose-a-number)
+        board (:board params)]
+    (if (input-validation/is-valid-move-input? board input)
       (helpers/input-to-number input)
       (do
-        (view/print-message (messenger/wrong-number-msg (:board params) input))
-        (view/print-message (messenger/stringify-board (:board params)))
+        (view/print-message (messenger/board-after-invalid-input board input))
         (recur player params)))))
