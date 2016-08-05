@@ -3,7 +3,8 @@
             [ttt.helpers :as helpers]
             [ttt.view :as view]
             [ttt.input-validation :as input-validation]
-            [ttt.messenger :as messenger]))
+            [ttt.messenger :as messenger]
+            [ttt.get-spots :refer [select-spot]]))
 
 (defn prompt
   [clean-input msg]
@@ -58,3 +59,13 @@
       (do
         (view/print-message messenger/default-invalid-input)
         (recur filenames)))))
+
+(defmethod select-spot :human
+  [player params]
+  (let [input (prompt string/trim messenger/choose-a-number)]
+    (if (input-validation/is-valid-move-input? (:board params) input)
+      (helpers/input-to-number input)
+      (do
+        (view/print-message (messenger/wrong-number-msg (:board params) input))
+        (view/print-message (messenger/stringify-board (:board params)))
+        (recur player params)))))

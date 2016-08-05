@@ -10,7 +10,8 @@
             [ttt.prompt :as prompt]
             [ttt.file-reader :as reader]
             [ttt.input-validation :as input-validation]
-            [ttt.file-reader :as file-reader]))
+            [ttt.file-reader :as file-reader]
+            [ttt.easy-computer :as easy-computer]))
 
 (def file-extension ".json")
 

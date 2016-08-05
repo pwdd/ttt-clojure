@@ -67,37 +67,3 @@
                                         :x
                                         :o
                                         negamax/start-depth))))
-
-(describe "best-move"
-
-  (with _ board/empty-spot)
-
-  (it "blocks opponent from winning"
-    (should= 2 (negamax/best-move [:o :o @_
-                                   :x @_ @_
-                                   :x @_ @_]
-                                   :x
-                                   :o
-                                   negamax/start-depth)))
-
-  (it "wins when it has the chance"
-    (should= 5 (negamax/best-move [:o :o @_
-                                   :x :x @_
-                                   @_ @_ @_]
-                                   :x
-                                   :o
-                                   negamax/start-depth)))
-
-  (it "avoids situation in which opponent can win in two positions"
-    (should (or (= 2 (negamax/best-move [:x @_ @_
-                                         @_ :o @_
-                                         @_ @_ :o]
-                                         :x
-                                         :o
-                                         negamax/start-depth))
-                (= 6 (negamax/best-move [:x @_ @_
-                                         @_ :o @_
-                                         @_ @_ :o]
-                                         :x
-                                         :o
-                                         negamax/start-depth))))))

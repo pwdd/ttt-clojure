@@ -1,7 +1,8 @@
 (ns ttt.get-spots-spec
   (:require [speclj.core :refer :all]
             [ttt.get-spots :as spots]
-            [ttt.board :as board]))
+            [ttt.board :as board]
+            [ttt.negamax :as negamax]))
 
 (describe "select-spot"
 
@@ -11,6 +12,7 @@
   (with _ board/empty-spot)
   (with human {:role :human :marker :x})
   (with easy-computer {:role :easy-computer :marker :o})
+  (with hard-computer {:role :hard-computer :marker :x})
 
   (context ":human"
     (it "returns an integer"
@@ -23,4 +25,39 @@
     (with spots (board/available-spots [:x @_ :o @_ :o @_ @_ :x :o :o]))
     (it "returns a random index from the available-spots"
       (should (some #{(spots/select-spot @easy-computer {:board [:x @_ :o @_ :o @_ @_ :x :o]})}
-                    @spots)))))
+                    @spots))))
+
+  (context ":hard-computer"
+    (it "blocks opponent from winning"
+      (should= 2 (spots/select-spot @hard-computer
+                                    {:board [:o :o @_
+                                             :x @_ @_
+                                             :x @_ @_]
+                                     :current-player :x
+                                     :opponent :o
+                                     :depth negamax/start-depth})))
+
+    (it "wins when it has the chance"
+      (should= 5 (spots/select-spot @hard-computer
+                                    {:board [:o :o @_
+                                             :x :x @_
+                                             @_ @_ @_]
+                                     :current-player :x
+                                     :opponent :o
+                                     :depth negamax/start-depth})))
+
+    (it "avoids situation in which opponent can win in two positions"
+      (should (or (= 2 (spots/select-spot @hard-computer
+                                          {:board [:x @_ @_
+                                                   @_ :o @_
+                                                   @_ @_ :o]
+                                           :current-player :x
+                                           :opponent :o
+                                           :depth negamax/start-depth}))
+                  (= 6 (spots/select-spot @hard-computer
+                                          {:board [:x @_ @_
+                                                   @_ :o @_
+                                                   @_ @_ :o]
+                                           :current-player :x
+                                           :opponent :o
+                                           :depth negamax/start-depth})))))))
