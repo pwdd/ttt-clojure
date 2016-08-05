@@ -90,8 +90,7 @@
 
 (defn game-loop
   [{:keys [game board current-player opponent saved first-screen]
-     :or {board (board/new-board)
-           first-screen true}}]
+    :or {board (board/new-board) first-screen true}}]
 
   (initial-view-of-board first-screen saved current-player board)
 
