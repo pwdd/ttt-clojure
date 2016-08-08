@@ -1,5 +1,5 @@
 {
-  "board": ["-" "-" "-" "x" "o" "-" "-" "-" "-"],
+  "board": ["_" "_" "_" "x" "o" "_" "_" "_" "_"],
   "current-player": {
     "marker": "x",
     "role": "easy"

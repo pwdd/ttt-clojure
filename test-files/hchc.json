@@ -1,6 +1,6 @@
 {
-  "board": ["x" "-" "-" "-" "o" "-" "-" "-" "-"],
-  "current-player": {
+  "board": ["x" "_" "_" "_" "o" "_" "_" "_" "_"],
+  "current_player": {
     "marker": "x",
     "role": "hard-computer"
  },

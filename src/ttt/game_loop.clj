@@ -76,8 +76,8 @@
   [board current-player opponent]
   (spots/select-spot current-player
                     {:board board
-                     :current-player (:marker current-player)
-                     :opponent (:marker opponent)
+                     :current-player current-player
+                     :opponent opponent
                      :depth negamax/start-depth
                      :board-length board/board-length}))
 
