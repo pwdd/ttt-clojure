@@ -25,10 +25,3 @@
   [directory filename {:keys [board current-player opponent]}]
   (spit (str directory "/" filename ".json")
         (write-json {:board board :current-player current-player :opponent opponent})))
-
-(defn save-and-exit
-  [directory filename {:keys [board current-player opponent]}]
-  (create-game-file directory
-                    filename
-                    {:board board :current-player current-player :opponent opponent})
-  (System/exit 0))
