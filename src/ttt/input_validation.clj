@@ -14,6 +14,9 @@
 (def saved-game-option "1")
 (def new-game-option "2")
 
+(def overwrite-file "1")
+(def dont-overwrite-file "2")
+
 (def save-valid-input "save")
 
 (defn is-acceptable-as-human-player?

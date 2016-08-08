@@ -96,3 +96,25 @@
 
   (it "recurs and returns the right filename"
     (should= "hh" (with-in-str "a\n1\n\nHH" (prompt/choose-a-file @filenames)))))
+
+(describe "overwrite-file"
+
+  (around [it]
+    (with-out-str (it)))
+
+  (it "returns the input with the filename if choice is '1'"
+    (should= "foo" (with-in-str "1" (prompt/overwrite-file "foo" ["foo" "bar"] true))))
+
+  (it "calls 'enter-a-file-name' if input is '2'"
+    (should= "baz" (with-in-str "2\nbaz" (prompt/overwrite-file "foo" ["foo" "bar"] true))))
+
+  (it "recurs if input is not '1' nor '2'"
+    (should= "foo" (with-in-str "11\n3\n1" (prompt/overwrite-file "foo" ["foo" "bar"] true)))))
+
+(describe "enter-a-file-name"
+
+  (around [it]
+    (with-out-str (it)))
+
+  (it "returns the input if there is no file with the same name as input"
+    (should= "baz" (with-in-str "baz" (prompt/enter-a-file-name ["foo" "bar"])))))

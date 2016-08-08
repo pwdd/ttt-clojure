@@ -41,6 +41,17 @@
 
 (def number-or-save (str choose-a-number or-enter-save))
 
+(def give-file-name "Enter the name of the game as you want it to be saved:")
+
+(def file-already-exists-msg
+  (str "There is already a file with this name."))
+
+(def overwrite-file-option
+    (str "Would you like to (1) overwrite it or (2) choose another name?\n"
+    "Please enter 1 or 2"))
+
+(def game-saved "Your game has been saved.")
+
 (def board-representation
   " 1 | 2 | 3 \n---|---|---\n 4 | 5 | 6 \n---|---|---\n 7 | 8 | 9 \n")
 
