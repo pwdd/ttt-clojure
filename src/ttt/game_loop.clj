@@ -30,7 +30,7 @@
 
 (defn setup-resumed-game
   [directory]
-  (let [files (reader/names (reader/filenames (reader/files directory)))
+  (let [files (reader/list-all-files directory)
         filename (prompt/choose-a-file files)
         data (reader/saved-data (str filename file-extension) directory)
         current-player-attributes (data :current-player-data)

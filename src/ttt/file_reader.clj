@@ -54,3 +54,7 @@
 (defn is-there-any-file?
   [directory]
   (not (empty? (files directory))))
+
+(defn list-all-files
+  [directory]
+  (->> directory files filenames names))
