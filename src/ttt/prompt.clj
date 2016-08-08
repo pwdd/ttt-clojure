@@ -4,6 +4,8 @@
             [ttt.view :as view]
             [ttt.input-validation :as input-validation]
             [ttt.messenger :as messenger]
+            [ttt.file-writer :as file-writer]
+            [ttt.file-reader :as file-reader]
             [ttt.get-spots :refer [select-spot]]))
 
 (defn prompt
@@ -58,10 +60,18 @@
 
 (defmethod select-spot :human
   [player params]
-  (let [input (prompt string/trim messenger/choose-a-number)
+  (let [input (prompt helpers/clean-string messenger/number-or-save)
         board (:board params)]
-    (if (input-validation/is-valid-move-input? board input)
-      (helpers/input-to-number input)
-      (do
-        (view/print-message (messenger/board-after-invalid-input board input))
-        (recur player params)))))
+    (cond
+      (input-validation/save? input)
+        (file-writer/save-and-exit file-reader/directory
+                                   "test-file"
+                                   {:board (:board params)
+                                   :current-player player
+                                   :opponent (:opponent params)})
+      (input-validation/is-valid-move-input? board input)
+        (helpers/input-to-number input)
+      :else
+        (do
+          (view/print-message (messenger/board-after-invalid-input board input))
+          (recur player params)))))

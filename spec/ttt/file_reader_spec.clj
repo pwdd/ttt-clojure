@@ -40,7 +40,7 @@
   (with _ board/empty-spot)
 
   (it "takes a string representing an empty spot returns empty-spot keyword"
-    (should= @_ (file-reader/convert-to-board-data "-")))
+    (should= @_ (file-reader/convert-to-board-data "_")))
 
   (it "takes a string representing a marker and returns it"
     (should= "x" (file-reader/convert-to-board-data "x"))))
@@ -51,13 +51,13 @@
 
   (it "returns an empty board if board from file only have empty spots"
     (should= (board/new-board)
-             (file-reader/build-board-from-file ["-" "-" "-"
-                                                 "-" "-" "-"
-                                                 "-" "-" "-"])))
+             (file-reader/build-board-from-file ["_" "_" "_"
+                                                 "_" "_" "_"
+                                                 "_" "_" "_"])))
 
   (it "returns a board containing players markers and empty spots"
     (should= ["x" @_ "o" @_ @_ @_ @_ @_ "x"]
-             (file-reader/build-board-from-file ["x" "-" "o" "-" "-" "-" "-" "-" "x"]))))
+             (file-reader/build-board-from-file ["x" "_" "o" "_" "_" "_" "_" "_" "x"]))))
 
 (describe "build-player-from-file"
 

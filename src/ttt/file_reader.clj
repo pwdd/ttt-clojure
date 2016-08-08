@@ -14,7 +14,7 @@
 
 (defn convert-to-board-data
   [string]
-  (if (= string "-")
+  (if (= string "_")
     board/empty-spot
     string))
 

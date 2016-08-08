@@ -14,6 +14,8 @@
 (def saved-game-option "1")
 (def new-game-option "2")
 
+(def save-valid-input "save")
+
 (defn is-acceptable-as-human-player?
   [role]
   (contains? acceptable-human-player role))
@@ -57,3 +59,7 @@
 (defn is-valid-filename?
   [user-input filenames]
   (some #{user-input} filenames))
+
+(defn save?
+  [user-input]
+  (= user-input save-valid-input))

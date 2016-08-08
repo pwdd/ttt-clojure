@@ -42,8 +42,8 @@
     4
     (let [spots (board/available-spots (:board params))
          scores (scores (:board params)
-                        (:current-player params)
-                        (:opponent params)
+                        (:marker (:current-player params))
+                        (:marker (:opponent params))
                         (:depth params))
          max-value (apply max scores)
          best (.indexOf scores max-value)]

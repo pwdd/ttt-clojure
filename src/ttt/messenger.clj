@@ -35,7 +35,11 @@
 (def ask-second-marker-msg
   "Please enter a single letter that will be the second player's marker")
 
-(def choose-a-number "Please enter a number from 1-9: ")
+(def choose-a-number "Please enter a number from 1-9: \n")
+
+(def or-enter-save "(or type 'SAVE' to save the current game)")
+
+(def number-or-save (str choose-a-number or-enter-save))
 
 (def board-representation
   " 1 | 2 | 3 \n---|---|---\n 4 | 5 | 6 \n---|---|---\n 7 | 8 | 9 \n")

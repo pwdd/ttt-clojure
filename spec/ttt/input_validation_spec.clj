@@ -122,3 +122,10 @@
 
   (it "returns true if input is in argument array"
     (should (input-validation/is-valid-filename? "hchc" @filenames))))
+
+(describe "save?"
+  (it "returns true if input is equal to 'save-valid-input'"
+    (should (input-validation/save? "save")))
+
+  (it "returns alse if input is not equal to 'save-valid-input'"
+    (should-not (input-validation/save? "s"))))

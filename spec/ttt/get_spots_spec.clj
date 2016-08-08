@@ -33,8 +33,8 @@
                                     {:board [:o :o @_
                                              :x @_ @_
                                              :x @_ @_]
-                                     :current-player :x
-                                     :opponent :o
+                                     :current-player @hard-computer
+                                     :opponent @easy-computer
                                      :depth negamax/start-depth})))
 
     (it "wins when it has the chance"
@@ -42,8 +42,8 @@
                                     {:board [:o :o @_
                                              :x :x @_
                                              @_ @_ @_]
-                                     :current-player :x
-                                     :opponent :o
+                                     :current-player @hard-computer
+                                     :opponent @easy-computer
                                      :depth negamax/start-depth})))
 
     (it "avoids situation in which opponent can win in two positions"
@@ -51,13 +51,13 @@
                                           {:board [:x @_ @_
                                                    @_ :o @_
                                                    @_ @_ :o]
-                                           :current-player :x
-                                           :opponent :o
+                                           :current-player @hard-computer
+                                           :opponent @easy-computer
                                            :depth negamax/start-depth}))
                   (= 6 (spots/select-spot @hard-computer
                                           {:board [:x @_ @_
                                                    @_ :o @_
                                                    @_ @_ :o]
-                                           :current-player :x
-                                           :opponent :o
+                                           :current-player @hard-computer
+                                           :opponent @easy-computer
                                            :depth negamax/start-depth})))))))
