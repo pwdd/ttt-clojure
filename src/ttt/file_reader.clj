@@ -26,7 +26,9 @@
   [player-from-file]
   (into {}
     (for [[k v] player-from-file]
-      [(keyword k) v])))
+      (if (= k "marker")
+        {:marker (build-player-from-file v)}
+        [(keyword k) v]))))
 
 (defn- build-from-file
   [field-name]

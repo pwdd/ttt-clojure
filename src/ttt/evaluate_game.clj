@@ -10,7 +10,7 @@
 (defn winner-role
   [board first-player second-player]
   (let [winner (winner-marker board)]
-    (if (= (:marker first-player) winner)
+    (if (= (player/marker first-player) winner)
       (:role first-player)
       (:role second-player))))
 

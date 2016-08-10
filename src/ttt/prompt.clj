@@ -6,7 +6,8 @@
             [ttt.messenger :as messenger]
             [ttt.file-writer :as file-writer]
             [ttt.file-reader :as file-reader]
-            [ttt.get-spots :refer [select-spot]]))
+            [ttt.get-spots :refer [select-spot]]
+            [ttt.player :as player]))
 
 (defn prompt
   [clean-input msg]

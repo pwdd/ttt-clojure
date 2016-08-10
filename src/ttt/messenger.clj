@@ -136,7 +136,7 @@
 
 (defmethod moved-to :same-roles
   [game player spot]
-  (str "Player '" (name (:marker player)) "' moved to " (inc spot) "\n"))
+  (str "Player '" (name (player/marker player)) "' moved to " (inc spot) "\n"))
 
 (defmethod moved-to :default
   [game player spot]

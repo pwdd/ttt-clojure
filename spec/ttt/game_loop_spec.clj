@@ -1,6 +1,7 @@
 (ns ttt.game-loop-spec
   (:require [speclj.core :refer :all]
             [ttt.game-loop :as game-loop]
+            [ttt.player :as player]
             [clojure.java.io :as io]
             [ttt.file-reader :as file-reader]
             [ttt.input-validation :as input-validation]))
@@ -25,6 +26,10 @@
 
     (it "returns a map with a key :current-player"
       (should (@data :current-player)))
+
+    (it "returns a map with a key :current-player.marker holding a map with :symbol and :color"
+      (should= "x"
+               (player/marker (@data :current-player))))
 
     (it "returns a map with a key :opponent"
       (should (@data :opponent))))

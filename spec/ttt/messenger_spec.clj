@@ -65,8 +65,8 @@
   (context ":computer-x-human"
 
     (with game (game/create-game :human :easy-computer))
-    (with human {:marker :x :role :human})
-    (with easy-computer {:marker :o :role :easy-computer})
+    (with human {:marker {:symbol :x :color :blue} :role :human})
+    (with easy-computer {:marker {:symbol :o :color :blue} :role :easy-computer})
 
     (it "returns tied message if the game ties"
       (should= "You tied\n" (messenger/result @game
@@ -96,9 +96,9 @@
 
 (describe "moved-to"
 
-  (with human {:marker :x :role :human})
-  (with easy-computer {:marker :o :role :easy-computer})
-  (with hard-computer {:marker :h :role :hard-computer})
+  (with human {:marker {:symbol :x :color :blue} :role :human})
+  (with easy-computer {:marker {:symbol :o :color :blue} :role :easy-computer})
+  (with hard-computer {:marker {:symbol :h :color :blue} :role :hard-computer})
   (with human-x-human (game/create-game :human :human))
   (with easy-x-human (game/create-game :easy-computer :human))
   (with easy-x-easy (game/create-game :easy-computer :easy-computer))

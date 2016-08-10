@@ -1,11 +1,11 @@
 {
   "board": ["x" "_" "o" "_" "_" "_" "_" "_" "_"],
   "current-player": {
-    "marker": "x",
+    "marker": {"symbol": "x", "color": "green"},
     "role": "human"
  },
   "opponent": {
-    "marker": "o",
+    "marker": {"symbol": "o", "color": "green"},
     "role": "human"
  }
 }

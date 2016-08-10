@@ -55,31 +55,31 @@
     (should= :human (evaluate-game/winner-role [:x :x :x
                                                 :e :e @_
                                                 :e :e @_]
-                                                {:marker :x :role :human}
-                                                {:marker :e :role :easy-computer})))
+                                                {:marker {:symbol :x :color :green} :role :human}
+                                                {:marker {:symbol :e :color :blue} :role :easy-computer})))
 
   (it "should not return :easy-computer if :human won the game"
     (should-not (= :easy-computer
                    (evaluate-game/winner-role [:x :x :x
                                                :e :e @_
                                                :e :e @_]
-                                               {:role :easy-computer :marker :e}
-                                               {:role :human :marker :x}))))
+                                               {:role :easy-computer :marker {:symbol :e :color :blue}}
+                                               {:role :human :marker {:symbol :x :color :blue}}))))
 
   (it "returns :easy-computer if it won the game"
     (should= :easy-computer
              (evaluate-game/winner-role [:e :x :x
                                          :e @_ :x
                                          :e :x @_]
-                                         {:role :easy-computer :marker :e}
-                                         {:role :human :marker :x})))
+                                         {:role :easy-computer :marker {:symbol :e :color :blue}}
+                                         {:role :human :marker {:symbol :x :color :blue}})))
 
   (it "returns :hard-computer if it won the game"
     (should= :hard-computer (evaluate-game/winner-role [:h :h :h
                                                         :e :e @_
                                                         @_ @_ @_]
-                                                        {:role :hard-computer :marker :h}
-                                                        {:role :easy-computer :marker :e}))))
+                                                        {:role :hard-computer :marker {:symbol :h :color :blue}}
+                                                        {:role :easy-computer :marker {:symbol :e :color :blue}}))))
 
 (describe "is-winner-ai?"
   (with _ board/empty-spot)
@@ -87,20 +87,20 @@
     (should-not (evaluate-game/is-winner-ai? [:x :e :x
                                               :e :x :e
                                               :e :e :x]
-                                              {:marker :x :role :human}
-                                              {:role :easy-computer :marker :e})))
+                                              {:marker {:symbol :x :color :blue} :role :human}
+                                              {:role :easy-computer :marker {:symbol :e :color :blue}})))
   (it "returns true if winner is easy-computer"
     (should (evaluate-game/is-winner-ai? [:x :x :e
                                           :e :e :e
                                           :e :e :x]
-                                          {:marker :x :role :human}
-                                          {:role :easy-computer :marker :e})))
+                                          {:marker {:symbol :x :color :blue} :role :human}
+                                          {:role :easy-computer :marker {:symbol :e :color :blue}})))
   (it "returns true if winner is hard-computer"
     (should (evaluate-game/is-winner-ai? [:x :x :h
                                           :h :h :h
                                           :h :h :x]
-                                          {:marker :x :role :human}
-                                          {:role :easy-computer :marker :e}))))
+                                          {:marker {:symbol :x :color :blue} :role :human}
+                                          {:role :easy-computer :marker {:symbol :e :color :blue}}))))
 
 (describe "draw?"
   (with _ board/empty-spot)

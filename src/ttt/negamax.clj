@@ -1,7 +1,8 @@
 (ns ttt.negamax
   (:require [ttt.board :as board]
             [ttt.evaluate-game :as evaluate-game]
-            [ttt.get-spots :refer [select-spot]]))
+            [ttt.get-spots :refer [select-spot]]
+            [ttt.player :as player]))
 
 (def start-depth 0)
 
@@ -42,8 +43,8 @@
     4
     (let [spots (board/available-spots (:board params))
          scores (scores (:board params)
-                        (:marker (:current-player params))
-                        (:marker (:opponent params))
+                        (player/marker (:current-player params))
+                        (player/marker (:opponent params))
                         (:depth params))
          max-value (apply max scores)
          best (.indexOf scores max-value)]

@@ -10,9 +10,9 @@
     (with-out-str (it)))
 
   (with _ board/empty-spot)
-  (with human {:role :human :marker :x})
-  (with easy-computer {:role :easy-computer :marker :o})
-  (with hard-computer {:role :hard-computer :marker :x})
+  (with human {:role :human :marker {:symbol :x :color :blue}})
+  (with easy-computer {:role :easy-computer :marker {:symbol :o :color :red}})
+  (with hard-computer {:role :hard-computer :marker {:symbol :x :color :blue}})
 
   (context ":human"
     (it "returns an integer"

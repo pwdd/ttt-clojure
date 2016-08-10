@@ -18,10 +18,11 @@
 (defn setup-regular-game
   [msg-first-attr msg-second-attr]
   (let [current-player-attr (prompt/get-player-attributes {:msg msg-first-attr})
-        opponent-attr (prompt/get-player-attributes {:msg msg-second-attr
-                                                      :opponent-marker (:marker current-player-attr)})
-        current-player (player/define-player current-player-attr)
-        opponent (player/define-player opponent-attr)
+        opponent-attr
+          (prompt/get-player-attributes {:msg msg-second-attr
+                                         :opponent-marker (:marker current-player-attr)})
+        current-player (player/define-player current-player-attr :red)
+        opponent (player/define-player opponent-attr :blue)
         game (game/create-game (:role current-player) (:role opponent))]
     {:current-player current-player
      :opponent opponent
@@ -35,8 +36,8 @@
         data (reader/saved-data (str filename file-extension) directory)
         current-player-attributes (data :current-player-data)
         opponent-attributes (data :opponent-data)
-        current-player (player/define-player current-player-attributes)
-        opponent (player/define-player opponent-attributes)
+        current-player (player/define-player current-player-attributes :red)
+        opponent (player/define-player opponent-attributes :blue)
         game (game/create-game (:role current-player)
                                (:role opponent))
         board (data :board-data)]
@@ -63,7 +64,7 @@
   [first-screen saved player board]
   (when (game/human-makes-first-move? first-screen (:role player))
     (if saved
-      (view/print-message (messenger/current-player-is (:marker player))))
+      (view/print-message (messenger/current-player-is (player/marker player))))
     (view/print-message (messenger/stringify-board board))))
 
 (defn display-new-board-info
@@ -95,7 +96,7 @@
   (initial-view-of-board first-screen saved current-player board)
 
   (let [spot (make-a-move board current-player opponent)
-        game-board (board/move board spot (:marker current-player))]
+        game-board (board/move board spot (player/marker current-player))]
 
     (display-new-board-info game game-board current-player spot)
 
