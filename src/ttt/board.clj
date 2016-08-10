@@ -17,12 +17,17 @@
   []
   (apply mapv vector (board-rows)))
 
+(defn- make-diagonal
+  [indexes]
+  (->> indexes
+       (map-indexed vector)
+       (mapv #(get-in (board-rows) %))))
+
 (defn board-diagonals
   []
-  (let [forward (map-indexed vector (range board-size))
-        backward (map-indexed vector (reverse (range board-size)))]
-    [(mapv #(get-in (board-rows) %) forward)
-     (mapv #(get-in (board-rows) %) backward)]))
+  (let [forward (range board-size)
+        backward (reverse forward)]
+    [(make-diagonal forward) (make-diagonal backward)]))
 
 (defn winning-positions
   []

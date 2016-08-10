@@ -3,9 +3,9 @@
   "current-player": {
     "marker": "x",
     "role": "hard-computer"
-  },
+ },
   "opponent": {
     "marker": "o",
     "role": "hard-computer"
-  }
+ }
 }

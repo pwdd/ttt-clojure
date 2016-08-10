@@ -10,28 +10,29 @@
             [ttt.prompt :as prompt]
             [ttt.file-reader :as reader]
             [ttt.input-validation :as input-validation]
-            [ttt.file-reader :as file-reader]))
+            [ttt.file-reader :as file-reader]
+            [ttt.easy-computer :as easy-computer]))
 
 (def file-extension ".json")
 
 (defn setup-regular-game
   [msg-first-attr msg-second-attr]
-  (let [current-player-attr (prompt/get-player-attributes { :msg msg-first-attr })
-        opponent-attr (prompt/get-player-attributes { :msg msg-second-attr
-                                                      :opponent-marker (:marker current-player-attr) })
+  (let [current-player-attr (prompt/get-player-attributes {:msg msg-first-attr})
+        opponent-attr (prompt/get-player-attributes {:msg msg-second-attr
+                                                      :opponent-marker (:marker current-player-attr)})
         current-player (player/define-player current-player-attr)
         opponent (player/define-player opponent-attr)
         game (game/create-game (:role current-player) (:role opponent))]
-    { :current-player current-player
-      :opponent opponent
-      :game game
-      :saved false}))
+    {:current-player current-player
+     :opponent opponent
+     :game game
+     :saved false}))
 
 (defn setup-resumed-game
-  []
-  (let [files (reader/names (reader/filenames (reader/files)))
+  [directory]
+  (let [files (reader/names (reader/filenames (reader/files directory)))
         filename (prompt/choose-a-file files)
-        data (reader/saved-data (str filename file-extension))
+        data (reader/saved-data (str filename file-extension) directory)
         current-player-attributes (data :current-player-data)
         opponent-attributes (data :opponent-data)
         current-player (player/define-player current-player-attributes)
@@ -39,16 +40,16 @@
         game (game/create-game (:role current-player)
                                (:role opponent))
         board (data :board-data)]
-    { :current-player current-player
-      :opponent opponent
-      :game game
-      :board board
-      :saved true}))
+    {:current-player current-player
+     :opponent opponent
+     :game game
+     :board board
+     :saved true}))
 
 (defn game-setup
-  [game-selection & [msg-first-player-attr msg-second-player-attr]]
+  [game-selection directory & [msg-first-player-attr msg-second-player-attr]]
   (if (= game-selection input-validation/saved-game-option)
-    (setup-resumed-game)
+    (setup-resumed-game directory)
     (setup-regular-game msg-first-player-attr msg-second-player-attr)))
 
 (defn first-view-msgs
@@ -74,11 +75,11 @@
 (defn make-a-move
   [board current-player opponent]
   (spots/select-spot current-player
-                   { :board board
+                    {:board board
                      :current-player (:marker current-player)
                      :opponent (:marker opponent)
                      :depth negamax/start-depth
-                     :board-length board/board-length }))
+                     :board-length board/board-length}))
 
 (defn game-over-msg
   [game board current-player opponent]
@@ -88,9 +89,8 @@
                                         opponent)))
 
 (defn game-loop
-  [{ :keys [game board current-player opponent saved first-screen]
-     :or { board (board/new-board)
-           first-screen true }}]
+  [{:keys [game board current-player opponent saved first-screen]
+    :or {board (board/new-board) first-screen true}}]
 
   (initial-view-of-board first-screen saved current-player board)
 
@@ -101,23 +101,24 @@
 
     (if (evaluate-game/game-over? game-board)
       (game-over-msg game game-board current-player opponent)
-      (recur { :game game
-               :board game-board
-               :opponent current-player
-               :current-player opponent
-               :saved saved
-               :first-screen false }))))
+      (recur {:game game
+              :board game-board
+              :opponent current-player
+              :current-player opponent
+              :saved saved
+              :first-screen false}))))
 
 (defn game-selection
-  []
-  (if (reader/is-there-any-file?)
+  [directory]
+  (if (reader/is-there-any-file? directory)
     (prompt/get-new-or-saved)
     input-validation/new-game-option))
 
 (defn setup
   []
-  (let [selection (game-selection)]
+  (let [selection (game-selection file-reader/directory)]
     (game-setup selection
+                file-reader/directory
                 messenger/ask-first-marker-msg
                 messenger/ask-second-marker-msg)))
 

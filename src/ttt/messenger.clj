@@ -10,7 +10,7 @@
 
 (def welcome
   (str "   |------------------------|\n"
-       "  ---| Welcome to Tic Tac Toe |---\n"
+       "   ---| Welcome to Tic Tac Toe |---\n"
        "   |------------------------|"))
 
 (def instructions "The board is represented like the following:\n")
@@ -67,7 +67,7 @@
 
 (def invalid-role-options-msg
   (str default-invalid-input
-    "Only (H) human, (EC) easy computer and (HC) hard computer are available"))
+       "Only (H) human, (EC) easy computer and (HC) hard computer are available"))
 
 (defn human-lost
   [board]
@@ -116,47 +116,31 @@
 (defmethod moved-to :computer-x-human
   [game player spot]
   (if (player/is-ai? (:role player))
-    (str (string/capitalize
-           (name (:role player)))
-           " moved to "
-           (inc spot)
-           "\n")
+    (str (string/capitalize (name (:role player))) " moved to " (inc spot) "\n")
     (str "You moved to " (inc spot) "\n")))
 
 (defmethod moved-to :same-roles
   [game player spot]
-  (str "Player '"
-       (name (:marker player))
-       "' moved to "
-       (inc spot)
-       "\n"))
+  (str "Player '" (name (:marker player)) "' moved to " (inc spot) "\n"))
 
 (defmethod moved-to :default
   [game player spot]
-  (str (string/capitalize
-         (name (:role player)))
-       " moved to "
-       (inc spot)
-       "\n"))
+  (str (string/capitalize (name (:role player))) " moved to " (inc spot) "\n"))
 
 (defn not-a-valid-number
   [input]
-  (cond
-    (empty? input)
-      (str default-invalid-input "Empty spaces are not a number\n")
-    :else
-      (str default-invalid-input "'" input "' is not a number\n")))
+  (if (empty? input)
+    (str default-invalid-input "Empty spaces are not a number\n")
+    (str default-invalid-input "'" input "' is not a number\n")))
 
 (defn not-a-valid-move
   [position]
-  (cond
-    (not (helpers/in-range? position board/board-length))
-      (str default-invalid-input
-           "There is no position "
-           (inc position)
-           " in the board\n")
-    :else
-      (str default-invalid-input "The position is taken\n")))
+  (if (not (helpers/in-range? position board/board-length))
+    (str default-invalid-input
+         "There is no position "
+         (inc position)
+         " in the board\n")
+    (str default-invalid-input "The position is taken\n")))
 
 (defn wrong-number-msg
   [board input]
@@ -170,8 +154,7 @@
     (> (count input) 1)
       (str default-invalid-input "Marker must be a single letter.")
     (not (re-matches #"^[a-zA-Z]$" input))
-      (str default-invalid-input
-           "Numbers and special characters are not accepted.")
+      (str default-invalid-input "Numbers and special characters are not accepted.")
     (= input opponent-marker)
       (str default-invalid-input "This marker is taken by the first player.")
     :else
@@ -179,12 +162,24 @@
 
 (defn current-player-is
   [current-player-marker]
-  (str "Current player is playing with '"
-       current-player-marker
-       "'"))
+  (str "Current player is playing with '" current-player-marker "'"))
 
 (def choose-a-file-msg "Enter the name of the saved game you wanna play:")
 
 (defn display-files-list
   [files-list]
   (string/join ", " files-list))
+
+(defn board-after-invalid-input
+  [board input]
+  (str (wrong-number-msg board input) (stringify-board board)))
+
+(def show-saved-files-msg "These are the saved files:")
+
+(defn list-saved-files
+  [filenames]
+  (str show-saved-files-msg
+       "\n"
+       (display-files-list filenames)
+       "\n"
+       choose-a-file-msg))
