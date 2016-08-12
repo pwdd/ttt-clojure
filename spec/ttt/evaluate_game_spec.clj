@@ -83,19 +83,19 @@
 
 (describe "is-winner-ai?"
   (with _ board/empty-spot)
-  (it "returns false if winner has :ai attribute false"
+  (it "returns false if winner has role :human"
     (should-not (evaluate-game/is-winner-ai? [:x :e :x
                                               :e :x :e
                                               :e :e :x]
                                               {:marker {:symbol :x :color :blue} :role :human}
                                               {:role :easy-computer :marker {:symbol :e :color :blue}})))
-  (it "returns true if winner is easy-computer"
+  (it "returns true if winner has role :easy-computer"
     (should (evaluate-game/is-winner-ai? [:x :x :e
                                           :e :e :e
                                           :e :e :x]
                                           {:marker {:symbol :x :color :blue} :role :human}
                                           {:role :easy-computer :marker {:symbol :e :color :blue}})))
-  (it "returns true if winner is hard-computer"
+  (it "returns true if winner has role :hard-computer"
     (should (evaluate-game/is-winner-ai? [:x :x :h
                                           :h :h :h
                                           :h :h :x]

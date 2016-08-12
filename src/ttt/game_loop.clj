@@ -15,7 +15,7 @@
 
 (def file-extension ".json")
 
-(defn setup-regular-game
+(defn- setup-regular-game
   [msg-first-attr msg-second-attr]
   (let [current-player-attr (prompt/get-player-attributes {:msg msg-first-attr})
         opponent-attr
@@ -29,7 +29,7 @@
      :game game
      :saved false}))
 
-(defn setup-resumed-game
+(defn- setup-resumed-game
   [directory]
   (let [files (reader/list-all-files directory)
         filename (prompt/choose-a-file files)

@@ -8,12 +8,6 @@
 
     (with file-content (file-reader/read-file "hh.json" (io/file "test-files")))
 
-    (it "returns a collection"
-      (should (coll? @file-content)))
-
-    (it "returns a collection of length equals 3"
-      (should= 3 (count @file-content)))
-
     (it "returns a map that has key 'board'"
       (should (@file-content "board")))
 
@@ -64,7 +58,7 @@
   (with player {"role" "hard-computer" "marker" {"symbol" "o" "color" "green"}})
 
   (it "turns a map with string keys into a map with keywords keys"
-    (should= {:role "hard-computer" :marker {:symbol "o" :color "green"} }
+    (should= {:role "hard-computer" :marker {:symbol "o" :color :green} }
              (file-reader/build-player-from-file @player))))
 
 (describe "saved-data"

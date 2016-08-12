@@ -26,9 +26,11 @@
   [player-from-file]
   (into {}
     (for [[k v] player-from-file]
-      (if (= k "marker")
-        {:marker (build-player-from-file v)}
-        [(keyword k) v]))))
+      (cond
+        (= k "marker") {:marker (build-player-from-file v)}
+        (= k "color") [(keyword k) (keyword v)]
+        :else
+          [(keyword k) v]))))
 
 (defn- build-from-file
   [field-name]
