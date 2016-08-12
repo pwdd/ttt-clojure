@@ -4,7 +4,8 @@
             [ttt.player :as player]
             [ttt.helpers :as helpers]
             [ttt.evaluate-game :as evaluate-game]
-            [ttt.input-validation :as input-validation]))
+            [ttt.input-validation :as input-validation]
+            [ttt.colors :as colors]))
 
 (def separator "\n---|---|---\n")
 
@@ -136,7 +137,13 @@
 
 (defmethod moved-to :same-roles
   [game player spot]
-  (str "Player '" (name (player/marker player)) "' moved to " (inc spot) "\n"))
+  (str "Player '"
+       ((player/color player) colors/ansi-colors)
+       (name (player/marker player))
+       (:default colors/ansi-colors)
+       "' moved to "
+       (inc spot)
+       "\n"))
 
 (defmethod moved-to :default
   [game player spot]

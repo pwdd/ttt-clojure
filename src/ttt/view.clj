@@ -1,6 +1,7 @@
 (ns ttt.view
   (:require [clojure.string :as string]
-            [clojure.java.shell :as sh]))
+            [clojure.java.shell :as sh]
+            [ttt.colors :as colors]))
 
 (defn get-console-width
   []
@@ -42,7 +43,9 @@
 
 (defn print-message
   [msg]
-  (println (add-padding-spaces msg half-screen-width)))
+  (println (str (:default colors/ansi-colors)
+                (add-padding-spaces msg half-screen-width)
+                (:default colors/ansi-colors))))
 
 (defn centralize-cursor
   []
