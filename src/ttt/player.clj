@@ -1,5 +1,7 @@
 (ns ttt.player
-  (:require [ttt.input-validation :as input-validation]))
+  (:require [ttt.input-validation :as input-validation]
+            [ttt.marker :as marker])
+  (:import [ttt.marker Marker]))
 
 (defrecord Player [marker role])
 
@@ -26,8 +28,8 @@
 (defn- make-player
   [marker color role]
   (if (map? marker)
-    (map->Player {:marker marker :role role})
-    (map->Player {:marker {:token marker :color color}
+    (map->Player {:marker (marker/make-marker marker) :role role})
+    (map->Player {:marker (marker/make-marker {:token marker :color color})
                   :role role})))
 
 (defn define-player
