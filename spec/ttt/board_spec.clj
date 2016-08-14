@@ -1,8 +1,7 @@
 (ns ttt.board-spec
   (:require [speclj.core :refer :all]
             [clojure.set :as set]
-            [ttt.board :as board]
-            [ttt.marker :as marker]))
+            [ttt.board :as board]))
 
 (describe "new-board"
   (it "returns a collection of empty spots"
@@ -31,8 +30,8 @@
 
   (with _ board/empty-spot)
   (with empty-board (board/new-board))
-  (with x (marker/make-marker {:token :x :color :green}))
-  (with o (marker/make-marker {:token :o :color :blue}))
+  (with x {:token :x :color :green})
+  (with o {:token :o :color :blue})
 
   (it "sets a value to an empty board"
     (should= [@x @_ @_ @_ @_ @_ @_ @_ @_]
@@ -45,8 +44,8 @@
 (describe "is-board-full?"
 
   (with _ board/empty-spot)
-  (with x (marker/make-marker {:token :x :color :green}))
-  (with o (marker/make-marker {:token :o :color :blue}))
+  (with x {:token :x :color :green})
+  (with o {:token :o :color :blue})
 
   (it "returns true if there is no empty spots"
     (should (board/is-board-full? (vec (repeat board/board-length @x)))))
@@ -58,7 +57,7 @@
 
   (with _ board/empty-spot)
   (with empty-board (board/new-board))
-  (with x (marker/make-marker {:token :x :color :green}))
+  (with x {:token :x :color :green})
 
   (it "returns true if board has only empty spots"
     (should (board/is-board-empty? @empty-board)))
@@ -69,8 +68,8 @@
 (describe "is-spot-available?"
 
   (with _ board/empty-spot)
-  (with x (marker/make-marker {:token :x :color :green}))
-  (with o (marker/make-marker {:token :o :color :blue}))
+  (with x {:token :x :color :green})
+  (with o {:token :o :color :blue})
 
   (it "returns true if spot is in range and board is empty"
     (should (board/is-spot-available? (board/new-board) 1)))
@@ -90,8 +89,8 @@
 (describe "available-spots"
 
   (with _ board/empty-spot)
-  (with x (marker/make-marker {:token :x :color :green}))
-  (with o (marker/make-marker {:token :o :color :blue}))
+  (with x {:token :x :color :green})
+  (with o {:token :o :color :blue})
 
   (it "returns a collection containing the index of the only empty spot"
     (should= '(8) (board/available-spots [@x @x @x @x @x @x @x @x @_])))
@@ -106,7 +105,7 @@
 
   (with _ board/empty-spot)
   (with empty-board (board/new-board))
-  (with x (marker/make-marker {:token :x :color :green}))
+  (with x {:token :x :color :green})
 
   (it "returns true if spot is in range and board is empty"
     (should (board/is-valid-move? @empty-board 0)))
@@ -127,8 +126,8 @@
 
   (with _ board/empty-spot)
   (with empty-board (board/new-board))
-  (with x (marker/make-marker {:token :x :color :green}))
-  (with o (marker/make-marker {:token :o :color :blue}))
+  (with x {:token :x :color :green})
+  (with o {:token :o :color :blue})
 
   (it "returns false if board is empty"
     (should-not (board/repeated-markers? @empty-board [0 1 2])))
@@ -161,8 +160,8 @@
 
   (with _ board/empty-spot)
   (with empty-board (board/new-board))
-  (with x (marker/make-marker {:token :x :color :green}))
-  (with o (marker/make-marker {:token :o :color :blue}))
+  (with x {:token :x :color :green})
+  (with o {:token :o :color :blue})
 
   (it "returns nil when board is empty"
     (should-not (board/winning-combo @empty-board)))
