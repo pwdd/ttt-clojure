@@ -14,12 +14,16 @@
             [ttt.easy-computer :as easy-computer]))
 
 (def file-extension ".json")
+(def first-player-color :green)
+(def second-player-color :blue)
 
 (defn- setup-regular-game
   [msg-first-attr msg-second-attr]
-  (let [current-player-attr (prompt/get-player-attributes {:msg msg-first-attr :color :green})
+  (let [current-player-attr (prompt/get-player-attributes {:msg msg-first-attr
+                                                           :color first-player-color})
         opponent-attr
-          (prompt/get-player-attributes {:msg msg-second-attr :color :blue
+          (prompt/get-player-attributes {:msg msg-second-attr
+                                         :color second-player-color
                                          :opponent-marker (:marker current-player-attr)})
         current-player (player/define-player current-player-attr :green)
         opponent (player/define-player opponent-attr :blue)
