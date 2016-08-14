@@ -62,10 +62,14 @@
 
 (defn end-animated-board
   [board]
-  (do
-    (view/print-message (messenger/stringify-board board))
-    (Thread/sleep 300)
-    (view/print-message messenger/welcome)))
+  (let [wait-one 500
+        wait-two 1000]
+    (do
+      (view/print-message (messenger/stringify-board board))
+      (Thread/sleep wait-one)
+      (view/print-message messenger/welcome)
+      (Thread/sleep wait-two)
+      (view/clear-screen))))
 
 (defn animated-board
   [game board current-player opponent]

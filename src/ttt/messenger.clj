@@ -19,8 +19,9 @@
 
 (def instructions "The board is represented like the following:\n")
 
-(def new-or-saved-msg (str "Would you like to (1) restart a saved game "
-                           "or (2) start a new game? "
+(def new-or-saved-msg (str "Would you like to\n"
+                          "(1) restart a saved game or\n"
+                           "(2) start a new game?\n"
                            "Please enter 1 or 2:"))
 
 (def role-options-msg
