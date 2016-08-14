@@ -16,6 +16,9 @@
 (def file-extension ".json")
 (def first-player-color :green)
 (def second-player-color :blue)
+(def x {:token :x :color :green})
+(def o {:token :o :color :blue})
+(def start-animated-board [o o :_ :_ x :_ :_ :_ x])
 
 (defn- setup-regular-game
   [msg-first-attr msg-second-attr]
@@ -55,12 +58,32 @@
     (setup-resumed-game directory)
     (setup-regular-game msg-first-player-attr msg-second-player-attr)))
 
+(declare make-a-move)
+
+(defn end-animated-board
+  [board]
+  (do
+    (view/print-message (messenger/stringify-board board))
+    (Thread/sleep 300)
+    (view/print-message messenger/welcome)))
+
+(defn animated-board
+  [game board current-player opponent]
+  (let [spot (make-a-move board current-player opponent)
+        game-board (board/move board spot (:marker current-player))]
+    (view/print-message (messenger/stringify-board board))
+    (view/make-board-disappear (:role current-player) 300)
+    (if (evaluate-game/game-over? game-board)
+      (end-animated-board game-board)
+      (recur game game-board opponent current-player))))
+
 (defn first-view-msgs
   []
   (view/clear-screen)
-  (view/print-message messenger/welcome)
-  (view/print-message messenger/instructions)
-  (view/print-message messenger/board-representation))
+  (animated-board :computer-x-computer
+                  start-animated-board
+                  {:marker x :role :hard-computer}
+                  {:marker o :role :easy-computer}))
 
 (defn initial-view-of-board
   [first-screen saved player board]
@@ -71,7 +94,7 @@
 
 (defn display-new-board-info
   [game board current-player spot]
-  (view/make-board-disappear (:role current-player))
+  (view/make-board-disappear (:role current-player) 1000)
   (view/print-message (messenger/moved-to game current-player spot))
   (view/print-message (messenger/stringify-board board)))
 

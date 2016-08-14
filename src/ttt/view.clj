@@ -68,8 +68,8 @@
   (do (print (padding-spaces 0 half-screen-width)) (flush)))
 
 (defn make-board-disappear
-  [player-role]
+  [player-role time]
   (if (or (= :easy-computer player-role)
           (= :hard-computer player-role))
-    (do (Thread/sleep 1000)
+    (do (Thread/sleep time)
         (clear-screen))))
