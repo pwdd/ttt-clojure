@@ -11,7 +11,8 @@
             [ttt.file-reader :as reader]
             [ttt.input-validation :as input-validation]
             [ttt.file-reader :as file-reader]
-            [ttt.easy-computer :as easy-computer]))
+            [ttt.easy-computer :as easy-computer]
+            [ttt.animated-start :as animate]))
 
 (def file-extension ".json")
 (def first-player-color :green)
@@ -58,35 +59,14 @@
     (setup-resumed-game directory)
     (setup-regular-game msg-first-player-attr msg-second-player-attr)))
 
-(declare make-a-move)
-
-(defn end-animated-board
-  [board]
-  (let [wait-one 500 wait-two 2000]
-      (view/print-message (messenger/stringify-board board))
-      (Thread/sleep wait-one)
-      (view/print-message messenger/welcome)
-      (Thread/sleep wait-two)
-      (view/clear-screen)))
-
-(defn animated-board
-  [game board current-player opponent]
-  (let [spot (make-a-move board current-player opponent)
-        game-board (board/move board spot (:marker current-player))
-        board-time 300]
-    (view/print-message (messenger/stringify-board board))
-    (view/make-board-disappear (:role current-player) board-time)
-    (if (evaluate-game/game-over? game-board)
-      (end-animated-board game-board)
-      (recur game game-board opponent current-player))))
-
 (defn first-view-msgs
   []
   (view/clear-screen)
-  (animated-board :computer-x-computer
+  (animate/animated-board :computer-x-computer
                   start-animated-board
                   {:marker x :role :hard-computer}
-                  {:marker o :role :easy-computer}))
+                  {:marker o :role :easy-computer})
+  (view/print-message messenger/welcome))
 
 (defn initial-view-of-board
   [first-screen saved player board]
