@@ -35,11 +35,11 @@
 (defn- build-game-data
   [json-map]
   (zipmap (map keyword (keys json-map))
-          (map #(keywordize-game-element %) (vals json-map))))
+          (map keywordize-game-element (vals json-map))))
 
 (defn build-board-from-file
   [board-from-file]
-  (mapv #(convert-to-board-data %) board-from-file))
+  (mapv convert-to-board-data board-from-file))
 
 (defn build-player-from-file
   [player-from-file]
@@ -70,7 +70,7 @@
 
 (defn is-there-any-file?
   [directory]
-  (not (empty? (files directory))))
+  (seq (files directory)))
 
 (defn list-all-files
   [directory]

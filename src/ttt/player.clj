@@ -7,7 +7,7 @@
 
 (defn is-ai?
   [player-role]
-  (not (= :human player-role)))
+  (not= :human player-role))
 
 (defn role
   [player]

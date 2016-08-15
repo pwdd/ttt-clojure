@@ -69,7 +69,7 @@
 
 (defn make-board-disappear
   [player-role time]
-  (if (or (= :easy-computer player-role)
-          (= :hard-computer player-role))
-    (do (Thread/sleep time)
-        (clear-screen))))
+  (when (or (= :easy-computer player-role)
+            (= :hard-computer player-role))
+    (Thread/sleep time)
+    (clear-screen)))

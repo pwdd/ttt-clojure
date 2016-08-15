@@ -66,7 +66,7 @@
 
 (defn translate-keyword
   [k]
-  (if (not (= k board/empty-spot))
+  (if-not (= k board/empty-spot)
     (str " " (colors/colorize (:color k) (marker-string k)) " ")
     "   "))
 
@@ -86,7 +86,7 @@
 
 (defn stringify-combo
   [combo]
-  (string/join ", " (map #(inc %) combo)))
+  (string/join ", " (map inc combo)))
 
 (def default-invalid-input "Your choice is not valid. ")
 
@@ -166,7 +166,7 @@
 
 (defn not-a-valid-move
   [position]
-  (if (not (helpers/in-range? position board/board-length))
+  (if-not (helpers/in-range? position board/board-length)
     (str default-invalid-input
          "There is no position "
          (inc position)

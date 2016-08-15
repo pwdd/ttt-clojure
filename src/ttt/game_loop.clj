@@ -62,21 +62,20 @@
 
 (defn end-animated-board
   [board]
-  (let [wait-one 500
-        wait-two 1000]
-    (do
+  (let [wait-one 500 wait-two 2000]
       (view/print-message (messenger/stringify-board board))
       (Thread/sleep wait-one)
       (view/print-message messenger/welcome)
       (Thread/sleep wait-two)
-      (view/clear-screen))))
+      (view/clear-screen)))
 
 (defn animated-board
   [game board current-player opponent]
   (let [spot (make-a-move board current-player opponent)
-        game-board (board/move board spot (:marker current-player))]
+        game-board (board/move board spot (:marker current-player))
+        board-time 300]
     (view/print-message (messenger/stringify-board board))
-    (view/make-board-disappear (:role current-player) 300)
+    (view/make-board-disappear (:role current-player) board-time)
     (if (evaluate-game/game-over? game-board)
       (end-animated-board game-board)
       (recur game game-board opponent current-player))))
