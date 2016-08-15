@@ -32,16 +32,21 @@
 (describe "convert-to-board-data"
 
   (with _ board/empty-spot)
+  (with x {:token :x :color :green})
 
   (it "takes a string representing an empty spot returns empty-spot keyword"
     (should= @_ (file-reader/convert-to-board-data "_")))
 
-  (it "takes a string representing a marker and returns it"
-    (should= "x" (file-reader/convert-to-board-data "x"))))
+  (it "takes a mpa representing a marker and returns as valid marker/Marker"
+    (should= @x (file-reader/convert-to-board-data {"token" "x" "color" "green"}))))
 
 (describe "build-board-from-file"
 
   (with _ board/empty-spot)
+  (with x {"token" "x" "color" "green"})
+  (with X {:token :x :color :green})
+  (with o {"token" "o" "color" "blue"})
+  (with O {:token :o :color :blue})
 
   (it "returns an empty board if board from file only have empty spots"
     (should= (board/new-board)
@@ -50,19 +55,18 @@
                                                  "_" "_" "_"])))
 
   (it "returns a board containing players markers and empty spots"
-    (should= ["x" @_ "o" @_ @_ @_ @_ @_ "x"]
-             (file-reader/build-board-from-file ["x" "_" "o" "_" "_" "_" "_" "_" "x"]))))
+    (should= [@X @_ @O @_ @_ @_ @_ @_ @X]
+             (file-reader/build-board-from-file [@x "_" @o "_" "_" "_" "_" "_" @x]))))
 
 (describe "build-player-from-file"
 
-  (with player {"role" "hard-computer" "marker" {"symbol" "o" "color" "green"}})
+  (with player {"role" "hard-computer" "marker" {"token" "o" "color" "green"}})
 
   (it "turns a map with string keys into a map with keywords keys"
-    (should= {:role "hard-computer" :marker {:symbol "o" :color :green} }
+    (should= {:role :hard-computer :marker {:token :o :color :green} }
              (file-reader/build-player-from-file @player))))
 
 (describe "saved-data"
-
   (it "returns a map with :current-player-data key"
     (should ((file-reader/saved-data "hh.json" (io/file "test-files"))
             :current-player-data)))
@@ -80,7 +84,7 @@
     (should (empty? (file-reader/files (io/file "test-files/empty-dir")))))
 
   (it "returns a collection with file objects"
-      (should= 2 (count (file-reader/files (io/file "test-files"))))))
+      (should= 1 (count (file-reader/files (io/file "test-files"))))))
 
 (describe "filenames"
 

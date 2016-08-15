@@ -18,13 +18,13 @@
     input))
 
 (defn get-marker
-  [{:keys [msg opponent-marker] :or {opponent-marker ""}}]
+  [{:keys [msg color opponent-token] :or {opponent-token :0}}]
   (let [marker (prompt string/trim msg)]
-    (if (input-validation/is-valid-marker? marker opponent-marker)
-      marker
+    (if (input-validation/is-valid-marker? marker opponent-token)
+      {:token (keyword marker) :color color}
       (do
-        (view/print-message (messenger/invalid-marker-msg marker opponent-marker))
-        (recur {:msg msg :opponent-marker opponent-marker})))))
+        (view/print-message (messenger/invalid-marker-msg marker opponent-token))
+        (recur {:msg msg :color color :opponent-token opponent-token})))))
 
 (defn get-role
   [marker]
@@ -36,8 +36,8 @@
         (recur marker)))))
 
 (defn get-player-attributes
-  [{:keys [msg opponent-marker] :or {opponent-marker ""}}]
-  (let [marker (get-marker {:msg msg :opponent-marker opponent-marker})
+  [{:keys [msg color opponent-token] :or {opponent-marker :0}}]
+  (let [marker (get-marker {:msg msg :color color :opponent-token opponent-token})
         role (get-role marker)]
     {:marker marker :role role}))
 

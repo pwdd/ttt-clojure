@@ -12,11 +12,30 @@
   [filename directory]
   (json/read-str (slurp (str directory "/" filename))))
 
+(defn- keywordize
+  [hashmap]
+  (let [keys (keys hashmap)
+        values (vals hashmap)]
+    (zipmap (map keyword keys) (map keyword values))))
+
 (defn convert-to-board-data
-  [string]
-  (if (= string "_")
+  [board-element]
+  (if (= board-element "_")
     board/empty-spot
-    string))
+    (keywordize board-element)))
+
+(defn- keywordize-game-element
+  [value]
+  (cond
+    (vector? value) (convert-to-board-data value)
+    (map? value) (keywordize value)
+  :else
+    (keyword value)))
+
+(defn- build-game-data
+  [json-map]
+  (zipmap (map keyword (keys json-map))
+          (map #(keywordize-game-element %) (vals json-map))))
 
 (defn build-board-from-file
   [board-from-file]
@@ -24,13 +43,7 @@
 
 (defn build-player-from-file
   [player-from-file]
-  (into {}
-    (for [[k v] player-from-file]
-      (cond
-        (= k "marker") {:marker (build-player-from-file v)}
-        (= k "color") [(keyword k) (keyword v)]
-        :else
-          [(keyword k) v]))))
+  (build-game-data player-from-file))
 
 (defn- build-from-file
   [field-name]

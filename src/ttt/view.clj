@@ -29,6 +29,22 @@
   [message-length half-screen-width]
   (- half-screen-width (quot message-length 2)))
 
+(def color-re #"\[\d*m")
+
+(defn color-code-list
+  [message-string]
+    (re-seq color-re message-string))
+
+(defn color-code-length
+  [message-string]
+  (if-let [color-list (color-code-list message-string)]
+    (+ (count color-list) (count (string/join color-list)))
+    0))
+
+(defn message-length
+  [message]
+  (- (count message) (color-code-length message)))
+
 (defn padding-spaces
   [message-length half-screen-width]
   (string/join (repeat (number-of-spaces message-length half-screen-width) " ")))
@@ -37,7 +53,7 @@
   [message half-screen-width]
   (->> message
        string/split-lines
-       (map #(str (padding-spaces (count %) half-screen-width) %))
+       (map #(str (padding-spaces (message-length %) half-screen-width) %))
        (string/join "\n")
        (str "\n")))
 

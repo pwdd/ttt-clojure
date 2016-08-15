@@ -1,1 +1,0 @@
-{"board": ["x","_","_","_","_","_","_","_","o"],"current-player": {"marker":{"symbol":"x","color":"red"},"role":"human"},"opponent": {"marker":{"symbol":"o","color":"blue"},"role":"easy-computer"}}

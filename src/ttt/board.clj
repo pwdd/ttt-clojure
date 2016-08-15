@@ -61,7 +61,7 @@
 (defn repeated-markers?
   [board combo]
   (let [selected-combo (mapv board combo)]
-    (if (not (= empty-spot (first selected-combo)))
+    (if-not (= empty-spot (first selected-combo))
       (apply = selected-combo))))
 
 (defn winning-combo

@@ -65,8 +65,8 @@
   (it "returns false if input has more than one character"
     (should-not (input-validation/is-valid-marker? "ab" "")))
 
-  (it "returns false if chosen marker is the same as opponent's marker"
-    (should-not (input-validation/is-valid-marker? "a" "a"))))
+  (it "returns false if chosen token is the same as opponent's token"
+    (should-not (input-validation/is-valid-marker? "a" :a))))
 
 (describe "is-int?"
   (it "returns true if argument is numeric string"

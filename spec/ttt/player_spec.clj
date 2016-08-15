@@ -16,12 +16,13 @@
 
 (describe "marker"
   (it "returns the marker from a player record"
-    (should= :x (player/marker {:marker {:symbol :x :color :green}
-                                :role :human}))))
+    (should= {:token :x :color :green}
+             (player/marker {:marker {:token :x :color :green}
+                             :role :human}))))
 
 (describe "color"
   (it "returns the color of a marker from a player record"
-    (should= :green (player/color {:marker {:symbol :x :color :green}
+    (should= :green (player/color {:marker {:token :x :color :green}
                                    :role :human}))))
 
 (describe "define-player"

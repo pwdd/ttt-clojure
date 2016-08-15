@@ -17,11 +17,11 @@
 
 (defn- setup-regular-game
   [msg-first-attr msg-second-attr]
-  (let [current-player-attr (prompt/get-player-attributes {:msg msg-first-attr})
+  (let [current-player-attr (prompt/get-player-attributes {:msg msg-first-attr :color :green})
         opponent-attr
-          (prompt/get-player-attributes {:msg msg-second-attr
+          (prompt/get-player-attributes {:msg msg-second-attr :color :blue
                                          :opponent-marker (:marker current-player-attr)})
-        current-player (player/define-player current-player-attr :red)
+        current-player (player/define-player current-player-attr :green)
         opponent (player/define-player opponent-attr :blue)
         game (game/create-game (:role current-player) (:role opponent))]
     {:current-player current-player
@@ -34,10 +34,8 @@
   (let [files (reader/list-all-files directory)
         filename (prompt/choose-a-file files)
         data (reader/saved-data (str filename file-extension) directory)
-        current-player-attributes (data :current-player-data)
-        opponent-attributes (data :opponent-data)
-        current-player (player/define-player current-player-attributes :red)
-        opponent (player/define-player opponent-attributes :blue)
+        current-player (data :current-player-data)
+        opponent (data :opponent-data)
         game (game/create-game (:role current-player)
                                (:role opponent))
         board (data :board-data)]
@@ -64,7 +62,7 @@
   [first-screen saved player board]
   (when (game/human-makes-first-move? first-screen (:role player))
     (if saved
-      (view/print-message (messenger/current-player-is (player/marker player))))
+      (view/print-message (messenger/current-player-is (:marker player))))
     (view/print-message (messenger/stringify-board board))))
 
 (defn display-new-board-info
@@ -96,7 +94,7 @@
   (initial-view-of-board first-screen saved current-player board)
 
   (let [spot (make-a-move board current-player opponent)
-        game-board (board/move board spot (player/marker current-player))]
+        game-board (board/move board spot (:marker current-player))]
 
     (display-new-board-info game game-board current-player spot)
 

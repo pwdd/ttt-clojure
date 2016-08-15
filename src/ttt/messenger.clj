@@ -7,7 +7,10 @@
             [ttt.input-validation :as input-validation]
             [ttt.colors :as colors]))
 
-(def separator "\n---|---|---\n")
+(def board-color :red)
+
+(def separator
+  (str "\n" (colors/colorize board-color "---|---|---") "\n"))
 
 (def welcome
   (str "   |------------------------|\n"
@@ -23,10 +26,14 @@
 (def role-options-msg
   "Please type H (human), EC (easy computer) or HC (hard computer): ")
 
+(defn- marker-string
+  [marker]
+  (name (:token marker)))
+
 (defn ask-role-msg
   [marker]
   (str "Should player '"
-       marker
+       (colors/colorize (:color marker) (marker-string marker))
        "' be a human or a computer?\n"
        role-options-msg))
 
@@ -59,12 +66,13 @@
 (defn translate-keyword
   [k]
   (if (not (= k board/empty-spot))
-    (str " " (name k) " ")
+    (str " " (colors/colorize (:color k) (marker-string k)) " ")
     "   "))
 
 (defn join-combo
   [string-combo]
-  (string/join "|" string-combo))
+  (string/join (str (colors/colorize board-color "|"))
+                    string-combo))
 
 (defn translate-board
   [board]
@@ -100,11 +108,13 @@
        "\n"))
 
 (defn default-win
-  [board]
-  (str "Player '"
-       (name (evaluate-game/winner-marker board))
-       "' won on positions "
-       (stringify-combo (board/winning-combo board))))
+  [board first-player second-player]
+  (let [winner (evaluate-game/winner-player board first-player second-player)
+        winner-marker (:marker winner)]
+    (str "Player '"
+         (colors/colorize (:color winner-marker) (marker-string winner-marker))
+         "' won on positions "
+         (stringify-combo (board/winning-combo board)))))
 
 (defmulti result
   (fn [game & [board first-player second-player]]
@@ -123,7 +133,7 @@
   [game & [board first-player second-player]]
   (if (evaluate-game/draw? board)
     "The game tied"
-    (default-win board)))
+    (default-win board first-player second-player)))
 
 (defmulti moved-to
   (fn [game player spot]
@@ -138,9 +148,7 @@
 (defmethod moved-to :same-roles
   [game player spot]
   (str "Player '"
-       ((player/color player) colors/ansi-colors)
-       (name (player/marker player))
-       (:default colors/ansi-colors)
+       (colors/colorize (player/color player) (marker-string (:marker player)))
        "' moved to "
        (inc spot)
        "\n"))
@@ -184,7 +192,10 @@
 
 (defn current-player-is
   [current-player-marker]
-  (str "Current player is playing with '" current-player-marker "'"))
+  (str "Current player is playing with '"
+       (colors/colorize (:color current-player-marker)
+                        (marker-string current-player-marker))
+       "'"))
 
 (def choose-a-file-msg "Enter the name of the saved game you wanna play:")
 

@@ -32,14 +32,20 @@
     (with-out-str (it)))
 
   (it "returns a player's marker if input is valid"
-    (should= "x" (with-in-str "x" (prompt/get-marker {:msg "select marker"}))))
+    (should= {:token :x :color :blue}
+             (with-in-str "x" (prompt/get-marker {:msg "select marker"
+                                                  :color :blue}))))
 
   (it "recurs and keep asking for input until it is valid"
-    (should= "x" (with-in-str "1\n#\n x" (prompt/get-marker {:msg "recur"}))))
+    (should= {:token :x :color :blue}
+             (with-in-str "1\n#\n x" (prompt/get-marker {:msg "recur"
+                                                         :color :blue}))))
 
   (it "recurs and asks for new input if marker is being used by the first player"
-    (should= "o"
-             (with-in-str "x\no" (prompt/get-marker {:msg "recur" :opponent-marker "x"})))))
+    (should= {:token :o :color :blue}
+             (with-in-str "x\no" (prompt/get-marker {:msg "recur"
+                                                     :color :blue
+                                                     :opponent-token :x})))))
 
 (describe "get-role"
 
@@ -47,10 +53,12 @@
     (with-out-str (it)))
 
   (it "returns a player's role if input is valid"
-    (should= "h" (with-in-str "h" (prompt/get-role {:msg "select role"}))))
+    (should= "h" (with-in-str "h" (prompt/get-role {:token :x :color :green}))))
 
   (it "recurs and keep asking for input until it is valid"
-    (should= "ec" (with-in-str "1\n#\n x\nec" (prompt/get-role {:msg "recur"})))))
+    (should= "ec"
+             (with-in-str "1\n#\n x\nec"
+                          (prompt/get-role {:token :x :color :green})))))
 
 (describe "get-player-attributes"
 
@@ -58,14 +66,21 @@
     (with-out-str (it)))
 
   (it "returns a map with keys :marker and :role"
-    (should= {:role "h" :marker "x"}
-             (with-in-str "x\nh" (prompt/get-player-attributes {:msg ""}))))
+    (should= {:marker {:token :x :color :green} :role "h" }
+             (with-in-str "x\nh"
+                          (prompt/get-player-attributes {:msg ""
+                                                         :color :green}))))
 
   (it "returns a map with the first input associate with :marker key"
-    (should= "x" (:marker (with-in-str "x\nh" (prompt/get-player-attributes {:msg ""})))))
+    (should= {:token :x :color :green}
+             (:marker (with-in-str "x\nh"
+                      (prompt/get-player-attributes {:msg ""
+                                                     :color :green})))))
 
   (it "returns a map with the second input associate with :role key"
-    (should= "h" (:role (with-in-str "x\nh" (prompt/get-player-attributes {:msg ""}))))))
+    (should= "h" (:role (with-in-str "x\nh"
+                                     (prompt/get-player-attributes {:msg ""
+                                                                    :color :green}))))))
 
 (describe "get-new-or-saved"
 
