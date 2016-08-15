@@ -1,16 +1,18 @@
 (ns ttt.colors)
 
-(def escape (char 27))
-
 (defn color-code
-  [color]
-  (str escape color))
+  [code-string]
+  (let [escape (char 27)]
+    (str escape code-string)))
+
+(def colors-code-list
+  (mapv #(color-code %) ["[31m" "[32m" "[33m" "[34m" "[35m" "[36m" "[37m"]))
+
+(def colors-key-list [:red :green :yellow :blue :purple :cyan :default])
 
 (def ansi-colors
-  {:default (color-code "[37m")
-   :blue (color-code "[34m")
-   :red (color-code "[31m")
-   :yellow (color-code "[33m")
-   :green (color-code "[36m")
-   :gray (color-code "[37m")
-   :reset (color-code "[m")})
+  (zipmap colors-key-list colors-code-list))
+
+(defn colorize
+  [color string]
+  (str (color ansi-colors) string (:default ansi-colors)))
