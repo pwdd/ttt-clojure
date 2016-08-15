@@ -9,26 +9,33 @@
             [ttt.evaluate-game :as evaluate-game]))
 
 (def initial-ttt-color :yellow)
+(def welcome "Welcome to Tic Tac Toe")
+
+(defn padded-welcome
+  []
+  (let [spaces (view/padding-spaces (count welcome) view/half-screen-width)]
+    (str spaces "Welcome to ")))
 
 (defn- timed-same-line-string
   [string time]
-    (print string) (flush) (Thread/sleep time))
+    (print string)
+    (flush)
+    (Thread/sleep time))
 
 (defn animate-ttt
   [time]
-  (let [spaces (view/padding-spaces (count "Tic Tac Toe") view/half-screen-width)
-        ttt (map #(colors/colorize initial-ttt-color %)
-                 [(str spaces "Tic") " Tac ""Toe"])]
+  (let [ttt (map #(colors/colorize initial-ttt-color %) ["Tic" " Tac ""Toe"])]
     (doall (map #(timed-same-line-string % time) ttt))))
 
 (defn end-animated-board
   [board]
-  (let [first-wait 500 second-wait 1300 third-wait 800]
+  (let [short-wait 500 medium-wait 800 long-wait 1300]
     (view/print-message (messenger/stringify-board board))
     (println "")
-    (Thread/sleep first-wait)
-    (animate-ttt third-wait)
-    (Thread/sleep second-wait)
+    (Thread/sleep short-wait)
+    (timed-same-line-string (padded-welcome) short-wait)
+    (animate-ttt medium-wait)
+    (Thread/sleep long-wait)
     (view/clear-screen)))
 
 (defn animated-board
