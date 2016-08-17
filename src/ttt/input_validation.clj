@@ -66,3 +66,9 @@
 (defn save?
   [input]
   (= input save-valid-input))
+
+(def valid-board-dimensions ["3" "4" "5"])
+
+(defn is-valid-board-dimension?
+  [input]
+  (some #{input} valid-board-dimensions))

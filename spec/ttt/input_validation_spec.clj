@@ -129,3 +129,16 @@
 
   (it "returns alse if input is not equal to 'save-valid-input'"
     (should-not (input-validation/save? "s"))))
+
+(describe "is-valid-board-dimension?"
+  (with valid-input ["3" "4" "5"])
+
+  (it "returns true if input is in @valid-input"
+    (should= 3 (count (map input-validation/is-valid-board-dimension?
+                           @valid-input))))
+
+  (it "returns false if input is smaller than 3"
+    (should-not (input-validation/is-valid-board-dimension? "2")))
+
+  (it "returns false if input is biggern than '5'"
+    (should-not (input-validation/is-valid-board-dimension? "6"))))
