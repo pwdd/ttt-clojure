@@ -5,31 +5,31 @@
 
 (describe "new-board"
   (it "returns a collection of empty spots"
-    (should (every? #{board/empty-spot} (board/new-board))))
+    (should (every? #{board/empty-spot} (board/new-board 3))))
 
   (it "returns a collection with length equal to board-length"
-    (should (= board/board-length (count (board/new-board))))))
+    (should (= (board/board-length 3) (count (board/new-board 3))))))
 
 (describe "winning-positions"
   (it "returns a collections with length 8"
-    (should= 8 (count (board/winning-positions))))
+    (should= 8 (count (board/winning-positions 3))))
 
   (it "contains board-rows"
-    (should (set/subset? (set (board/board-rows)) (set (board/winning-positions)))))
+    (should (set/subset? (set (board/board-rows 3)) (set (board/winning-positions 3)))))
 
   (it "contains board-columns"
-    (should (set/subset? (set (board/board-columns)) (set (board/winning-positions)))))
+    (should (set/subset? (set (board/board-columns 3)) (set (board/winning-positions 3)))))
 
   (it "contains board-diagonals"
-    (should (set/subset? (set (board/board-diagonals)) (set (board/winning-positions)))))
+    (should (set/subset? (set (board/board-diagonals 3)) (set (board/winning-positions 3)))))
 
   (it "returns a collection in which each element has size equals to board-size"
-    (should (every? #(= board/board-size (count %)) (board/winning-positions)))))
+    (should (every? #(= 3 (count %)) (board/winning-positions 3)))))
 
 (describe "move"
 
   (with _ board/empty-spot)
-  (with empty-board (board/new-board))
+  (with empty-board (board/new-board 3))
   (with x {:token :x :color :green})
   (with o {:token :o :color :blue})
 
@@ -48,7 +48,7 @@
   (with o {:token :o :color :blue})
 
   (it "returns true if there is no empty spots"
-    (should (board/is-board-full? (vec (repeat board/board-length @x)))))
+    (should (board/is-board-full? (vec (repeat (count @x) @x)))))
 
   (it "returns false if there is any empty spot"
     (should-not (board/is-board-full? [@x @o @x @o @_ @x @x @o]))))
@@ -56,7 +56,7 @@
 (describe "is-board-empty?"
 
   (with _ board/empty-spot)
-  (with empty-board (board/new-board))
+  (with empty-board (board/new-board 3))
   (with x {:token :x :color :green})
 
   (it "returns true if board has only empty spots"
@@ -72,7 +72,7 @@
   (with o {:token :o :color :blue})
 
   (it "returns true if spot is in range and board is empty"
-    (should (board/is-spot-available? (board/new-board) 1)))
+    (should (board/is-spot-available? (board/new-board 3) 1)))
 
   (it "returns true if spot has an empty spot"
     (should (board/is-spot-available? [@_ @_ @_
@@ -99,18 +99,18 @@
     (should= '(0 1 8) (board/available-spots [@_ @_ @x @x @x @x @x @x @_])))
 
   (it "returns an empty collection if no empty spot"
-    (should= '() (board/available-spots (vec (repeat board/board-length @x))))))
+    (should= '() (board/available-spots (vec (repeat (count @x) @x))))))
 
 (describe "is-valid-move?"
 
   (with _ board/empty-spot)
-  (with empty-board (board/new-board))
+  (with empty-board (board/new-board 3))
   (with x {:token :x :color :green})
 
   (it "returns true if spot is in range and board is empty"
     (should (board/is-valid-move? @empty-board 0)))
 
-  (it "returns false if spot is bigger than board-length"
+  (it "returns false if spot is bigger than length of the board"
     (should-not (board/is-valid-move? @empty-board 10)))
 
   (it "returns true if spot is the index of one of the empty spots"
@@ -125,7 +125,7 @@
 (describe "repeated-markers?"
 
   (with _ board/empty-spot)
-  (with empty-board (board/new-board))
+  (with empty-board (board/new-board 3))
   (with x {:token :x :color :green})
   (with o {:token :o :color :blue})
 
@@ -159,7 +159,7 @@
 (describe "winning-combo"
 
   (with _ board/empty-spot)
-  (with empty-board (board/new-board))
+  (with empty-board (board/new-board 3))
   (with x {:token :x :color :green})
   (with o {:token :o :color :blue})
 
