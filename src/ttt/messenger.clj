@@ -34,6 +34,13 @@
                            "(2) start a new game?\n"
                            "Please enter 1 or 2:"))
 
+(def choose-board-size
+  (str "Would you like to play using a board that has dimensions:\n"
+       "(3) 3 x 3\n"
+       "(4) 4 x 4\n"
+       "(5) 5 x 5?\n"
+       "Please enter '3', '4', or '5'"))
+
 (def role-options-msg
   "Please type H (human), EC (easy computer) or HC (hard computer): ")
 
