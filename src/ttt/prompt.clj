@@ -113,3 +113,10 @@
         (do
           (view/print-message (messenger/board-after-invalid-input board input))
           (recur player params)))))
+
+(defn get-board-size
+  []
+  (let [input (prompt string/trim messenger/choose-board-size)]
+    (if (input-validation/is-valid-board-size? input)
+      input
+      (recur))))
