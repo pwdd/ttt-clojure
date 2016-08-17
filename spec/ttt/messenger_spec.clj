@@ -6,6 +6,19 @@
             [ttt.board :as board]
             [ttt.helpers :as helpers]))
 
+(describe "separator"
+  (it "returns the board row separation for a 3 x 3 board"
+    (should= "\n---|---|---\n"
+             (helpers/remove-color (messenger/separator 3))))
+
+  (it "returns the board row separation for a 4 x 4 board"
+    (should= "\n---|---|---|---\n"
+             (helpers/remove-color (messenger/separator 4))))
+
+  (it "returns the board row separation for a 5 x 5 board"
+    (should= "\n---|---|---|---|---\n"
+             (helpers/remove-color (messenger/separator 5)))))
+
 (describe "ask-role-msg"
   (with x {:token :x :color :blue})
 

@@ -9,8 +9,18 @@
 
 (def board-color :red)
 
-(def separator
-  (str "\n" (colors/colorize board-color "---|---|---") "\n"))
+(defn- newline-wrap
+  [message]
+  (str "\n" message "\n"))
+
+(defn separator
+  [board-size]
+  (let [dashes "---"
+        pipe "|"]
+   (->> (repeat board-size dashes)
+        (string/join pipe)
+        newline-wrap
+        (colors/colorize board-color))))
 
 (def welcome
   (str "   |------------------------|\n"
@@ -61,9 +71,6 @@
 
 (def game-saved "Your game has been saved.")
 
-(def board-representation
-  " 1 | 2 | 3 \n---|---|---\n 4 | 5 | 6 \n---|---|---\n 7 | 8 | 9 \n")
-
 (defn translate-keyword
   [k]
   (if-not (= k board/empty-spot)
@@ -77,12 +84,12 @@
 
 (defn translate-board
   [board]
-  (let [board-string (partition board/board-size (map translate-keyword board))]
+  (let [board-string (partition (board/board-size board) (map translate-keyword board))]
     (map join-combo board-string)))
 
 (defn stringify-board
   [board]
-  (str (string/join separator (translate-board board)) "\n"))
+  (str (string/join (separator (board/board-size board)) (translate-board board)) "\n"))
 
 (defn stringify-combo
   [combo]
@@ -165,8 +172,8 @@
     (str default-invalid-input "'" input "' is not a number\n")))
 
 (defn not-a-valid-move
-  [position]
-  (if-not (helpers/in-range? position board/board-length)
+  [position board-length]
+  (if-not (helpers/in-range? position board-length)
     (str default-invalid-input
          "There is no position "
          (inc position)
