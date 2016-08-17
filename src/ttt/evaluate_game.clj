@@ -7,12 +7,16 @@
   (if-let [combo (board/winning-combo board)]
     (board (combo 0))))
 
+(defn winner-player
+  [board first-player second-player]
+  (let [winner-marker (winner-marker board)]
+    (if (= winner-marker (player/marker first-player))
+      first-player
+      second-player)))
+
 (defn winner-role
   [board first-player second-player]
-  (let [winner (winner-marker board)]
-    (if (= (:marker first-player) winner)
-      (:role first-player)
-      (:role second-player))))
+  (player/role (winner-player board first-player second-player)))
 
 (defn is-winner-ai?
  [board first-player second-player]

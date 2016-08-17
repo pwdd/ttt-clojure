@@ -4,28 +4,37 @@
             [ttt.player :as player]
             [ttt.helpers :as helpers]
             [ttt.evaluate-game :as evaluate-game]
-            [ttt.input-validation :as input-validation]))
+            [ttt.input-validation :as input-validation]
+            [ttt.colors :as colors]))
 
-(def separator "\n---|---|---\n")
+(def board-color :red)
+
+(def separator
+  (str "\n" (colors/colorize board-color "---|---|---") "\n"))
 
 (def welcome
   (str "   |------------------------|\n"
-       "   ---| Welcome to Tic Tac Toe |---\n"
+       "   ---| " (colors/colorize :purple "Welcome to Tic Tac Toe") " |---\n"
        "   |------------------------|"))
 
 (def instructions "The board is represented like the following:\n")
 
-(def new-or-saved-msg (str "Would you like to (1) restart a saved game "
-                           "or (2) start a new game? "
+(def new-or-saved-msg (str "Would you like to\n"
+                          "(1) restart a saved game or\n"
+                           "(2) start a new game?\n"
                            "Please enter 1 or 2:"))
 
 (def role-options-msg
   "Please type H (human), EC (easy computer) or HC (hard computer): ")
 
+(defn- marker-string
+  [marker]
+  (name (:token marker)))
+
 (defn ask-role-msg
   [marker]
   (str "Should player '"
-       marker
+       (colors/colorize (:color marker) (marker-string marker))
        "' be a human or a computer?\n"
        role-options-msg))
 
@@ -57,13 +66,14 @@
 
 (defn translate-keyword
   [k]
-  (if (not (= k board/empty-spot))
-    (str " " (name k) " ")
+  (if-not (= k board/empty-spot)
+    (str " " (colors/colorize (:color k) (marker-string k)) " ")
     "   "))
 
 (defn join-combo
   [string-combo]
-  (string/join "|" string-combo))
+  (string/join (str (colors/colorize board-color "|"))
+                    string-combo))
 
 (defn translate-board
   [board]
@@ -76,7 +86,7 @@
 
 (defn stringify-combo
   [combo]
-  (string/join ", " (map #(inc %) combo)))
+  (string/join ", " (map inc combo)))
 
 (def default-invalid-input "Your choice is not valid. ")
 
@@ -99,11 +109,13 @@
        "\n"))
 
 (defn default-win
-  [board]
-  (str "Player '"
-       (name (evaluate-game/winner-marker board))
-       "' won on positions "
-       (stringify-combo (board/winning-combo board))))
+  [board first-player second-player]
+  (let [winner (evaluate-game/winner-player board first-player second-player)
+        winner-marker (:marker winner)]
+    (str "Player '"
+         (colors/colorize (:color winner-marker) (marker-string winner-marker))
+         "' won on positions "
+         (stringify-combo (board/winning-combo board)))))
 
 (defmulti result
   (fn [game & [board first-player second-player]]
@@ -122,7 +134,7 @@
   [game & [board first-player second-player]]
   (if (evaluate-game/draw? board)
     "The game tied"
-    (default-win board)))
+    (default-win board first-player second-player)))
 
 (defmulti moved-to
   (fn [game player spot]
@@ -136,7 +148,11 @@
 
 (defmethod moved-to :same-roles
   [game player spot]
-  (str "Player '" (name (:marker player)) "' moved to " (inc spot) "\n"))
+  (str "Player '"
+       (colors/colorize (player/color player) (marker-string (:marker player)))
+       "' moved to "
+       (inc spot)
+       "\n"))
 
 (defmethod moved-to :default
   [game player spot]
@@ -150,7 +166,7 @@
 
 (defn not-a-valid-move
   [position]
-  (if (not (helpers/in-range? position board/board-length))
+  (if-not (helpers/in-range? position board/board-length)
     (str default-invalid-input
          "There is no position "
          (inc position)
@@ -177,7 +193,10 @@
 
 (defn current-player-is
   [current-player-marker]
-  (str "Current player is playing with '" current-player-marker "'"))
+  (str "Current player is playing with '"
+       (colors/colorize (:color current-player-marker)
+                        (marker-string current-player-marker))
+       "'"))
 
 (def choose-a-file-msg "Enter the name of the saved game you wanna play:")
 

@@ -11,32 +11,39 @@
             [ttt.file-reader :as reader]
             [ttt.input-validation :as input-validation]
             [ttt.file-reader :as file-reader]
-            [ttt.easy-computer :as easy-computer]))
+            [ttt.easy-computer :as easy-computer]
+            [ttt.animated-start :as animate]))
 
 (def file-extension ".json")
+(def first-player-color :green)
+(def second-player-color :blue)
+(def x {:token :x :color :green})
+(def o {:token :o :color :blue})
+(def start-animated-board [o o :_ :_ x :_ :_ :_ x])
 
-(defn setup-regular-game
+(defn- setup-regular-game
   [msg-first-attr msg-second-attr]
-  (let [current-player-attr (prompt/get-player-attributes {:msg msg-first-attr})
-        opponent-attr (prompt/get-player-attributes {:msg msg-second-attr
-                                                      :opponent-marker (:marker current-player-attr)})
-        current-player (player/define-player current-player-attr)
-        opponent (player/define-player opponent-attr)
+  (let [current-player-attr (prompt/get-player-attributes {:msg msg-first-attr
+                                                           :color first-player-color})
+        opponent-attr
+          (prompt/get-player-attributes {:msg msg-second-attr
+                                         :color second-player-color
+                                         :opponent-marker (:marker current-player-attr)})
+        current-player (player/define-player current-player-attr :green)
+        opponent (player/define-player opponent-attr :blue)
         game (game/create-game (:role current-player) (:role opponent))]
     {:current-player current-player
      :opponent opponent
      :game game
      :saved false}))
 
-(defn setup-resumed-game
+(defn- setup-resumed-game
   [directory]
   (let [files (reader/list-all-files directory)
         filename (prompt/choose-a-file files)
         data (reader/saved-data (str filename file-extension) directory)
-        current-player-attributes (data :current-player-data)
-        opponent-attributes (data :opponent-data)
-        current-player (player/define-player current-player-attributes)
-        opponent (player/define-player opponent-attributes)
+        current-player (data :current-player-data)
+        opponent (data :opponent-data)
         game (game/create-game (:role current-player)
                                (:role opponent))
         board (data :board-data)]
@@ -55,9 +62,11 @@
 (defn first-view-msgs
   []
   (view/clear-screen)
-  (view/print-message messenger/welcome)
-  (view/print-message messenger/instructions)
-  (view/print-message messenger/board-representation))
+  (animate/animated-board :computer-x-computer
+                  start-animated-board
+                  {:marker x :role :hard-computer}
+                  {:marker o :role :easy-computer})
+  (view/print-message messenger/welcome))
 
 (defn initial-view-of-board
   [first-screen saved player board]
@@ -68,7 +77,7 @@
 
 (defn display-new-board-info
   [game board current-player spot]
-  (view/make-board-disappear (:role current-player))
+  (view/make-board-disappear (:role current-player) 1000)
   (view/print-message (messenger/moved-to game current-player spot))
   (view/print-message (messenger/stringify-board board)))
 

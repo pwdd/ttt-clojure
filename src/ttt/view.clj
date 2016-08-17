@@ -1,6 +1,7 @@
 (ns ttt.view
   (:require [clojure.string :as string]
-            [clojure.java.shell :as sh]))
+            [clojure.java.shell :as sh]
+            [ttt.colors :as colors]))
 
 (defn get-console-width
   []
@@ -28,6 +29,22 @@
   [message-length half-screen-width]
   (- half-screen-width (quot message-length 2)))
 
+(def color-re #"\[\d*m")
+
+(defn color-code-list
+  [message-string]
+    (re-seq color-re message-string))
+
+(defn color-code-length
+  [message-string]
+  (if-let [color-list (color-code-list message-string)]
+    (+ (count color-list) (count (string/join color-list)))
+    0))
+
+(defn message-length
+  [message]
+  (- (count message) (color-code-length message)))
+
 (defn padding-spaces
   [message-length half-screen-width]
   (string/join (repeat (number-of-spaces message-length half-screen-width) " ")))
@@ -36,21 +53,23 @@
   [message half-screen-width]
   (->> message
        string/split-lines
-       (map #(str (padding-spaces (count %) half-screen-width) %))
+       (map #(str (padding-spaces (message-length %) half-screen-width) %))
        (string/join "\n")
        (str "\n")))
 
 (defn print-message
   [msg]
-  (println (add-padding-spaces msg half-screen-width)))
+  (println (str (:default colors/ansi-colors)
+                (add-padding-spaces msg half-screen-width)
+                (:default colors/ansi-colors))))
 
 (defn centralize-cursor
   []
   (do (print (padding-spaces 0 half-screen-width)) (flush)))
 
 (defn make-board-disappear
-  [player-role]
-  (if (or (= :easy-computer player-role)
-          (= :hard-computer player-role))
-    (do (Thread/sleep 1000)
-        (clear-screen))))
+  [player-role time]
+  (when (or (= :easy-computer player-role)
+            (= :hard-computer player-role))
+    (Thread/sleep time)
+    (clear-screen)))

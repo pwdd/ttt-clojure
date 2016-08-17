@@ -1,6 +1,7 @@
 (ns ttt.helpers-spec
   (:require [speclj.core :refer :all]
-            [ttt.helpers :as helpers]))
+            [ttt.helpers :as helpers]
+            [ttt.colors :as colors]))
 
 (describe "clean-string"
 
@@ -32,3 +33,17 @@
 
   (it "returns true if 10 and if limit is 20"
      (should (helpers/in-range? 10 20))))
+
+(describe "remove-color"
+  (it "returns string if it has not ansi color code"
+    (should= "x" (helpers/remove-color "x")))
+
+  (it "returns string without ansi color code"
+    (should= "x" (helpers/remove-color (colors/colorize :blue "x"))))
+
+  (it "returns string without any ansi color code"
+    (should= "xoy"
+             (helpers/remove-color (str (colors/colorize :blue "x")
+                                         "o"
+                                         (colors/colorize :red "y")))))
+)

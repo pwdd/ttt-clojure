@@ -6,9 +6,20 @@
   (string/lower-case (string/trim str)))
 
 (defn input-to-number
-  [user-input]
-  (dec (Integer/parseInt (string/trim user-input))))
+  [input]
+  (dec (Integer/parseInt (string/trim input))))
 
 (defn in-range?
   [idx limit]
   (and (>= idx 0) (< idx limit)))
+
+(defn remove-color
+  [string]
+  (let [escape (char 27)
+        re-code #"\[\d*m"]
+    (loop [string string
+           code-list (re-seq re-code string)]
+      (if (empty? code-list)
+        string
+        (recur (string/replace string (str escape (first code-list)) "")
+               (rest code-list))))))

@@ -1,7 +1,8 @@
 (ns ttt.view-spec
   (:require [speclj.core :refer :all]
             [ttt.view :as view]
-            [clojure.string :as string]))
+            [clojure.string :as string]
+            [ttt.colors :as colors]))
 
 (describe "number-of-spaces"
 
@@ -13,6 +14,34 @@
 
   (it "returns the number of spaces if message length is odd"
     (should= 59 (view/number-of-spaces 3 60))))
+
+(describe "color-code-list"
+  (it "returns false if string has no color code"
+     (should-not (view/color-code-list "foo")))
+
+  (it "returns a collection with codes if string has one part that has color"
+    (should= ["[34m" "[37m"]
+             (view/color-code-list (str (:blue colors/ansi-colors)
+                                        "foo bar"
+                                        (:default colors/ansi-colors))))))
+
+(describe "color-code-length"
+  (it "returns 0 if string has not color code"
+    (should (zero? (view/color-code-length "foo")))
+
+    (it "returns the length of a set ansi color code used on string"
+      (should= 8 (view/color-code-length (str (:blue colors/ansi-colors)
+                                               "foo bar"
+                                               (:default colors/ansi-colors)))))
+
+    (it "returns the length of two sets of ansi color code used on string"
+      (should= 16 (view/color-code-length (str (:blue colors/ansi-colors)
+                                                "foo"
+                                                (:default colors/ansi-colors)
+                                                "bar"
+                                                (:green colors/ansi-colors)
+                                                "baz"
+                                                (:default colors/ansi-colors)))))))
 
 (describe "padding-spaces"
 

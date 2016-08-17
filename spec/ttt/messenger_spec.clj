@@ -3,32 +3,45 @@
             [ttt.messenger :as messenger]
             [ttt.player :as player]
             [ttt.game :as game]
-            [ttt.board :as board]))
+            [ttt.board :as board]
+            [ttt.helpers :as helpers]))
 
 (describe "ask-role-msg"
+  (with x {:token :x :color :blue})
+
   (it "returns a message that contains a player's marker"
-    (should (re-find #" 'x' " (messenger/ask-role-msg "x")))))
+    (should (re-find #" 'x' "
+                     (helpers/remove-color (messenger/ask-role-msg @x))))))
 
 (describe "translate-keyword"
   (it "returns ' x '"
-    (should= " x " (messenger/translate-keyword :x)))
+    (should= " x "
+             (helpers/remove-color (messenger/translate-keyword {:token :x
+                                                                 :color :blue}))))
 
   (it "returns ' o '"
-    (should= " o " (messenger/translate-keyword :o)))
+    (should= " o "
+             (helpers/remove-color (messenger/translate-keyword {:token :o
+                                                                 :color :blue}))))
 
   (it "returns an empty space for :_"
     (should= "   " (messenger/translate-keyword board/empty-spot))))
 
 (describe "stringify-board"
+
+  (with x {:token :x :color :reset})
+  (with o {:token :o :color :reset})
+  (with _ board/empty-spot)
+
   (it "outputs a representation of the empty board"
     (should=
       "   |   |   \n---|---|---\n   |   |   \n---|---|---\n   |   |   \n"
-      (messenger/stringify-board (board/new-board))))
+      (helpers/remove-color (messenger/stringify-board (board/new-board)))))
 
   (it "combines empty spaces and letters when some spots are taken"
     (should=
       "   | x |   \n---|---|---\n o |   |   \n---|---|---\n   |   | x \n"
-      (messenger/stringify-board [:_ :x :_ :o :_ :_ :_ :_ :x]))))
+      (helpers/remove-color (messenger/stringify-board [@_ @x @_ @o @_ @_ @_ @_ @x])))))
 
 (describe "stringify-combo"
   (it "returns a string representing a vector of numbers"
@@ -41,64 +54,76 @@
   (context ":default"
 
     (with game (game/create-game :human :human))
+    (with x {:token :x :color :green})
+    (with o {:token :o :color :blue})
+    (with _ board/empty-spot)
+    (with first-player {:role :human :marker @x})
+    (with second-player {:role :human :marker @o})
 
     (it "returns a message saying that the game ends ties"
       (should= "The game tied" (messenger/result @game
-                                                 [:x :o :x
-                                                  :o :x :o
-                                                  :o :x :o])))
+                                                 [@x @o @x
+                                                  @o @x @o
+                                                  @o @x @o])))
 
     (it "returns a message that has the marker 'x' and the winning positions"
-      (should= "Player 'x' won on positions 1, 2, 3"
+      (should (re-find #"(?=^Player )(?=.*x.*)(?=.*1, 2, 3.*)"
                (messenger/result @game
-                                 [:x :x :x
-                                  :o :_ :o
-                                  :o :x :o])))
+                                 [@x @x @x
+                                  @o @_ @o
+                                  @o @x @o]
+                                  @first-player
+                                  @second-player))))
 
     (it "returns a message that has the marker 'o' and the winning positions"
-      (should= "Player 'o' won on positions 1, 5, 9"
+      (should (re-find #"(?=^Player )(?=.*o.*)(?=.*1, 5, 9.*)"
                (messenger/result @game
-                                 [:o :x :x
-                                  :x :o :_
-                                  :_ :_ :o]))))
+                                 [@o @x @x
+                                  @x @o @_
+                                  @_ @_ @o]
+                                  @first-player
+                                  @second-player)))))
 
   (context ":computer-x-human"
 
+    (with x {:token :x :color :green})
+    (with o {:token :o :color :blue})
+    (with _ board/empty-spot)
     (with game (game/create-game :human :easy-computer))
-    (with human {:marker :x :role :human})
-    (with easy-computer {:marker :o :role :easy-computer})
+    (with human {:marker @x :role :human})
+    (with easy-computer {:marker @o :role :easy-computer})
 
     (it "returns tied message if the game ties"
       (should= "You tied\n" (messenger/result @game
-                                              [:x :o :x
-                                               :o :x :o
-                                               :o :x :o]
+                                              [@x @o @x
+                                               @o @x @o
+                                               @o @x @o]
                                                @human
                                                @easy-computer)))
 
     (it "returns winning message if human player won"
       (should (re-find #"You won(.*)"
                        (messenger/result @game
-                                         [:x :x :x
-                                          :o :_ :o
-                                          :o :x :o]
+                                         [@x @x @x
+                                          @o @_ @o
+                                          @o @x @o]
                                           @human
                                           @easy-computer))))
 
     (it "returns 'you lost' message if human player lost"
       (should (re-find #"You lost(.*)"
                        (messenger/result @game
-                                         [:o :x :x
-                                          :x :o :_
-                                          :_ :_ :o]
+                                         [@o @x @x
+                                          @x @o @_
+                                          @_ @_ @o]
                                           @human
                                           @easy-computer))))))
 
 (describe "moved-to"
 
-  (with human {:marker :x :role :human})
-  (with easy-computer {:marker :o :role :easy-computer})
-  (with hard-computer {:marker :h :role :hard-computer})
+  (with human {:marker {:token :x :color :blue} :role :human})
+  (with easy-computer {:marker {:token :o :color :blue} :role :easy-computer})
+  (with hard-computer {:marker {:token :h :color :blue} :role :hard-computer})
   (with human-x-human (game/create-game :human :human))
   (with easy-x-human (game/create-game :easy-computer :human))
   (with easy-x-easy (game/create-game :easy-computer :easy-computer))
@@ -116,16 +141,16 @@
 
   (context ":same-player-roles"
     (it "returns message starting with 'Player [marker]' if player is human"
-      (should= "Player 'x' moved to 2\n"
-               (messenger/moved-to @human-x-human @human 1))))
+      (should (re-find #"(?=^Player )(?=.*x.*)(?=.*2.*)"
+              (messenger/moved-to @human-x-human @human 1)))))
 
     (it "returns message starting with 'Player [marker]' if player is easy-computer"
-      (should= "Player 'o' moved to 3\n"
-               (messenger/moved-to @easy-x-easy @easy-computer 2)))
+      (should (re-find #"(?=^Player )(?=.*o.*)(?=.*3.*)"
+              (messenger/moved-to @easy-x-easy @easy-computer 2))))
 
     (it "returns message starting with 'Player [marker]' if player is hard-computer"
-      (should= "Player 'h' moved to 9\n"
-               (messenger/moved-to @hard-x-hard @hard-computer 8))))
+      (should (re-find #"(?=^Player )(?=.*h.*)(?=.*9.*)"
+              (messenger/moved-to @hard-x-hard @hard-computer 8)))))
 
 (describe "not-a-valid-number"
   (it "explains that empty space is not a number"
@@ -167,10 +192,14 @@
 
 (describe "current-player-is"
   (it "returns a string containing 'x'"
-    (should (re-find #"'x'" (messenger/current-player-is "x"))))
+    (should (re-find #"'x'"
+                    (helpers/remove-color
+                     (messenger/current-player-is {:token :x :color :blue})))))
 
   (it "returns a string containing 'a'"
-    (should (re-find #"'a'" (messenger/current-player-is "a")))))
+    (should (re-find #"'a'"
+                     (helpers/remove-color
+                      (messenger/current-player-is {:token :a :color :blue}))))))
 
 (describe "display-files-list"
   (it "returns an empty string if collection is empty"

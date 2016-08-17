@@ -38,31 +38,31 @@
      (is-acceptable-as-hard-computer? role)))
 
 (defn is-valid-marker?
- [input opponent-marker]
+ [input opponent-token]
  (and (= (count input) 1)
       (re-matches #"^[a-zA-Z]$" input)
-      (not (= input opponent-marker))))
+      (not= (keyword input) opponent-token)))
 
 (defn is-int?
-  [user-input]
+  [input]
   (try
-    (Integer/parseInt (helpers/clean-string user-input))
+    (Integer/parseInt (helpers/clean-string input))
     true
   (catch Exception e false)))
 
 (defn is-valid-move-input?
-  [board user-input]
-  (and (is-int? user-input)
-       (board/is-valid-move? board (helpers/input-to-number user-input))))
+  [board input]
+  (and (is-int? input)
+       (board/is-valid-move? board (helpers/input-to-number input))))
 
 (defn is-valid-new-or-saved?
-  [user-input]
-  (or (= user-input saved-game-option) (= user-input new-game-option)))
+  [input]
+  (or (= input saved-game-option) (= input new-game-option)))
 
 (defn is-valid-filename?
-  [user-input filenames]
-  (some #{user-input} filenames))
+  [input filenames]
+  (some #{input} filenames))
 
 (defn save?
-  [user-input]
-  (= user-input save-valid-input))
+  [input]
+  (= input save-valid-input))

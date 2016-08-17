@@ -21,29 +21,31 @@
 
 (describe "write-players"
   (it "adds current player marker and role to respective key"
-    (should= "\"current-player\": {\"marker\":\"x\",\"role\":\"human\"}"
-             (file-writer/write-players "current-player" { :marker "x" :role :human })))
+    (should= "\"current-player\": {\"marker\":{\"token\":\"x\",\"color\":\"green\"},\"role\":\"human\"}"
+             (file-writer/write-players "current-player" { :marker {:token "x" :color "green"}
+                                                           :role :human })))
 
   (it "adds opponent marker and role to respective key"
-    (should= "\"opponent\": {\"marker\":\"o\",\"role\":\"hard-computer\"}"
-             (file-writer/write-players "opponent" { :marker "o" :role :hard-computer }))))
+    (should= "\"opponent\": {\"marker\":{\"token\":\"o\",\"color\":\"green\"},\"role\":\"hard-computer\"}"
+             (file-writer/write-players "opponent" { :marker {:token "o" :color "green"}
+                                                     :role :hard-computer }))))
 
 (describe "write-json"
   (it "returns a map in valid JSON format"
     (should= (str "{\"board\": [\"_\",\"_\",\"_\",\"_\",\"_\",\"_\",\"_\",\"_\",\"_\"],"
-                  "\"current-player\": {\"marker\":\"x\",\"role\":\"human\"},"
-                  "\"opponent\": {\"marker\":\"o\",\"role\":\"easy-computer\"}}")
+                  "\"current-player\": {\"marker\":{\"token\":\"x\",\"color\":\"green\"},\"role\":\"human\"},"
+                  "\"opponent\": {\"marker\":{\"token\":\"o\",\"color\":\"green\"},\"role\":\"easy-computer\"}}")
              (file-writer/write-json {:board (board/new-board)
-                                      :current-player {:marker "x" :role "human"}
-                                      :opponent {:marker "o" :role "easy-computer"}}))))
+                                      :current-player {:marker {:token "x" :color :green} :role "human"}
+                                      :opponent {:marker {:token "o" :color :green} :role "easy-computer"}}))))
 
 (describe "create-game-file"
 
   (with directory (io/file "test-files"))
   (with filename "test-game")
   (with game-data {:board (board/new-board)
-                   :current-player {:marker "x" :role "human"}
-                   :opponent {:marker "o" :role "easy-computer"}})
+                   :current-player {:marker {:token "x" :color :green} :role "human"}
+                   :opponent {:marker {:token "o" :color :green} :role "easy-computer"}})
 
   (it "write JSON data to a file"
     (file-writer/create-game-file @directory @filename @game-data)
