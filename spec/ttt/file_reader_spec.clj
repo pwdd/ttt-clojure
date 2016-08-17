@@ -49,7 +49,7 @@
   (with O {:token :o :color :blue})
 
   (it "returns an empty board if board from file only have empty spots"
-    (should= (board/new-board)
+    (should= (board/new-board 3)
              (file-reader/build-board-from-file ["_" "_" "_"
                                                  "_" "_" "_"
                                                  "_" "_" "_"])))

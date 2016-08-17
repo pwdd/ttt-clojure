@@ -46,15 +46,31 @@
   (with o {:token :o :color :reset})
   (with _ board/empty-spot)
 
-  (it "outputs a representation of the empty board"
-    (should=
-      "   |   |   \n---|---|---\n   |   |   \n---|---|---\n   |   |   \n"
-      (helpers/remove-color (messenger/stringify-board (board/new-board)))))
+  (it "outputs a representation of the empty board with dimension 3x3"
+    (should= (str   "   |   |   "
+                  "\n---|---|---\n"
+                    "   |   |   "
+                  "\n---|---|---\n"
+                    "   |   |   \n")
+      (helpers/remove-color (messenger/stringify-board (board/new-board 3)))))
+
+  (it "outputs a representation of the empty board with dimension 4x4"
+    (should= (str   "   |   |   |   "
+                  "\n---|---|---|---\n"
+                    "   |   |   |   "
+                  "\n---|---|---|---\n"
+                    "   |   |   |   "
+                  "\n---|---|---|---\n"
+                    "   |   |   |   \n")
+      (helpers/remove-color (messenger/stringify-board (board/new-board 4)))))
 
   (it "combines empty spaces and letters when some spots are taken"
-    (should=
-      "   | x |   \n---|---|---\n o |   |   \n---|---|---\n   |   | x \n"
-      (helpers/remove-color (messenger/stringify-board [@_ @x @_ @o @_ @_ @_ @_ @x])))))
+    (should= (str   "   | x |   "
+                  "\n---|---|---\n"
+                    " o |   |   "
+                  "\n---|---|---\n"
+                    "   |   | x \n")
+             (helpers/remove-color (messenger/stringify-board [@_ @x @_ @o @_ @_ @_ @_ @x])))))
 
 (describe "stringify-combo"
   (it "returns a string representing a vector of numbers"
@@ -177,11 +193,11 @@
 (describe "not-a-valid-move"
   (it "explains that number is out of range"
     (should= (str messenger/default-invalid-input "There is no position 12 in the board\n")
-             (messenger/not-a-valid-move 11)))
+             (messenger/not-a-valid-move 11 9)))
 
   (it "explains that a position is taken"
     (should= (str messenger/default-invalid-input "The position is taken\n")
-             (messenger/not-a-valid-move 2))))
+             (messenger/not-a-valid-move 2 16))))
 
 (describe "invalid-marker-msg"
   (it "explains that a word is an invalid marker"

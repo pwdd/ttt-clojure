@@ -18,10 +18,10 @@
 
   (context ":human"
     (it "returns an integer"
-      (should= 0 (with-in-str "1" (spots/select-spot @human {:board (board/new-board)}))))
+      (should= 0 (with-in-str "1" (spots/select-spot @human {:board (board/new-board 3)}))))
 
     (it "returns an integer that numeric string minus one"
-      (should= 3 (with-in-str "4" (spots/select-spot @human {:board (board/new-board)})))))
+      (should= 3 (with-in-str "4" (spots/select-spot @human {:board (board/new-board 3)})))))
 
   (context ":easy-computer"
     (with spots (board/available-spots [@x @_ @o @_ @o @_ @_ @x @o @o]))

@@ -3,6 +3,10 @@
 
 (def empty-spot :_)
 
+(defn board-size
+  [board]
+  (int (Math/sqrt (count board))))
+
 (defn board-length
   [board-size]
   (* board-size board-size))
@@ -70,7 +74,7 @@
 
 (defn winning-combo
   [board]
-  (let [board-size (int (Math/sqrt (count board)))]
+  (let [board-size (board-size board)]
     (->> (winning-positions board-size)
          (filter #(repeated-markers? board %))
          (first))))
