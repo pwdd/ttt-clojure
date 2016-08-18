@@ -23,7 +23,8 @@
 
 (defn- setup-regular-game
   [msg-first-attr msg-second-attr]
-  (let [current-player-attr (prompt/get-player-attributes {:msg msg-first-attr
+  (let [board-size (Integer/parseInt (prompt/get-board-size))
+        current-player-attr (prompt/get-player-attributes {:msg msg-first-attr
                                                            :color first-player-color})
         opponent-attr
           (prompt/get-player-attributes {:msg msg-second-attr
@@ -35,6 +36,7 @@
     {:current-player current-player
      :opponent opponent
      :game game
+     :board-size board-size
      :saved false}))
 
 (defn- setup-resumed-game
@@ -51,7 +53,8 @@
      :opponent opponent
      :game game
      :board board
-     :saved true}))
+     :saved true
+     :board-size (board/board-size board)}))
 
 (defn game-setup
   [game-selection directory & [msg-first-player-attr msg-second-player-attr]]
@@ -97,25 +100,33 @@
                                         current-player
                                         opponent)))
 
+(defn- get-game-board
+  [board board-size]
+  (if (seq board)
+    board
+    (board/new-board board-size)))
+
 (defn game-loop
-  [{:keys [game board current-player opponent saved first-screen]
-    :or {board (board/new-board 3) first-screen true}}]
+  [{:keys [game board current-player opponent saved first-screen board-size]
+    :or {board [] first-screen true}}]
 
-  (initial-view-of-board first-screen saved current-player board)
+  (let [new-board (get-game-board board board-size)]
 
-  (let [spot (make-a-move board current-player opponent)
-        game-board (board/move board spot (:marker current-player))]
+    (initial-view-of-board first-screen saved current-player new-board)
 
-    (display-new-board-info game game-board current-player spot)
+    (let [spot (make-a-move new-board current-player opponent)
+          game-board (board/move new-board spot (:marker current-player))]
 
-    (if (evaluate-game/game-over? game-board)
-      (game-over-msg game game-board current-player opponent)
-      (recur {:game game
-              :board game-board
-              :opponent current-player
-              :current-player opponent
-              :saved saved
-              :first-screen false}))))
+      (display-new-board-info game game-board current-player spot)
+
+      (if (evaluate-game/game-over? game-board)
+        (game-over-msg game game-board current-player opponent)
+        (recur {:game game
+                :board game-board
+                :opponent current-player
+                :current-player opponent
+                :saved saved
+                :first-screen false})))))
 
 (defn game-selection
   [directory]

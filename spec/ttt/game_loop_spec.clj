@@ -39,7 +39,7 @@
     (around [it]
       (with-out-str (it)))
 
-    (with data (with-in-str "x\nec\no\nec"
+    (with data (with-in-str "3\nx\nec\no\nec"
                  (game-loop/game-setup "2" (io/file "test-files") "first" "second")))
 
     (it "returns a map"
