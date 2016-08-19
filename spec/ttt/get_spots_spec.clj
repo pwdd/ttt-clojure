@@ -62,4 +62,24 @@
                                                    @_ @_ @o]
                                            :current-player @hard-computer
                                            :opponent @easy-computer
-                                           :depth negamax/start-depth})))))))
+                                           :depth negamax/start-depth})))))
+  
+    (it "avoids opponent win in a 4x4 board"
+      (should= 3 (spots/select-spot @hard-computer
+                                   {:board [@o @o @o @_
+                                            @_ @_ @_ @_
+                                            @_ @_ @x @_
+                                            @x @x @_ @_]
+                                    :current-player @hard-computer
+                                    :opponent @easy-computer
+                                    :depth negamax/start-depth})))
+    
+    (it "wins when it can in a 4x4 board"
+      (should= 7 (spots/select-spot @hard-computer
+                                    {:board [@o @o @o @_
+                                             @x @x @x @_
+                                             @_ @_ @_ @_
+                                             @_ @_ @_ @_]
+                                     :current-player @hard-computer
+                                     :opponent @easy-computer
+                                     :depth negamax/start-depth})))))
