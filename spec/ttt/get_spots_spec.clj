@@ -18,15 +18,18 @@
 
   (context ":human"
     (it "returns an integer"
-      (should= 0 (with-in-str "1" (spots/select-spot @human {:board (board/new-board 3)}))))
+      (should= 0 (with-in-str "1" (spots/select-spot @human 
+                                                     {:board (board/new-board 3)}))))
 
     (it "returns an integer that numeric string minus one"
-      (should= 3 (with-in-str "4" (spots/select-spot @human {:board (board/new-board 3)})))))
+      (should= 3 (with-in-str "4" (spots/select-spot @human 
+                                                     {:board (board/new-board 3)})))))
 
   (context ":easy-computer"
     (with spots (board/available-spots [@x @_ @o @_ @o @_ @_ @x @o @o]))
     (it "returns a random index from the available-spots"
-      (should (some #{(spots/select-spot @easy-computer {:board [@x @_ @o @_ @o @_ @_ @x @o]})}
+      (should (some #{(spots/select-spot @easy-computer 
+                                         {:board [@x @_ @o @_ @o @_ @_ @x @o]})}
                     @spots))))
 
   (context ":hard-computer"
@@ -37,7 +40,9 @@
                                              @x @_ @_]
                                      :current-player @hard-computer
                                      :opponent @easy-computer
-                                     :depth negamax/start-depth})))
+                                     :depth negamax/start-depth
+                                     :alpha -100
+                                     :beta 100})))
 
     (it "wins when it has the chance"
       (should= 5 (spots/select-spot @hard-computer
@@ -46,7 +51,9 @@
                                              @_ @_ @_]
                                      :current-player @hard-computer
                                      :opponent @easy-computer
-                                     :depth negamax/start-depth})))
+                                     :depth negamax/start-depth
+                                     :alpha -100
+                                     :beta 100})))
 
     (it "avoids situation in which opponent can win in two positions"
       (should (or (= 2 (spots/select-spot @hard-computer
@@ -55,14 +62,18 @@
                                                    @_ @_ @o]
                                            :current-player @hard-computer
                                            :opponent @easy-computer
-                                           :depth negamax/start-depth}))
+                                           :depth negamax/start-depth
+                                           :alpha -100
+                                           :beta 100}))
                   (= 6 (spots/select-spot @hard-computer
                                           {:board [@x @_ @_
                                                    @_ @o @_
                                                    @_ @_ @o]
                                            :current-player @hard-computer
                                            :opponent @easy-computer
-                                           :depth negamax/start-depth})))))
+                                           :depth negamax/start-depth
+                                           :alpha -100
+                                           :beta 100})))))
   
     (it "avoids opponent win in a 4x4 board"
       (should= 3 (spots/select-spot @hard-computer
@@ -72,7 +83,9 @@
                                             @x @x @_ @_]
                                     :current-player @hard-computer
                                     :opponent @easy-computer
-                                    :depth negamax/start-depth})))
+                                    :depth negamax/start-depth
+                                    :alpha -100
+                                    :beta 100})))
     
     (it "wins when it can in a 4x4 board"
       (should= 7 (spots/select-spot @hard-computer
@@ -82,4 +95,6 @@
                                              @_ @_ @_ @_]
                                      :current-player @hard-computer
                                      :opponent @easy-computer
-                                     :depth negamax/start-depth})))))
+                                     :depth negamax/start-depth
+                                     :alpha -100
+                                     :beta 100})))))

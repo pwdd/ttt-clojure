@@ -13,6 +13,10 @@
   [idx limit]
   (and (>= idx 0) (< idx limit)))
 
+(defn random-move
+  [available-spots]
+  (rand-nth available-spots))
+
 (defn remove-color
   [string]
   (let [escape (char 27)
