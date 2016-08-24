@@ -1,0 +1,1 @@
+{"board": ["_",{"token":"u","color":"green"},"_","_","_","_",{"token":"u","color":"green"},"_",{"token":"c","color":"blue"},"_","_","_",{"token":"c","color":"blue"},"_","_","_"],"current-player": {"marker":{"token":"u","color":"green"},"role":"human"},"opponent": {"marker":{"token":"c","color":"blue"},"role":"easy-computer"}}
