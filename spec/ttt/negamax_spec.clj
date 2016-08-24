@@ -56,9 +56,7 @@
                                        @x @x @o]
                                        @x
                                        @o
-                                       2
-                                       -100
-                                       100)))
+                                       2)))
 
   (it "returns 9 if current player will win the game"
     (should= 9 (negamax/negamax-score [@x @x @_
@@ -66,9 +64,7 @@
                                        @o @x @o]
                                        @x
                                        @o
-                                       negamax/start-depth
-                                       -100
-                                       100)))
+                                       negamax/start-depth)))
 
   (it "returns -8 if opponent will win the game"
     (should= -8 (negamax/negamax-score [@o @x @o
@@ -76,6 +72,4 @@
                                         @_ @x @_]
                                         @x
                                         @o
-                                        negamax/start-depth
-                                        -100
-                                        100))))
+                                        negamax/start-depth))))

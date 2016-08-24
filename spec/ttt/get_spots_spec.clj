@@ -40,9 +40,7 @@
                                              @x @_ @_]
                                      :current-player @hard-computer
                                      :opponent @easy-computer
-                                     :depth negamax/start-depth
-                                     :alpha -100
-                                     :beta 100})))
+                                     :depth negamax/start-depth})))
 
     (it "wins when it has the chance"
       (should= 5 (spots/select-spot @hard-computer
@@ -51,9 +49,7 @@
                                              @_ @_ @_]
                                      :current-player @hard-computer
                                      :opponent @easy-computer
-                                     :depth negamax/start-depth
-                                     :alpha -100
-                                     :beta 100})))
+                                     :depth negamax/start-depth})))
 
     (it "avoids situation in which opponent can win in two positions"
       (should (or (= 2 (spots/select-spot @hard-computer
@@ -62,18 +58,14 @@
                                                    @_ @_ @o]
                                            :current-player @hard-computer
                                            :opponent @easy-computer
-                                           :depth negamax/start-depth
-                                           :alpha -100
-                                           :beta 100}))
+                                           :depth negamax/start-depth}))
                   (= 6 (spots/select-spot @hard-computer
                                           {:board [@x @_ @_
                                                    @_ @o @_
                                                    @_ @_ @o]
                                            :current-player @hard-computer
                                            :opponent @easy-computer
-                                           :depth negamax/start-depth
-                                           :alpha -100
-                                           :beta 100})))))
+                                           :depth negamax/start-depth })))))
   
     (it "avoids opponent win in a 4x4 board"
       (should= 3 (spots/select-spot @hard-computer
@@ -83,9 +75,7 @@
                                             @x @x @_ @_]
                                     :current-player @hard-computer
                                     :opponent @easy-computer
-                                    :depth negamax/start-depth
-                                    :alpha -100
-                                    :beta 100})))
+                                    :depth negamax/start-depth})))
     
     (it "wins when it can in a 4x4 board"
       (should= 7 (spots/select-spot @hard-computer
@@ -95,6 +85,4 @@
                                              @_ @_ @_ @_]
                                      :current-player @hard-computer
                                      :opponent @easy-computer
-                                     :depth negamax/start-depth
-                                     :alpha -100
-                                     :beta 100})))))
+                                     :depth negamax/start-depth})))))

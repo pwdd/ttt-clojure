@@ -25,28 +25,24 @@
 (declare negamax)
 
 (defn scores
-  [board current-player-marker opponent-marker depth alpha beta]
+  [board current-player-marker opponent-marker depth]
   (let [spots (board/available-spots board)
        new-boards (create-next-boards board spots current-player-marker)]
     (map #(- (negamax % 
                       opponent-marker 
                       current-player-marker 
-                      (inc depth)
-                      (- beta)
-                      (- alpha)))
+                      (inc depth)))
          new-boards)))
 
 (defn negamax-score
-  [board current-player-marker opponent-marker depth alpha beta]
+  [board current-player-marker opponent-marker depth]
   (if (or (evaluate-game/game-over? board)
           (>= depth 4))
     (board-analysis board current-player-marker opponent-marker depth)
     (apply max (scores board 
                        current-player-marker 
                        opponent-marker 
-                       depth 
-                       alpha 
-                       beta))))
+                       depth ))))
 
 (def negamax (memoize negamax-score))
 
@@ -88,9 +84,7 @@
          scores (scores (:board params)
                         (player/marker (:current-player params))
                         (player/marker (:opponent params))
-                        (:depth params)
-                        (:alpha params)
-                        (:beta params))
+                        (:depth params))
          max-value (apply max scores)
          best (.indexOf scores max-value)]
       (nth spots best))))
