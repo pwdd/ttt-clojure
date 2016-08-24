@@ -2,7 +2,8 @@
   (:require [ttt.board :as board]
             [ttt.evaluate-game :as evaluate-game]
             [ttt.get-spots :refer [select-spot]]
-            [ttt.player :as player]))
+            [ttt.player :as player]
+            [ttt.helpers :as helpers]))
 
 (def start-depth 0)
 
@@ -17,10 +18,6 @@
 (defn create-next-boards
   [board available-spots current-player-marker]
   (map #(board/move board % current-player-marker) available-spots))
-
-(defn is-big-board?
-  [board]
-  (> (count board) 9))
 
 (declare negamax)
 
@@ -69,16 +66,12 @@
     (> (count (board/available-spots board)) start-medium-board)
     (> (count (board/available-spots board)) start-large-board)))
 
-(defn randomize-first-moves
-  [board]
-  (rand-nth (board/available-spots board)))
-
 (defmethod select-spot :hard-computer
   [player params]
   (cond 
     (board/is-board-empty? (:board params)) 4
     (and (alternative-board? (:board params)) 
-         (first-moves-alternative-board? (:board params))) (randomize-first-moves (:board params))
+         (first-moves-alternative-board? (:board params))) (helpers/random-move (:board params))
     :else
     (let [spots (board/available-spots (:board params))
          scores (scores (:board params)
