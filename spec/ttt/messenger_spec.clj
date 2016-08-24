@@ -29,16 +29,21 @@
 (describe "translate-keyword"
   (it "returns ' x '"
     (should= " x "
-             (helpers/remove-color (messenger/translate-keyword {:token :x
-                                                                 :color :blue}))))
+             (helpers/remove-color (messenger/translate-keyword [1 
+                                                                {:token :x
+                                                                 :color :blue}]))))
 
   (it "returns ' o '"
     (should= " o "
-             (helpers/remove-color (messenger/translate-keyword {:token :o
-                                                                 :color :blue}))))
+             (helpers/remove-color (messenger/translate-keyword [1
+                                                                {:token :o
+                                                                 :color :blue}]))))
 
-  (it "returns an empty space for :_"
-    (should= "   " (messenger/translate-keyword board/empty-spot))))
+  (it "returns a number surrounded by whitespaces if index of empty spot is smaller than 9"
+    (should= " 2 " (helpers/remove-color (messenger/translate-keyword [1 board/empty-spot]))))
+  
+  (it "returns whitespace and number if empty spot index is bigger than 9"
+    (should= " 10" (helpers/remove-color (messenger/translate-keyword [9 board/empty-spot])))))
 
 (describe "stringify-board"
 
@@ -47,29 +52,29 @@
   (with _ board/empty-spot)
 
   (it "outputs a representation of the empty board with dimension 3x3"
-    (should= (str   "   |   |   "
+    (should= (str   " 1 | 2 | 3 "
                   "\n---|---|---\n"
-                    "   |   |   "
+                    " 4 | 5 | 6 "
                   "\n---|---|---\n"
-                    "   |   |   \n")
+                    " 7 | 8 | 9 \n")
       (helpers/remove-color (messenger/stringify-board (board/new-board 3)))))
 
   (it "outputs a representation of the empty board with dimension 4x4"
-    (should= (str   "   |   |   |   "
+    (should= (str   " 1 | 2 | 3 | 4 "
                   "\n---|---|---|---\n"
-                    "   |   |   |   "
+                    " 5 | 6 | 7 | 8 "
                   "\n---|---|---|---\n"
-                    "   |   |   |   "
+                    " 9 | 10| 11| 12"
                   "\n---|---|---|---\n"
-                    "   |   |   |   \n")
+                    " 13| 14| 15| 16\n")
       (helpers/remove-color (messenger/stringify-board (board/new-board 4)))))
 
   (it "combines empty spaces and letters when some spots are taken"
-    (should= (str   "   | x |   "
+    (should= (str   " 1 | x | 3 "
                   "\n---|---|---\n"
-                    " o |   |   "
+                    " o | 5 | 6 "
                   "\n---|---|---\n"
-                    "   |   | x \n")
+                    " 7 | 8 | x \n")
              (helpers/remove-color (messenger/stringify-board [@_ @x @_ @o @_ @_ @_ @_ @x])))))
 
 (describe "stringify-combo"

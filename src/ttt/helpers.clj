@@ -20,7 +20,7 @@
 (defn remove-color
   [string]
   (let [escape (char 27)
-        re-code #"\[\d*m"]
+        re-code #"\[\d?;?\d*m"]
     (loop [string string
            code-list (re-seq re-code string)]
       (if (empty? code-list)

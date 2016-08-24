@@ -29,7 +29,7 @@
   [message-length half-screen-width]
   (- half-screen-width (quot message-length 2)))
 
-(def color-re #"\[\d*m")
+(def color-re #"\[\d?;?\d*m")
 
 (defn color-code-list
   [message-string]

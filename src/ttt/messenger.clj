@@ -8,6 +8,7 @@
             [ttt.colors :as colors]))
 
 (def board-color :red)
+(def number-color :gray)
 
 (defn- newline-wrap
   [message]
@@ -30,7 +31,7 @@
 (def instructions "The board is represented like the following:\n")
 
 (def new-or-saved-msg (str "Would you like to\n"
-                          "(1) restart a saved game or\n"
+                           "(1) restart a saved game or\n"
                            "(2) start a new game?\n"
                            "Please enter 1 or 2:"))
 
@@ -48,10 +49,18 @@
   [marker]
   (name (:token marker)))
 
+(defn- colorful-marker
+  [marker]
+  (colors/colorize (:color marker) (marker-string marker)))
+
+(defn colorful-empty-spot
+  [number-string]
+  (colors/colorize number-color number-string))
+
 (defn ask-role-msg
   [marker]
   (str "Should player '"
-       (colors/colorize (:color marker) (marker-string marker))
+       (colorful-marker marker)
        "' be a human or a computer?\n"
        role-options-msg))
 
@@ -78,11 +87,17 @@
 
 (def game-saved "Your game has been saved.")
 
+(defn- empty-spot-to-number
+  [index]
+  (if (< index 9)
+    (colorful-empty-spot (str " " (inc index) " "))
+    (colorful-empty-spot (str " " (inc index)))))
+
 (defn translate-keyword
-  [k]
-  (if-not (= k board/empty-spot)
-    (str " " (colors/colorize (:color k) (marker-string k)) " ")
-    "   "))
+  [[index marker]]
+  (if (= marker board/empty-spot)
+    (empty-spot-to-number index)
+    (str " " (colorful-marker marker) " ")))
 
 (defn join-combo
   [string-combo]
@@ -91,7 +106,9 @@
 
 (defn translate-board
   [board]
-  (let [board-string (partition (board/board-size board) (map translate-keyword board))]
+  (let [indexed-board (map-indexed vector board)
+        board-string (partition (board/board-size board) 
+                                (map translate-keyword indexed-board))]
     (map join-combo board-string)))
 
 (defn stringify-board
@@ -127,7 +144,7 @@
   (let [winner (evaluate-game/winner-player board first-player second-player)
         winner-marker (:marker winner)]
     (str "Player '"
-         (colors/colorize (:color winner-marker) (marker-string winner-marker))
+        (colorful-marker winner-marker) 
          "' won on positions "
          (stringify-combo (board/winning-combo board)))))
 
@@ -163,7 +180,7 @@
 (defmethod moved-to :same-roles
   [game player spot]
   (str "Player '"
-       (colors/colorize (player/color player) (marker-string (:marker player)))
+      (colorful-marker (:marker player)) 
        "' moved to "
        (inc spot)
        "\n"))
@@ -208,9 +225,7 @@
 (defn current-player-is
   [current-player-marker]
   (str "Current player is playing with '"
-       (colors/colorize (:color current-player-marker)
-                        (marker-string current-player-marker))
-       "'"))
+      (colorful-marker current-player-marker) "'"))
 
 (def choose-a-file-msg "Enter the name of the saved game you wanna play:")
 
