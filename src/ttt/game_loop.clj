@@ -15,10 +15,10 @@
             [ttt.animated-start :as animate]))
 
 (def file-extension ".json")
-(def first-player-color :green)
-(def second-player-color :blue)
-(def x {:token :x :color :green})
-(def o {:token :o :color :blue})
+(def first-player-color :bright-green)
+(def second-player-color :bright-blue)
+(def x {:token :x :color first-player-color})
+(def o {:token :o :color second-player-color})
 (def start-animated-board [o o :_ :_ x :_ :_ :_ x])
 
 (defn- setup-regular-game
@@ -30,8 +30,8 @@
           (prompt/get-player-attributes {:msg msg-second-attr
                                          :color second-player-color
                                          :opponent-marker (:marker current-player-attr)})
-        current-player (player/define-player current-player-attr :green)
-        opponent (player/define-player opponent-attr :blue)
+        current-player (player/define-player current-player-attr first-player-color)
+        opponent (player/define-player opponent-attr second-player-color)
         game (game/create-game (:role current-player) (:role opponent))]
     {:current-player current-player
      :opponent opponent
