@@ -70,14 +70,12 @@
   [input existing-files first-loop]
   (file-exist-msg first-loop)
   (let [overwrite (prompt helpers/clean-string messenger/overwrite-file-option)]
-    (cond
-      (= overwrite input-validation/overwrite-file) input
-      (= overwrite input-validation/dont-overwrite-file)
-        (enter-a-file-name existing-files)
-      :else
-        (do
-          (view/print-message messenger/default-invalid-input)
-          (recur input existing-files false)))))
+    (condp = overwrite
+      input-validation/overwrite-file input
+      input-validation/dont-overwrite-file (enter-a-file-name existing-files)
+      (do
+        (view/print-message messenger/default-invalid-input)
+        (recur input existing-files false)))))
 
 (defn enter-a-file-name
   [existing-files]

@@ -1,6 +1,10 @@
 (ns ttt.helpers
   (:require [clojure.string :as string]))
 
+(defn is-windows-os?
+  []
+  (re-find #"Win(.*)" (System/getProperty "os.name")))
+
 (defn clean-string
   [str]
   (string/lower-case (string/trim str)))

@@ -1,7 +1,8 @@
 (ns ttt.view
   (:require [clojure.string :as string]
             [clojure.java.shell :as sh]
-            [ttt.colors :as colors]))
+            [ttt.colors :as colors]
+            [ttt.helpers :as helpers]))
 
 (defn get-console-width
   []
@@ -10,7 +11,7 @@
 
 (defn get-half-screen-width
   []
-  (if (re-find #"Win(.*)" (System/getProperty "os.name"))
+  (if (helpers/is-windows-os?)
     40
     (quot (Integer/parseInt (get-console-width)) 2)))
 

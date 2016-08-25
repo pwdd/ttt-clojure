@@ -91,9 +91,7 @@
                      :current-player current-player
                      :opponent opponent
                      :depth negamax/start-depth
-                     :board-length board/board-length
-                     :alpha -100
-                     :beta 100}))
+                     :board-length board/board-length}))
 
 (defn game-over-msg
   [game board current-player opponent]

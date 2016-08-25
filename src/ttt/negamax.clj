@@ -10,9 +10,9 @@
 (defn board-analysis
   [board current-player-marker opponent-marker depth]
   (let [winner (evaluate-game/winner-marker board)]
-    (condp = winner 
+    (condp = winner
       current-player-marker (- 10 depth)
-      opponent-marker (- depth 10) 
+      opponent-marker (- depth 10)
       0)))
 
 (defn create-next-boards
@@ -25,9 +25,9 @@
   [board current-player-marker opponent-marker depth]
   (let [spots (board/available-spots board)
        new-boards (create-next-boards board spots current-player-marker)]
-    (map #(- (negamax % 
-                      opponent-marker 
-                      current-player-marker 
+    (map #(- (negamax %
+                      opponent-marker
+                      current-player-marker
                       (inc depth)))
          new-boards)))
 
@@ -36,9 +36,9 @@
   (if (or (evaluate-game/game-over? board)
           (>= depth 4))
     (board-analysis board current-player-marker opponent-marker depth)
-    (apply max (scores board 
-                       current-player-marker 
-                       opponent-marker 
+    (apply max (scores board
+                       current-player-marker
+                       opponent-marker
                        depth ))))
 
 (def negamax (memoize negamax-score))
@@ -68,10 +68,11 @@
 
 (defmethod select-spot :hard-computer
   [player params]
-  (cond 
+  (cond
     (board/is-board-empty? (:board params)) 4
-    (and (alternative-board? (:board params)) 
-         (first-moves-alternative-board? (:board params))) (helpers/random-move (:board params))
+    (and (alternative-board? (:board params))
+         (first-moves-alternative-board? (:board params)))
+      (helpers/random-move (board/available-spots (:board params)))
     :else
     (let [spots (board/available-spots (:board params))
          scores (scores (:board params)
