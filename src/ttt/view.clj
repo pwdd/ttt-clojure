@@ -16,7 +16,7 @@
     (quot (Integer/parseInt (get-console-width)) 2)))
 
 (def half-screen-width (get-half-screen-width))
-(def center-of-screen "[8;6H")
+(def center-of-screen "[4;0H")
 (def height 24)
 (def final-msg-lines 9)
 (def flush-down (string/join (repeat (quot (- height final-msg-lines) 2) "\n")))

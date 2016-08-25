@@ -73,15 +73,15 @@
 (def choose-a-number "Please enter a number corresponding to a position on the board: \n")
 
 (def or-enter-save "-  'SAVE' to save the current game")
-
 (def or-enter-quit "- 'QUIT' to quit the game")
+(def or-restart "- 'RESTART' to restart this game")
+(def other-options
+  (string/join "\n" [or-enter-save or-enter-quit or-restart]))
 
 (def multiple-choice
   (str choose-a-number
-       "\nOr you can also type: \n"
-       or-enter-save
-       "\n"
-       or-enter-quit))
+       "\nYou can also type: \n"
+       other-options))
 
 (def give-file-name "Enter the name of the game as you want it to be saved:")
 
@@ -214,7 +214,7 @@
 (defn wrong-number-msg
   [board input]
   (if (input-validation/is-int? input)
-    (not-a-valid-move (helpers/input-to-number input))
+    (not-a-valid-move (helpers/input-to-number input) (count board))
     (not-a-valid-number input)))
 
 (defn invalid-marker-msg

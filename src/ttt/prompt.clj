@@ -6,7 +6,6 @@
             [ttt.messenger :as messenger]
             [ttt.file-writer :as file-writer]
             [ttt.file-reader :as file-reader]
-            [ttt.get-spots :refer [select-spot]]
             [ttt.player :as player]))
 
 (defn prompt
@@ -83,41 +82,6 @@
     (if-not (input-validation/is-valid-filename? input existing-files)
       input
       (overwrite-file input existing-files true))))
-
-(defn save-and-exit
-  [directory filename {:keys [board current-player opponent]}]
-  (file-writer/create-game-file directory
-                                filename
-                                {:board board
-                                 :current-player current-player
-                                 :opponent opponent})
-  (view/print-message messenger/game-saved)
-  (view/clear-and-quit))
-
-(defn quit-game
-  [input player params]
-  (if (input-validation/save? input)
-    (save-and-exit file-reader/directory
-                   (enter-a-file-name (file-reader/list-all-files file-reader/directory))
-                   {:board (:board params)
-                   :current-player player
-                   :opponent (:opponent params)})
-    (view/clear-and-quit)))
-
-(defmethod select-spot :human
-  [player params]
-  (let [input (prompt helpers/clean-string messenger/multiple-choice)
-        board (:board params)]
-    (cond 
-      (or (input-validation/save? input) 
-          (input-validation/quit? input)) 
-        (quit-game input player params)
-      (input-validation/is-valid-move-input? board input) 
-        (helpers/input-to-number input)
-      :else
-      (do
-        (view/print-message (messenger/board-after-invalid-input board input))
-        (recur player params)))))
 
 (defn get-board-size
   []

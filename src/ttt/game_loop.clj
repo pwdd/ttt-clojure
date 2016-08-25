@@ -4,22 +4,24 @@
             [ttt.view :as view]
             [ttt.board :as board]
             [ttt.negamax :as negamax]
-            [ttt.get-spots :as spots]
+            [ttt.get-spots :refer [select-spot]]
             [ttt.player :as player]
             [ttt.evaluate-game :as evaluate-game]
             [ttt.prompt :as prompt]
             [ttt.file-reader :as reader]
+            [ttt.file-writer :as file-writer]
             [ttt.input-validation :as input-validation]
             [ttt.file-reader :as file-reader]
             [ttt.easy-computer :as easy-computer]
-            [ttt.animated-start :as animate]))
+            [ttt.animated-start :as animate]
+            [ttt.helpers :as helpers]))
 
 (def file-extension ".json")
 (def first-player-color :bright-green)
 (def second-player-color :bright-blue)
 (def x {:token :x :color first-player-color})
 (def o {:token :o :color second-player-color})
-(def start-animated-board [o o :_ :_ x :_ :_ :_ x])
+(def animation-starting-board [o o :_ :_ x :_ :_ :_ x])
 
 (defn- setup-regular-game
   [msg-first-attr msg-second-attr]
@@ -66,9 +68,9 @@
   []
   (view/clear-screen)
   (animate/animated-board :computer-x-computer
-                  start-animated-board
-                  {:marker x :role :hard-computer}
-                  {:marker o :role :easy-computer})
+                          animation-starting-board
+                          {:marker x :role :hard-computer}
+                          {:marker o :role :easy-computer})
   (view/print-message messenger/welcome))
 
 (defn initial-view-of-board
@@ -84,14 +86,63 @@
   (view/print-message (messenger/moved-to game current-player spot))
   (view/print-message (messenger/stringify-board board)))
 
+(defn save-and-exit
+  [directory filename {:keys [board current-player opponent]}]
+  (file-writer/create-game-file directory
+                                filename
+                                {:board board
+                                 :current-player current-player
+                                 :opponent opponent})
+  (view/print-message messenger/game-saved)
+  (view/clear-and-quit))
+
+(defn restart-data
+  [params]
+  (assoc params :board (board/new-board (:board-size params))))
+
+(defn save-and-exit-data
+  [params]
+  (select-keys params [:board :current-player :opponent]))
+
+(declare game-loop)
+
+(defn not-spot-input
+  [input player params]
+  (cond 
+    (input-validation/save? input)
+      (save-and-exit file-reader/directory
+                     (prompt/enter-a-file-name (file-reader/list-all-files file-reader/directory))
+                     (save-and-exit-data params))
+    (input-validation/quit? input) (view/clear-and-quit)
+    :else
+      (game-loop (restart-data params))))
+
+(defmethod select-spot :human
+  [player params]
+  (let [input (prompt/prompt helpers/clean-string messenger/multiple-choice)
+        board (:board params)]
+    (cond 
+      (or (input-validation/save? input) 
+          (input-validation/quit? input)
+          (input-validation/restart? input)) 
+        (not-spot-input input player params)
+      (input-validation/is-valid-move-input? board input) 
+        (helpers/input-to-number input)
+      :else
+      (do
+        (view/print-message (messenger/board-after-invalid-input board input))
+        (recur player params)))))
+
 (defn make-a-move
-  [board current-player opponent]
-  (spots/select-spot current-player
-                    {:board board
-                     :current-player current-player
-                     :opponent opponent
-                     :depth negamax/start-depth
-                     :board-length board/board-length}))
+  [game board current-player opponent saved board-size]
+  (select-spot current-player
+               {:game game
+                :board-size board-size
+                :board board
+                :current-player current-player
+                :opponent opponent
+                :depth negamax/start-depth
+                :board-length board/board-length}))
 
 (defn game-over-msg
   [game board current-player opponent]
@@ -114,7 +165,7 @@
 
     (initial-view-of-board first-screen saved current-player new-board)
 
-    (let [spot (make-a-move new-board current-player opponent)
+    (let [spot (make-a-move game new-board current-player opponent saved board-size)
           game-board (board/move new-board spot (:marker current-player))]
 
       (display-new-board-info game game-board current-player spot)
@@ -126,7 +177,8 @@
                 :opponent current-player
                 :current-player opponent
                 :saved saved
-                :first-screen false})))))
+                :first-screen false
+                :board-size board-size})))))
 
 (defn game-selection
   [directory]

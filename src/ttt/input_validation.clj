@@ -19,6 +19,7 @@
 
 (def save-valid-input "save")
 (def quit-valid-input "quit")
+(def restart-valid-input "restart")
 
 (defn is-acceptable-as-human-player?
   [role]
@@ -71,6 +72,10 @@
 (defn quit?
   [input]
   (= input quit-valid-input))
+
+(defn restart?
+  [input]
+  (= input restart-valid-input))
 
 (def valid-board-size ["3" "4" "5"])
 
