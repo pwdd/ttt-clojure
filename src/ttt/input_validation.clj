@@ -18,6 +18,7 @@
 (def dont-overwrite-file "2")
 
 (def save-valid-input "save")
+(def quit-valid-input "quit")
 
 (defn is-acceptable-as-human-player?
   [role]
@@ -66,6 +67,10 @@
 (defn save?
   [input]
   (= input save-valid-input))
+
+(defn quit?
+  [input]
+  (= input quit-valid-input))
 
 (def valid-board-size ["3" "4" "5"])
 

@@ -1,12 +1,12 @@
 (ns ttt.view
   (:require [clojure.string :as string]
-            [clojure.java.shell :as sh]
+            [clojure.java.shell :as shell]
             [ttt.colors :as colors]
             [ttt.helpers :as helpers]))
 
 (defn get-console-width
   []
-  (->> (sh/sh "/bin/sh" "-c" "stty -a < /dev/tty")
+  (->> (shell/sh "/bin/sh" "-c" "stty -a < /dev/tty")
         :out (re-find #"(\d+) columns") second))
 
 (defn get-half-screen-width
@@ -25,6 +25,13 @@
   []
   (let [escape (char 27)]
     (print (str escape "[2J" escape center-of-screen))))
+
+(defn clear-and-quit
+  []
+    (when-not (helpers/is-windows-os?)
+      (->> (shell/sh "/bin/sh" "-c" "clear <  /dev/null") :out (print ""))
+      (flush))
+    (System/exit 0))
 
 (defn number-of-spaces
   [message-length half-screen-width]

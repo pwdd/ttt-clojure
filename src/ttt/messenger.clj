@@ -72,9 +72,16 @@
 
 (def choose-a-number "Please enter a number corresponding to a position on the board: \n")
 
-(def or-enter-save "(or type 'SAVE' to save the current game)")
+(def or-enter-save "-  'SAVE' to save the current game")
 
-(def number-or-save (str choose-a-number or-enter-save))
+(def or-enter-quit "- 'QUIT' to quit the game")
+
+(def multiple-choice
+  (str choose-a-number
+       "\nOr you can also type: \n"
+       or-enter-save
+       "\n"
+       or-enter-quit))
 
 (def give-file-name "Enter the name of the game as you want it to be saved:")
 

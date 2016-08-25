@@ -92,25 +92,32 @@
                                  :current-player current-player
                                  :opponent opponent})
   (view/print-message messenger/game-saved)
-  (System/exit 0))
+  (view/clear-and-quit))
+
+(defn quit-game
+  [input player params]
+  (if (input-validation/save? input)
+    (save-and-exit file-reader/directory
+                   (enter-a-file-name (file-reader/list-all-files file-reader/directory))
+                   {:board (:board params)
+                   :current-player player
+                   :opponent (:opponent params)})
+    (view/clear-and-quit)))
 
 (defmethod select-spot :human
   [player params]
-  (let [input (prompt helpers/clean-string messenger/number-or-save)
+  (let [input (prompt helpers/clean-string messenger/multiple-choice)
         board (:board params)]
-    (cond
-      (input-validation/save? input)
-        (save-and-exit file-reader/directory
-                       (enter-a-file-name (file-reader/list-all-files file-reader/directory))
-                       {:board (:board params)
-                       :current-player player
-                       :opponent (:opponent params)})
-      (input-validation/is-valid-move-input? board input)
+    (cond 
+      (or (input-validation/save? input) 
+          (input-validation/quit? input)) 
+        (quit-game input player params)
+      (input-validation/is-valid-move-input? board input) 
         (helpers/input-to-number input)
       :else
-        (do
-          (view/print-message (messenger/board-after-invalid-input board input))
-          (recur player params)))))
+      (do
+        (view/print-message (messenger/board-after-invalid-input board input))
+        (recur player params)))))
 
 (defn get-board-size
   []
