@@ -12,9 +12,11 @@
   (with _ board/empty-spot)
   (with x {:token :x :color :red})
   (with o {:token :o :color :blue})
+  (with m {:token :m :color :yellow})
   (with human {:role :human :marker @x})
   (with easy-computer {:role :easy-computer :marker @o})
   (with hard-computer {:role :hard-computer :marker @x})
+  (with medium-computer {:role :medium-computer :marker @m})
 
   (context ":human"
     (it "returns an integer"
@@ -84,5 +86,14 @@
                                              @_ @_ @_ @_
                                              @_ @_ @_ @_]
                                      :current-player @hard-computer
+                                     :opponent @easy-computer
+                                     :depth negamax/start-depth}))))
+  (context ":medium-player"
+    (it "wins when possible"
+      (should= 2 (spots/select-spot @medium-computer
+                                    {:board [@x @x @_
+                                             @o @_ @_
+                                             @o @_ @_]
+                                     :current-player @medium-computer
                                      :opponent @easy-computer
                                      :depth negamax/start-depth})))))
