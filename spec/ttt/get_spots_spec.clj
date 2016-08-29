@@ -2,13 +2,14 @@
   (:require [speclj.core :refer :all]
             [ttt.get-spots :as spots]
             [ttt.board :as board]
-            [ttt.negamax :as negamax]))
+            [ttt.negamax :as negamax]
+            [ttt.rules :as rules]))
 
 (describe "select-spot"
 
   (around [it]
     (with-out-str (it)))
-
+ 
   (with _ board/empty-spot)
   (with x {:token :x :color :red})
   (with o {:token :o :color :blue})
@@ -88,12 +89,60 @@
                                      :current-player @hard-computer
                                      :opponent @easy-computer
                                      :depth negamax/start-depth}))))
-  (context ":medium-player"
+  (context ":medium-computer"
+    (it "places marker in the middle if board is empty"
+      (should= 6 (spots/select-spot @medium-computer
+                                     {:board (board/new-board 4)
+                                     :current-player @medium-computer
+                                     :opponent @easy-computer})))
+
+    (it "places marker in the middle if opponent made only one move"
+      (should= 4 (spots/select-spot @medium-computer
+                                    {:board [@o @_ @_
+                                             @_ @_ @_
+                                             @_ @_ @_]
+                                     :current-player @medium-computer
+                                     :opponent @easy-computer})))
+
     (it "wins when possible"
       (should= 2 (spots/select-spot @medium-computer
-                                    {:board [@x @x @_
+                                    {:board [@m @m @_
                                              @o @_ @_
                                              @o @_ @_]
                                      :current-player @medium-computer
-                                     :opponent @easy-computer
-                                     :depth negamax/start-depth})))))
+                                     :opponent @easy-computer})))
+    
+    (it "blocks opponent from winning"
+      (should= 8 (spots/select-spot @medium-computer
+                                    {:board [@o @m @_
+                                             @_ @o @_
+                                             @_ @m @_]
+                                     :current-player @medium-computer
+                                     :opponent @easy-computer})))
+    
+   (it "fills in a board section if there is no blocking or winning situation"
+      (let [solution (spots/select-spot @medium-computer
+                                        {:board [@o @o @_ @_
+                                                 @m @_ @_ @_
+                                                 @o @_ @_ @_
+                                                 @_ @_ @_ @_]
+                                         :current-player @medium-computer
+                                         :opponent @easy-computer})]
+        (should (some #{solution} [5 6 7]))))
+   
+   (it "picks a corner"
+     (let [solution (spots/select-spot @medium-computer
+                                       {:board [@_ @_ @_
+                                                @_ @o @_
+                                                @_ @_ @_]
+                                        :current-player @medium-computer
+                                        :opponent @easy-computer})]
+       (should (some #{solution} (rules/corners 3)))))
+   
+   (it "picks an empty section"
+      (let [solution (spots/select-spot @medium-computer
+                                        {:board [@_ @o @_ @_
+                                                 @o @x @_ @_
+                                                 @x @o @_ @_
+                                                 @x @_ @o @_]})]
+        (should (some #{solution} [3 7 11 15]))))))

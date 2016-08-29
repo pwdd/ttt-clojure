@@ -13,6 +13,7 @@
             [ttt.input-validation :as input-validation]
             [ttt.file-reader :as file-reader]
             [ttt.easy-computer :as easy-computer]
+            [ttt.medium-computer :as medium-computer]
             [ttt.animated-start :as animate]
             [ttt.helpers :as helpers]))
 

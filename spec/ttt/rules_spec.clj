@@ -100,4 +100,150 @@
                                            @_ @_ @_ @_ @_
                                            @_ @_ @_ @_ @_]))))
 
+(describe "is-middle-the-best-move?"
+  (with _ board/empty-spot)
+  (with o {:token :o :color :blue})
 
+  (it "returns true if board is empty"
+    (should (rules/is-middle-the-best-move? (board/new-board 3))))
+  
+  (it "returns true if opponent has made only one move and not in the middle"
+    (should (rules/is-middle-the-best-move? [@o @_ @_
+                                             @_ @_ @_
+                                             @_ @_ @_]))))
+
+(describe "marker-frequency"
+  (with _ board/empty-spot)
+  (with x {:token :x :color :blue})
+
+  (it "returns 0 if there is no marker in given combo"
+    (should= 0 (rules/marker-frequency (board/new-board 3)
+                                       [0 1 2]
+                                       @x)))
+  
+  (it "returns 2 if there is 2 @x in given combo"
+    (should= 2 (rules/marker-frequency [@x @x @_ 
+                                        @_ @_ @_
+                                        @_ @_ @_]
+                                        [0 1 2]
+                                        @x))))
+
+(describe "where-can-win"
+  (with _ board/empty-spot)
+  (with o {:token :o :color :blue})
+  (with x {:token :x :color :green})
+ 
+  (it "returns nil if there is no immediate winning position"
+    (should-not (rules/where-can-win [@x @o @_
+                                      @o @_ @_
+                                      @_ @x @_]
+                                      @x)))
+
+  (it "returns nil if current-player cannot win"
+    (should-not (rules/where-can-win [@o @x @_
+                                      @_ @o @_
+                                      @_ @x @_]
+                                      @x)))
+
+  (it "returns the row where it can win"
+    (should= [3 4 5] (rules/where-can-win [@_ @o @o
+                                           @x @x @_
+                                           @_ @_ @_]
+                                           @x)))
+  
+  (it "returns the diagonal where it can win"
+    (should= [2 4 6] (rules/where-can-win [@_ @o @x
+                                           @_ @_ @o
+                                           @x @_ @_]
+                                           @x)))
+  
+  (it "returns the column where it can win"
+    (should= [1 4 7] (rules/where-can-win [@o @_ @_
+                                           @o @x @_
+                                           @_ @x @_]
+                                           @x))))
+
+(describe "place-in-winning-spot"
+  (with _ board/empty-spot)
+  (with o {:token :o :color :blue})
+  (with x {:token :x :color :green})
+  
+  (it "returns the center spot if it will win with that move"
+    (should= 4 (rules/place-in-winning-spot [@_ @o @x
+                                            @_ @_ @o
+                                            @x @_ @_]
+                                            @x)))
+  
+  (it "returns 5 if it will win with that move"
+    (should= 5 (rules/place-in-winning-spot [@_ @o @o
+                                             @x @x @_
+                                             @_ @_ @_]
+                                             @x)))
+  
+  (it "returns 8 if it will win with that move"
+    (should= 8 (rules/place-in-winning-spot [@o @x @_
+                                             @_ @o @_
+                                             @_ @x @_]
+                                             @o)))
+  
+  (it "returns nil if player cannot win"
+    (should-not (rules/place-in-winning-spot [@_ @o @x
+                                              @o @_ @_
+                                              @_ @x @_]
+                                              @x)))
+  
+  (it "returns nil if current-player cannot win"
+    (should-not (rules/place-in-winning-spot [@o @x @_
+                                              @_ @o @_
+                                              @_ @x @_]
+                                              @x))))
+
+(describe "owned-sections"
+  (with _ board/empty-spot)
+  (with o {:token :o :color :blue})
+  (with x {:token :x :color :green})
+
+  (it "returns an empty collection if there is no current-player marker on board"
+    (should= [] (rules/owned-sections (board/move (board/new-board 4) 1 @o) @x @o)))
+  
+  (it "returns sections where that is only same player marker if there is one marker"
+    (should= [[8 9 10 11] [3 6 9 12]] (rules/owned-sections [@o @_ @_ @_
+                                                             @_ @_ @_ @_
+                                                             @_ @x @_ @_
+                                                             @_ @o @_ @_]
+                                                             @x
+                                                             @o)))
+  
+  (it "returns sections where there is more than one same marker"
+    (should= [[8 9 10 11] [2 6 10 14] [0 5 10 15] [3 6 9 12]] 
+             (rules/owned-sections [@o @_ @_ @_
+                                    @_ @_ @_ @_
+                                    @_ @x @x @_
+                                    @_ @o @_ @_]
+                                    @x
+                                    @o))))
+
+(describe "most-populated-owned-section"
+  (with _ board/empty-spot)
+  (with o {:token :o :color :blue})
+  (with x {:token :x :color :green})
+  
+  (it "returns the owned section with highest repetition rate"
+    (should= [8 9 10 11] (rules/most-populated-owned-section   [@o @_ @_ @_
+                                                               @_ @_ @_ @_
+                                                               @_ @x @x @_
+                                                               @_ @o @_ @_]
+                                                               @x
+                                                               @o))))
+
+(describe "available-spots-in-section"
+  (with _ board/empty-spot)
+  (with o {:token :o :color :blue})
+  (with x {:token :x :color :green})
+  
+  (it "returns the available spots in a given section"
+    (should= [8 11] (rules/available-spots-in-section  [@o @_ @_ @_
+                                                        @_ @_ @_ @_
+                                                        @_ @x @x @_
+                                                        @_ @o @_ @_]
+                                                        [8 9 10 11]))))

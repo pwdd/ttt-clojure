@@ -39,5 +39,7 @@
       (make-player (:marker attributes) player-color :human)
     (input-validation/is-acceptable-as-easy-computer? (:role attributes))
       (make-player (:marker attributes) player-color :easy-computer)
+    (input-validation/is-acceptable-as-medium-computer? (:role attributes))
+      (make-player (:marker attributes) player-color :medium-computer)
     :else
       (make-player (:marker attributes) player-color :hard-computer)))

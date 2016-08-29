@@ -8,6 +8,9 @@
 (def acceptable-easy-computer
   #{"ec" "easy computer" "easycomputer" "easy" "easy-computer"})
 
+(def acceptable-medium-computer
+  #{"mc" "medium computer" "mediumcomputer" "medium" "medium-computer"})
+
 (def acceptable-hard-computer
   #{"hc" "hard computer" "hardcomputer" "hard" "difficult" "hard-computer"})
 
@@ -29,6 +32,10 @@
   [role]
   (contains? acceptable-easy-computer role))
 
+(defn is-acceptable-as-medium-computer?
+  [role]
+  (contains? acceptable-medium-computer role))
+
 (defn is-acceptable-as-hard-computer?
   [role]
   (contains? acceptable-hard-computer role))
@@ -37,6 +44,7 @@
  [role]
  (or (is-acceptable-as-human-player? role)
      (is-acceptable-as-easy-computer? role)
+     (is-acceptable-as-medium-computer? role)
      (is-acceptable-as-hard-computer? role)))
 
 (defn is-valid-marker?

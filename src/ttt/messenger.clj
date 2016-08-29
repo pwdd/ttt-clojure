@@ -43,7 +43,7 @@
        "Please enter '3', '4', or '5'"))
 
 (def role-options-msg
-  "Please type H (human), EC (easy computer) or HC (hard computer): ")
+  "Please type H (human), EC (easy computer), MC (medium computer) or HC (hard computer): ")
 
 (defn- marker-string
   [marker]
