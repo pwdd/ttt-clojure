@@ -3,7 +3,8 @@
             [ttt.evaluate-game :as evaluate-game]
             [ttt.get-spots :refer [select-spot]]
             [ttt.player :as player]
-            [ttt.helpers :as helpers]))
+            [ttt.helpers :as helpers]
+            [ttt.rules :as rules]))
 
 (def start-depth 0)
 
@@ -45,8 +46,8 @@
 
 (def medium-board-length 16)
 (def large-board-length 25)
-(def start-medium-board (- medium-board-length 5))
-(def start-large-board (- large-board-length 7))
+(def start-medium-board (- medium-board-length 10))
+(def start-large-board (- large-board-length 14))
 
 (defn- medium-board?
   [board]
@@ -69,10 +70,10 @@
 (defmethod select-spot :hard-computer
   [player params]
   (cond
-    (board/is-board-empty? (:board params)) 4
+    (board/is-board-empty? (:board params)) (rules/place-in-the-middle (:board params)) 
     (and (alternative-board? (:board params))
          (first-moves-alternative-board? (:board params)))
-      (helpers/random-move (board/available-spots (:board params)))
+      (rules/play-based-on-rules player params)
     :else
     (let [spots (board/available-spots (:board params))
          scores (scores (:board params)

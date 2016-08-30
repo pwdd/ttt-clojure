@@ -1,6 +1,7 @@
 (ns ttt.rules
   (:require [clojure.set :as set]
-            [ttt.board :as board]))
+            [ttt.board :as board]
+            [ttt.helpers :as helpers]))
 
 (defn- is-section-empty?
   [board-section]
@@ -151,3 +152,42 @@
         board-map (zipmap section board-section)]
     (keep #(when (= (val %) board/empty-spot) (key %)) 
           board-map)))
+
+(defn- owned
+  [board current-player-marker opponent-marker]
+  (most-populated-owned-section board current-player-marker opponent-marker))
+
+(defn- empty-section
+  [board]
+  (is-there-empty-section? board))
+
+(defn play-based-on-rules
+  [player params]
+  (let [board (:board params)
+        current-player-marker (get-in params [:current-player :marker])
+        opponent-marker (get-in params [:opponent :marker])
+        board-size (board/board-size board)]
+
+    (cond
+      (is-middle-the-best-move? board) (place-in-the-middle board)
+      (and (is-board-with-one-move? board)
+           (not (is-middle-free? board)))
+        (helpers/random-move (available-spots-in-section
+                               board 
+                               (corners board-size)))
+      (where-can-win board current-player-marker) 
+        (place-in-winning-spot board current-player-marker) 
+      (where-can-win board opponent-marker)
+        (place-in-winning-spot board opponent-marker)
+      (not (empty? (owned-sections board 
+                                   current-player-marker 
+                                   opponent-marker)))
+        (helpers/random-move 
+          (available-spots-in-section board 
+                                     (owned board 
+                                            current-player-marker
+                                            opponent-marker)))
+      (is-there-empty-section? board)
+        (helpers/random-move (empty-section board))
+      :else
+        (helpers/random-move (board/available-spots board)))))
