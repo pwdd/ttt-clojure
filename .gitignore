@@ -4,6 +4,7 @@
 /checkouts
 /target
 /dev-resources
+saved/*.json
 pom.xml
 questions.md
 .nrepl-port

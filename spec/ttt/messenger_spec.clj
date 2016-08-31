@@ -6,6 +6,19 @@
             [ttt.board :as board]
             [ttt.helpers :as helpers]))
 
+(describe "separator"
+  (it "returns the board row separation for a 3 x 3 board"
+    (should= "\n---|---|---\n"
+             (helpers/remove-color (messenger/separator 3))))
+
+  (it "returns the board row separation for a 4 x 4 board"
+    (should= "\n---|---|---|---\n"
+             (helpers/remove-color (messenger/separator 4))))
+
+  (it "returns the board row separation for a 5 x 5 board"
+    (should= "\n---|---|---|---|---\n"
+             (helpers/remove-color (messenger/separator 5)))))
+
 (describe "ask-role-msg"
   (with x {:token :x :color :blue})
 
@@ -16,16 +29,21 @@
 (describe "translate-keyword"
   (it "returns ' x '"
     (should= " x "
-             (helpers/remove-color (messenger/translate-keyword {:token :x
-                                                                 :color :blue}))))
+             (helpers/remove-color (messenger/translate-keyword [1 
+                                                                {:token :x
+                                                                 :color :blue}]))))
 
   (it "returns ' o '"
     (should= " o "
-             (helpers/remove-color (messenger/translate-keyword {:token :o
-                                                                 :color :blue}))))
+             (helpers/remove-color (messenger/translate-keyword [1
+                                                                {:token :o
+                                                                 :color :blue}]))))
 
-  (it "returns an empty space for :_"
-    (should= "   " (messenger/translate-keyword board/empty-spot))))
+  (it "returns a number surrounded by whitespaces if index of empty spot is smaller than 9"
+    (should= " 2 " (helpers/remove-color (messenger/translate-keyword [1 board/empty-spot]))))
+  
+  (it "returns whitespace and number if empty spot index is bigger than 9"
+    (should= " 10" (helpers/remove-color (messenger/translate-keyword [9 board/empty-spot])))))
 
 (describe "stringify-board"
 
@@ -33,15 +51,31 @@
   (with o {:token :o :color :reset})
   (with _ board/empty-spot)
 
-  (it "outputs a representation of the empty board"
-    (should=
-      "   |   |   \n---|---|---\n   |   |   \n---|---|---\n   |   |   \n"
-      (helpers/remove-color (messenger/stringify-board (board/new-board)))))
+  (it "outputs a representation of the empty board with dimension 3x3"
+    (should= (str   " 1 | 2 | 3 "
+                  "\n---|---|---\n"
+                    " 4 | 5 | 6 "
+                  "\n---|---|---\n"
+                    " 7 | 8 | 9 \n")
+      (helpers/remove-color (messenger/stringify-board (board/new-board 3)))))
+
+  (it "outputs a representation of the empty board with dimension 4x4"
+    (should= (str   " 1 | 2 | 3 | 4 "
+                  "\n---|---|---|---\n"
+                    " 5 | 6 | 7 | 8 "
+                  "\n---|---|---|---\n"
+                    " 9 | 10| 11| 12"
+                  "\n---|---|---|---\n"
+                    " 13| 14| 15| 16\n")
+      (helpers/remove-color (messenger/stringify-board (board/new-board 4)))))
 
   (it "combines empty spaces and letters when some spots are taken"
-    (should=
-      "   | x |   \n---|---|---\n o |   |   \n---|---|---\n   |   | x \n"
-      (helpers/remove-color (messenger/stringify-board [@_ @x @_ @o @_ @_ @_ @_ @x])))))
+    (should= (str   " 1 | x | 3 "
+                  "\n---|---|---\n"
+                    " o | 5 | 6 "
+                  "\n---|---|---\n"
+                    " 7 | 8 | x \n")
+             (helpers/remove-color (messenger/stringify-board [@_ @x @_ @o @_ @_ @_ @_ @x])))))
 
 (describe "stringify-combo"
   (it "returns a string representing a vector of numbers"
@@ -164,11 +198,11 @@
 (describe "not-a-valid-move"
   (it "explains that number is out of range"
     (should= (str messenger/default-invalid-input "There is no position 12 in the board\n")
-             (messenger/not-a-valid-move 11)))
+             (messenger/not-a-valid-move 11 9)))
 
   (it "explains that a position is taken"
     (should= (str messenger/default-invalid-input "The position is taken\n")
-             (messenger/not-a-valid-move 2))))
+             (messenger/not-a-valid-move 2 16))))
 
 (describe "invalid-marker-msg"
   (it "explains that a word is an invalid marker"

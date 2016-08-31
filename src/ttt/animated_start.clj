@@ -45,7 +45,9 @@
                                  :current-player current-player
                                  :opponent opponent
                                  :depth negamax/start-depth
-                                 :board-length board/board-length})
+                                 :board-length board/board-length
+                                 :alpha 100
+                                 :beta -100})
         game-board (board/move board spot (:marker current-player))
         board-time 300]
     (view/print-message (messenger/stringify-board board))

@@ -1,21 +1,22 @@
 (ns ttt.view
   (:require [clojure.string :as string]
-            [clojure.java.shell :as sh]
-            [ttt.colors :as colors]))
+            [clojure.java.shell :as shell]
+            [ttt.colors :as colors]
+            [ttt.helpers :as helpers]))
 
 (defn get-console-width
   []
-  (->> (sh/sh "/bin/sh" "-c" "stty -a < /dev/tty")
+  (->> (shell/sh "/bin/sh" "-c" "stty -a < /dev/tty")
         :out (re-find #"(\d+) columns") second))
 
 (defn get-half-screen-width
   []
-  (if (re-find #"Win(.*)" (System/getProperty "os.name"))
+  (if (helpers/is-windows-os?)
     40
     (quot (Integer/parseInt (get-console-width)) 2)))
 
 (def half-screen-width (get-half-screen-width))
-(def center-of-screen "[8;6H")
+(def center-of-screen "[4;0H")
 (def height 24)
 (def final-msg-lines 9)
 (def flush-down (string/join (repeat (quot (- height final-msg-lines) 2) "\n")))
@@ -25,11 +26,18 @@
   (let [escape (char 27)]
     (print (str escape "[2J" escape center-of-screen))))
 
+(defn clear-and-quit
+  []
+    (when-not (helpers/is-windows-os?)
+      (->> (shell/sh "/bin/sh" "-c" "clear <  /dev/null") :out (print ""))
+      (flush))
+    (System/exit 0))
+
 (defn number-of-spaces
   [message-length half-screen-width]
   (- half-screen-width (quot message-length 2)))
 
-(def color-re #"\[\d*m")
+(def color-re #"\[\d?;?\d*m")
 
 (defn color-code-list
   [message-string]
@@ -70,6 +78,7 @@
 (defn make-board-disappear
   [player-role time]
   (when (or (= :easy-computer player-role)
-            (= :hard-computer player-role))
+            (= :hard-computer player-role)
+            (= :medium-computer player-role))
     (Thread/sleep time)
     (clear-screen)))

@@ -8,9 +8,20 @@
             [ttt.colors :as colors]))
 
 (def board-color :red)
+(def number-color :gray)
 
-(def separator
-  (str "\n" (colors/colorize board-color "---|---|---") "\n"))
+(defn- newline-wrap
+  [message]
+  (str "\n" message "\n"))
+
+(defn separator
+  [board-size]
+  (let [dashes "---"
+        pipe "|"]
+   (->> (repeat board-size dashes)
+        (string/join pipe)
+        newline-wrap
+        (colors/colorize board-color))))
 
 (def welcome
   (str "   |------------------------|\n"
@@ -20,21 +31,36 @@
 (def instructions "The board is represented like the following:\n")
 
 (def new-or-saved-msg (str "Would you like to\n"
-                          "(1) restart a saved game or\n"
+                           "(1) restart a saved game or\n"
                            "(2) start a new game?\n"
                            "Please enter 1 or 2:"))
 
+(def choose-board-size
+  (str "Would you like to play using a board that has dimensions:\n"
+       "(3) 3 x 3\n"
+       "(4) 4 x 4\n"
+       "(5) 5 x 5?\n"
+       "Please enter '3', '4', or '5'"))
+
 (def role-options-msg
-  "Please type H (human), EC (easy computer) or HC (hard computer): ")
+  "Please type H (human), EC (easy computer), MC (medium computer) or HC (hard computer): ")
 
 (defn- marker-string
   [marker]
   (name (:token marker)))
 
+(defn- colorful-marker
+  [marker]
+  (colors/colorize (:color marker) (marker-string marker)))
+
+(defn colorful-empty-spot
+  [number-string]
+  (colors/colorize number-color number-string))
+
 (defn ask-role-msg
   [marker]
   (str "Should player '"
-       (colors/colorize (:color marker) (marker-string marker))
+       (colorful-marker marker)
        "' be a human or a computer?\n"
        role-options-msg))
 
@@ -44,11 +70,18 @@
 (def ask-second-marker-msg
   "Please enter a single letter that will be the second player's marker")
 
-(def choose-a-number "Please enter a number from 1-9: \n")
+(def choose-a-number "Please enter a number corresponding to a position on the board: \n")
 
-(def or-enter-save "(or type 'SAVE' to save the current game)")
+(def or-enter-save "-  'SAVE' to save the current game")
+(def or-enter-quit "- 'QUIT' to quit the game")
+(def or-restart "- 'RESTART' to restart this game")
+(def other-options
+  (string/join "\n" [or-enter-save or-enter-quit or-restart]))
 
-(def number-or-save (str choose-a-number or-enter-save))
+(def multiple-choice
+  (str choose-a-number
+       "\nYou can also type: \n"
+       other-options))
 
 (def give-file-name "Enter the name of the game as you want it to be saved:")
 
@@ -61,14 +94,17 @@
 
 (def game-saved "Your game has been saved.")
 
-(def board-representation
-  " 1 | 2 | 3 \n---|---|---\n 4 | 5 | 6 \n---|---|---\n 7 | 8 | 9 \n")
+(defn- empty-spot-to-number
+  [index]
+  (if (< index 9)
+    (colorful-empty-spot (str " " (inc index) " "))
+    (colorful-empty-spot (str " " (inc index)))))
 
 (defn translate-keyword
-  [k]
-  (if-not (= k board/empty-spot)
-    (str " " (colors/colorize (:color k) (marker-string k)) " ")
-    "   "))
+  [[index marker]]
+  (if (= marker board/empty-spot)
+    (empty-spot-to-number index)
+    (str " " (colorful-marker marker) " ")))
 
 (defn join-combo
   [string-combo]
@@ -77,12 +113,14 @@
 
 (defn translate-board
   [board]
-  (let [board-string (partition board/board-size (map translate-keyword board))]
+  (let [indexed-board (map-indexed vector board)
+        board-string (partition (board/board-size board) 
+                                (map translate-keyword indexed-board))]
     (map join-combo board-string)))
 
 (defn stringify-board
   [board]
-  (str (string/join separator (translate-board board)) "\n"))
+  (str (string/join (separator (board/board-size board)) (translate-board board)) "\n"))
 
 (defn stringify-combo
   [combo]
@@ -113,7 +151,7 @@
   (let [winner (evaluate-game/winner-player board first-player second-player)
         winner-marker (:marker winner)]
     (str "Player '"
-         (colors/colorize (:color winner-marker) (marker-string winner-marker))
+        (colorful-marker winner-marker) 
          "' won on positions "
          (stringify-combo (board/winning-combo board)))))
 
@@ -149,7 +187,7 @@
 (defmethod moved-to :same-roles
   [game player spot]
   (str "Player '"
-       (colors/colorize (player/color player) (marker-string (:marker player)))
+      (colorful-marker (:marker player)) 
        "' moved to "
        (inc spot)
        "\n"))
@@ -165,8 +203,8 @@
     (str default-invalid-input "'" input "' is not a number\n")))
 
 (defn not-a-valid-move
-  [position]
-  (if-not (helpers/in-range? position board/board-length)
+  [position board-length]
+  (if-not (helpers/in-range? position board-length)
     (str default-invalid-input
          "There is no position "
          (inc position)
@@ -176,7 +214,7 @@
 (defn wrong-number-msg
   [board input]
   (if (input-validation/is-int? input)
-    (not-a-valid-move (helpers/input-to-number input))
+    (not-a-valid-move (helpers/input-to-number input) (count board))
     (not-a-valid-number input)))
 
 (defn invalid-marker-msg
@@ -194,9 +232,7 @@
 (defn current-player-is
   [current-player-marker]
   (str "Current player is playing with '"
-       (colors/colorize (:color current-player-marker)
-                        (marker-string current-player-marker))
-       "'"))
+      (colorful-marker current-player-marker) "'"))
 
 (def choose-a-file-msg "Enter the name of the saved game you wanna play:")
 

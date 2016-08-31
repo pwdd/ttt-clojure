@@ -2,50 +2,91 @@
   (:require [ttt.board :as board]
             [ttt.evaluate-game :as evaluate-game]
             [ttt.get-spots :refer [select-spot]]
-            [ttt.player :as player]))
+            [ttt.player :as player]
+            [ttt.helpers :as helpers]
+            [ttt.rules :as rules]))
 
 (def start-depth 0)
 
 (defn board-analysis
   [board current-player-marker opponent-marker depth]
-  (if (evaluate-game/draw? board)
-    0
-    (let [winner (evaluate-game/winner-marker board)]
-      (if (= winner current-player-marker)
-        (- 10 depth)
-        (- depth 10)))))
+  (let [winner (evaluate-game/winner-marker board)]
+    (condp = winner
+      current-player-marker (- 10 depth)
+      opponent-marker (- depth 10)
+      0)))
+
+(defn create-next-boards
+  [board available-spots current-player-marker]
+  (map #(board/move board % current-player-marker) available-spots))
 
 (declare negamax)
 
 (defn scores
   [board current-player-marker opponent-marker depth]
   (let [spots (board/available-spots board)
-       new-boards (map #(board/move board
-                                    %
-                                    current-player-marker) spots)]
-    (map #(- (negamax % opponent-marker current-player-marker (inc depth)))
+       new-boards (create-next-boards board spots current-player-marker)]
+    (map #(- (negamax %
+                      opponent-marker
+                      current-player-marker
+                      (inc depth)))
          new-boards)))
 
 (defn negamax-score
   [board current-player-marker opponent-marker depth]
-  (if (evaluate-game/game-over? board)
+  (if (or (evaluate-game/game-over? board)
+          (>= depth 4))
     (board-analysis board current-player-marker opponent-marker depth)
     (apply max (scores board
                        current-player-marker
                        opponent-marker
-                       depth))))
+                       depth ))))
 
 (def negamax (memoize negamax-score))
 
+(def medium-board-length 16)
+(def large-board-length 25)
+(def start-medium-board (- medium-board-length 10))
+(def start-large-board (- large-board-length 14))
+
+(defn- medium-board?
+  [board]
+  (= (count board) medium-board-length))
+
+(defn- large-board?
+  [board]
+  (= (count board) large-board-length))
+
+(defn- alternative-board?
+  [board]
+  (or (medium-board? board) (large-board? board)))
+
+(defn- first-moves-alternative-board?
+  [board]
+  (if (medium-board? board)
+    (> (count (board/available-spots board)) start-medium-board)
+    (> (count (board/available-spots board)) start-large-board)))
+
+(defn- starting-game-with-alternative-board?
+  [board]
+  (and (alternative-board? board) (first-moves-alternative-board? board)))
+
 (defmethod select-spot :hard-computer
   [player params]
-  (if (board/is-board-empty? (:board params))
-    4
-    (let [spots (board/available-spots (:board params))
-         scores (scores (:board params)
-                        (player/marker (:current-player params))
-                        (player/marker (:opponent params))
-                        (:depth params))
+  (let [board (:board params)
+        current-player (:current-player params)
+        opponent (:opponent params)
+        depth (:depth params)]
+  (cond
+    (board/is-board-empty? board) (rules/place-in-the-center board) 
+    (starting-game-with-alternative-board? board)
+      (rules/play-based-on-rules player params)
+    :else
+    (let [spots (board/available-spots board)
+         scores (scores board
+                        (:marker current-player)
+                        (:marker opponent)
+                        depth)
          max-value (apply max scores)
          best (.indexOf scores max-value)]
-      (nth spots best))))
+      (nth spots best)))))

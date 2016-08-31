@@ -20,7 +20,7 @@
      (should-not (view/color-code-list "foo")))
 
   (it "returns a collection with codes if string has one part that has color"
-    (should= ["[34m" "[37m"]
+    (should= ["[34m" "[0;37m"]
              (view/color-code-list (str (:blue colors/ansi-colors)
                                         "foo bar"
                                         (:default colors/ansi-colors))))))

@@ -10,13 +10,13 @@
 (defn winner-player
   [board first-player second-player]
   (let [winner-marker (winner-marker board)]
-    (if (= winner-marker (player/marker first-player))
+    (if (= winner-marker (:marker first-player))
       first-player
       second-player)))
 
 (defn winner-role
   [board first-player second-player]
-  (player/role (winner-player board first-player second-player)))
+  (:role (winner-player board first-player second-player)))
 
 (defn is-winner-ai?
  [board first-player second-player]

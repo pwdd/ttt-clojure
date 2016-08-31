@@ -1,6 +1,10 @@
 (ns ttt.helpers
   (:require [clojure.string :as string]))
 
+(defn is-windows-os?
+  []
+  (re-find #"Win(.*)" (System/getProperty "os.name")))
+
 (defn clean-string
   [str]
   (string/lower-case (string/trim str)))
@@ -13,10 +17,14 @@
   [idx limit]
   (and (>= idx 0) (< idx limit)))
 
+(defn random-move
+  [available-spots]
+  (rand-nth available-spots))
+
 (defn remove-color
   [string]
   (let [escape (char 27)
-        re-code #"\[\d*m"]
+        re-code #"\[\d?;?\d*m"]
     (loop [string string
            code-list (re-seq re-code string)]
       (if (empty? code-list)

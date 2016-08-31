@@ -1,37 +1,45 @@
 (ns ttt.board
   (:require [ttt.helpers :as helpers]))
 
-(def board-size 3)
-(def board-length (* board-size board-size))
 (def empty-spot :_)
 
+(defn board-size
+  [board]
+  (int (Math/sqrt (count board))))
+
+(defn board-length
+  [board-size]
+  (* board-size board-size))
+
 (defn new-board
-  []
-  (vec (repeat board-length empty-spot)))
+  [board-size]
+  (vec (repeat (board-length board-size) empty-spot)))
 
 (defn board-rows
-  []
-  (mapv vec (partition board-size (range board-length))))
+  [board-size]
+  (mapv vec (partition board-size (range (board-length board-size)))))
 
 (defn board-columns
-  []
-  (apply mapv vector (board-rows)))
+  [board-size]
+  (apply mapv vector (board-rows board-size)))
 
 (defn- make-diagonal
-  [indexes]
+  [indexes board-size]
   (->> indexes
        (map-indexed vector)
-       (mapv #(get-in (board-rows) %))))
+       (mapv #(get-in (board-rows board-size) %))))
 
 (defn board-diagonals
-  []
+  [board-size]
   (let [forward (range board-size)
         backward (reverse forward)]
-    [(make-diagonal forward) (make-diagonal backward)]))
+    [(make-diagonal forward board-size) (make-diagonal backward board-size)]))
 
 (defn winning-positions
-  []
-  (mapv vec (concat (board-rows) (board-columns) (board-diagonals))))
+  [board-size]
+  (mapv vec (concat (board-rows board-size)
+                    (board-columns board-size)
+                    (board-diagonals board-size))))
 
 (defn move
   [board spot marker]
@@ -55,7 +63,7 @@
 
 (defn is-valid-move?
   [board spot]
-  (and (helpers/in-range? spot board-length)
+  (and (helpers/in-range? spot (count board))
        (is-spot-available? board spot)))
 
 (defn repeated-markers?
@@ -66,6 +74,7 @@
 
 (defn winning-combo
   [board]
-  (->> (winning-positions)
-       (filter #(repeated-markers? board %))
-       (first)))
+  (let [board-size (board-size board)]
+    (->> (winning-positions board-size)
+         (filter #(repeated-markers? board %))
+         (first))))

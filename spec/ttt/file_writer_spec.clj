@@ -11,7 +11,7 @@
 
   (it "converts an empty board into valid JSON key/pair format"
     (should= "\"board\": [\"_\",\"_\",\"_\",\"_\",\"_\",\"_\",\"_\",\"_\",\"_\"]"
-             (file-writer/write-board (board/new-board))))
+             (file-writer/write-board (board/new-board 3))))
 
   (it "converts a board with markers into a valid JSON key/pair format"
     (should= "\"board\": [\"_\",\"x\",\"_\",\"_\",\"_\",\"_\",\"_\",\"_\",\"o\"]"
@@ -35,7 +35,7 @@
     (should= (str "{\"board\": [\"_\",\"_\",\"_\",\"_\",\"_\",\"_\",\"_\",\"_\",\"_\"],"
                   "\"current-player\": {\"marker\":{\"token\":\"x\",\"color\":\"green\"},\"role\":\"human\"},"
                   "\"opponent\": {\"marker\":{\"token\":\"o\",\"color\":\"green\"},\"role\":\"easy-computer\"}}")
-             (file-writer/write-json {:board (board/new-board)
+             (file-writer/write-json {:board (board/new-board 3)
                                       :current-player {:marker {:token "x" :color :green} :role "human"}
                                       :opponent {:marker {:token "o" :color :green} :role "easy-computer"}}))))
 
@@ -43,7 +43,7 @@
 
   (with directory (io/file "test-files"))
   (with filename "test-game")
-  (with game-data {:board (board/new-board)
+  (with game-data {:board (board/new-board 3)
                    :current-player {:marker {:token "x" :color :green} :role "human"}
                    :opponent {:marker {:token "o" :color :green} :role "easy-computer"}})
 

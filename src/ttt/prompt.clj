@@ -6,7 +6,6 @@
             [ttt.messenger :as messenger]
             [ttt.file-writer :as file-writer]
             [ttt.file-reader :as file-reader]
-            [ttt.get-spots :refer [select-spot]]
             [ttt.player :as player]))
 
 (defn prompt
@@ -70,14 +69,12 @@
   [input existing-files first-loop]
   (file-exist-msg first-loop)
   (let [overwrite (prompt helpers/clean-string messenger/overwrite-file-option)]
-    (cond
-      (= overwrite input-validation/overwrite-file) input
-      (= overwrite input-validation/dont-overwrite-file)
-        (enter-a-file-name existing-files)
-      :else
-        (do
-          (view/print-message messenger/default-invalid-input)
-          (recur input existing-files false)))))
+    (condp = overwrite
+      input-validation/overwrite-file input
+      input-validation/dont-overwrite-file (enter-a-file-name existing-files)
+      (do
+        (view/print-message messenger/default-invalid-input)
+        (recur input existing-files false)))))
 
 (defn enter-a-file-name
   [existing-files]
@@ -86,30 +83,9 @@
       input
       (overwrite-file input existing-files true))))
 
-(defn save-and-exit
-  [directory filename {:keys [board current-player opponent]}]
-  (file-writer/create-game-file directory
-                                filename
-                                {:board board
-                                 :current-player current-player
-                                 :opponent opponent})
-  (view/print-message messenger/game-saved)
-  (System/exit 0))
-
-(defmethod select-spot :human
-  [player params]
-  (let [input (prompt helpers/clean-string messenger/number-or-save)
-        board (:board params)]
-    (cond
-      (input-validation/save? input)
-        (save-and-exit file-reader/directory
-                       (enter-a-file-name (file-reader/list-all-files file-reader/directory))
-                       {:board (:board params)
-                       :current-player player
-                       :opponent (:opponent params)})
-      (input-validation/is-valid-move-input? board input)
-        (helpers/input-to-number input)
-      :else
-        (do
-          (view/print-message (messenger/board-after-invalid-input board input))
-          (recur player params)))))
+(defn get-board-size
+  []
+  (let [input (prompt string/trim messenger/choose-board-size)]
+    (if (input-validation/is-valid-board-size? input)
+      input
+      (recur))))

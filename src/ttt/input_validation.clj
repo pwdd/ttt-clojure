@@ -8,6 +8,9 @@
 (def acceptable-easy-computer
   #{"ec" "easy computer" "easycomputer" "easy" "easy-computer"})
 
+(def acceptable-medium-computer
+  #{"mc" "medium computer" "mediumcomputer" "medium" "medium-computer"})
+
 (def acceptable-hard-computer
   #{"hc" "hard computer" "hardcomputer" "hard" "difficult" "hard-computer"})
 
@@ -18,6 +21,8 @@
 (def dont-overwrite-file "2")
 
 (def save-valid-input "save")
+(def quit-valid-input "quit")
+(def restart-valid-input "restart")
 
 (defn is-acceptable-as-human-player?
   [role]
@@ -27,6 +32,10 @@
   [role]
   (contains? acceptable-easy-computer role))
 
+(defn is-acceptable-as-medium-computer?
+  [role]
+  (contains? acceptable-medium-computer role))
+
 (defn is-acceptable-as-hard-computer?
   [role]
   (contains? acceptable-hard-computer role))
@@ -35,6 +44,7 @@
  [role]
  (or (is-acceptable-as-human-player? role)
      (is-acceptable-as-easy-computer? role)
+     (is-acceptable-as-medium-computer? role)
      (is-acceptable-as-hard-computer? role)))
 
 (defn is-valid-marker?
@@ -66,3 +76,17 @@
 (defn save?
   [input]
   (= input save-valid-input))
+
+(defn quit?
+  [input]
+  (= input quit-valid-input))
+
+(defn restart?
+  [input]
+  (= input restart-valid-input))
+
+(def valid-board-size ["3" "4" "5"])
+
+(defn is-valid-board-size?
+  [input]
+  (some #{input} valid-board-size))

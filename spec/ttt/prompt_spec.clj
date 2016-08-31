@@ -133,3 +133,15 @@
 
   (it "returns the input if there is no file with the same name as input"
     (should= "baz" (with-in-str "baz" (prompt/enter-a-file-name ["foo" "bar"])))))
+
+
+(describe "get-board-size"
+
+  (around [it]
+    (with-out-str (it)))
+
+  (it "returns user input if it is valid"
+    (should= "5" (with-in-str "5" (prompt/get-board-size))))
+
+  (it "recurs until input is valid"
+    (should= "3" (with-in-str "2\n  6\n3" (prompt/get-board-size)))))

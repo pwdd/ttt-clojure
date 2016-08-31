@@ -7,7 +7,7 @@
 (describe "winner-marker"
 
   (with _ board/empty-spot)
-  (with empty-board (board/new-board))
+  (with empty-board (board/new-board 3))
   (with x {:token :x :color :green})
   (with o {:token :o :color :blue})
 
@@ -117,7 +117,7 @@
 
 (describe "draw?"
   (with _ board/empty-spot)
-  (with empty-board (board/new-board))
+  (with empty-board (board/new-board 4))
   (with x {:token :x :color :green})
   (with o {:token :o :color :blue})
 
@@ -139,7 +139,7 @@
 
 (describe "game-over?"
   (with _ board/empty-spot)
-  (with empty-board (board/new-board))
+  (with empty-board (board/new-board 3))
   (with x {:token :x :color :green})
   (with o {:token :o :color :blue})
 

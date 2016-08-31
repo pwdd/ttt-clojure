@@ -11,3 +11,7 @@
 - Running the tests:
 
   Also from root, run `lein spec` or `lein spec -a`
+
+- Colors:
+  
+  Recommended terminal background color: black
