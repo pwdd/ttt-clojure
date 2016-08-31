@@ -29,7 +29,7 @@
 
     (it "returns a map with a key :current-player.marker holding a map with :token and :color"
       (should= {:token :x, :color :green}
-               (player/marker (@data :current-player))))
+               (:marker (@data :current-player))))
 
     (it "returns a map with a key :opponent"
       (should (@data :opponent))))

@@ -1,0 +1,1 @@
+{"board": [{"token":"x","color":"bright-green"},{"token":"o","color":"bright-blue"},"_","_","_","_","_","_","_"],"current-player": {"marker":{"token":"x","color":"bright-green"},"role":"human","start-game":"first"},"opponent": {"marker":{"token":"o","color":"bright-blue"},"role":"human","start-game":"second"}}

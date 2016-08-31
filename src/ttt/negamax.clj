@@ -67,19 +67,26 @@
     (> (count (board/available-spots board)) start-medium-board)
     (> (count (board/available-spots board)) start-large-board)))
 
+(defn- starting-game-with-alternative-board?
+  [board]
+  (and (alternative-board? board) (first-moves-alternative-board? board)))
+
 (defmethod select-spot :hard-computer
   [player params]
+  (let [board (:board params)
+        current-player (:current-player params)
+        opponent (:opponent params)
+        depth (:depth params)]
   (cond
-    (board/is-board-empty? (:board params)) (rules/place-in-the-center (:board params)) 
-    (and (alternative-board? (:board params))
-         (first-moves-alternative-board? (:board params)))
+    (board/is-board-empty? board) (rules/place-in-the-center board) 
+    (starting-game-with-alternative-board? board)
       (rules/play-based-on-rules player params)
     :else
-    (let [spots (board/available-spots (:board params))
-         scores (scores (:board params)
-                        (player/marker (:current-player params))
-                        (player/marker (:opponent params))
-                        (:depth params))
+    (let [spots (board/available-spots board)
+         scores (scores board
+                        (:marker current-player)
+                        (:marker opponent)
+                        depth)
          max-value (apply max scores)
          best (.indexOf scores max-value)]
-      (nth spots best))))
+      (nth spots best)))))

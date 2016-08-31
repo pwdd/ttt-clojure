@@ -33,8 +33,8 @@
           (prompt/get-player-attributes {:msg msg-second-attr
                                          :color second-player-color
                                          :opponent-marker (:marker current-player-attr)})
-        current-player (player/define-player current-player-attr first-player-color)
-        opponent (player/define-player opponent-attr second-player-color)
+        current-player (player/define-player current-player-attr first-player-color :first)
+        opponent (player/define-player opponent-attr second-player-color :second)
         game (game/create-game (:role current-player) (:role opponent))]
     {:current-player current-player
      :opponent opponent
@@ -65,7 +65,7 @@
     (setup-resumed-game directory)
     (setup-regular-game msg-first-player-attr msg-second-player-attr)))
 
-(defn first-view-msgs
+(defn- first-view-msgs
   []
   (view/clear-screen)
   (animate/animated-board :computer-x-computer
@@ -74,20 +74,20 @@
                           {:marker o :role :easy-computer})
   (view/print-message messenger/welcome))
 
-(defn initial-view-of-board
+(defn- initial-view-of-board
   [first-screen saved player board]
   (when (game/human-makes-first-move? first-screen (:role player))
     (if saved
       (view/print-message (messenger/current-player-is (:marker player))))
     (view/print-message (messenger/stringify-board board))))
 
-(defn display-new-board-info
+(defn- display-new-board-info
   [game board current-player spot]
   (view/make-board-disappear (:role current-player) 1000)
   (view/print-message (messenger/moved-to game current-player spot))
   (view/print-message (messenger/stringify-board board)))
 
-(defn save-and-exit
+(defn- save-and-exit
   [directory filename {:keys [board current-player opponent]}]
   (file-writer/create-game-file directory
                                 filename
@@ -95,28 +95,35 @@
                                  :current-player current-player
                                  :opponent opponent})
   (view/print-message messenger/game-saved)
+  (Thread/sleep 700)
   (view/clear-and-quit))
 
-(defn restart-data
+(defn- restart-data
   [params]
-  (assoc params :board (board/new-board (:board-size params))))
+  (let [new-board (board/new-board (:board-size params))]
+    (if (player/started-game? (get-in params [:current-player :start-game]))
+      (assoc params :board new-board)
+      {:board new-board 
+       :current-player (:opponent params)
+       :opponent (:current-player params)})))
 
-(defn save-and-exit-data
+(defn- save-and-exit-data
   [params]
   (select-keys params [:board :current-player :opponent]))
 
 (declare game-loop)
 
-(defn not-spot-input
+(defn- not-spot-input
   [input player params]
-  (cond 
-    (input-validation/save? input)
-      (save-and-exit file-reader/directory
-                     (prompt/enter-a-file-name (file-reader/list-all-files file-reader/directory))
-                     (save-and-exit-data params))
-    (input-validation/quit? input) (view/clear-and-quit)
-    :else
-      (game-loop (restart-data params))))
+  (let [directory file-reader/directory]
+    (cond 
+      (input-validation/save? input)
+        (save-and-exit directory
+                       (prompt/enter-a-file-name (file-reader/list-all-files directory))
+                       (save-and-exit-data params))
+      (input-validation/quit? input) (view/clear-and-quit)
+      :else
+        (game-loop (restart-data params)))))
 
 (defmethod select-spot :human
   [player params]
@@ -134,7 +141,7 @@
         (view/print-message (messenger/board-after-invalid-input board input))
         (recur player params)))))
 
-(defn make-a-move
+(defn- make-a-move
   [game board current-player opponent saved board-size]
   (select-spot current-player
                {:game game
@@ -145,7 +152,7 @@
                 :depth negamax/start-depth
                 :board-length board/board-length}))
 
-(defn game-over-msg
+(defn- game-over-msg
   [game board current-player opponent]
   (view/print-message (messenger/result game
                                         board
@@ -158,7 +165,7 @@
     board
     (board/new-board board-size)))
 
-(defn game-loop
+(defn- game-loop
   [{:keys [game board current-player opponent saved first-screen board-size]
     :or {board [] first-screen true}}]
 
@@ -172,7 +179,10 @@
       (display-new-board-info game game-board current-player spot)
 
       (if (evaluate-game/game-over? game-board)
-        (game-over-msg game game-board current-player opponent)
+        (do
+          (game-over-msg game game-board current-player opponent)
+          (view/print-message view/flush-down)
+          (System/exit 0))
         (recur {:game game
                 :board game-board
                 :opponent current-player
@@ -187,7 +197,7 @@
     (prompt/get-new-or-saved)
     input-validation/new-game-option))
 
-(defn setup
+(defn- setup
   []
   (let [selection (game-selection file-reader/directory)]
     (game-setup selection
@@ -195,7 +205,7 @@
                 messenger/ask-first-marker-msg
                 messenger/ask-second-marker-msg)))
 
-(defn clean-and-exit
+(defn- clean-and-exit
   []
   (println view/flush-down)
   (System/exit 0))

@@ -11,33 +11,32 @@
   (it "returns true if player is hard-computer"
     (should (player/is-ai? :hard-computer)))
 
+  (it "returns true if player is medium-computer"
+    (should (player/is-ai? :medium-computer)))
+
   (it "returns false if player is not ai"
     (should-not (player/is-ai? :human))))
 
-(describe "marker"
-  (it "returns the marker from a player record"
-    (should= {:token :x :color :green}
-             (player/marker {:marker {:token :x :color :green}
-                             :role :human}))))
-
-(describe "color"
-  (it "returns the color of a marker from a player record"
-    (should= :green (player/color {:marker {:token :x :color :green}
-                                   :role :human}))))
+(describe "started-game?"
+  (it "returns true if player :start-game is :first"
+    (should (player/started-game? :first)))
+  
+  (it "returns false if player :start-game is not :first"
+    (should-not (player/started-game? :second))))
 
 (describe "define-player"
   (it "returns an instance of Player"
     (should (instance? Player
-                       (player/define-player {:marker "x" :role "h"} :green))))
+                       (player/define-player {:marker "x" :role "h"} :green :first))))
 
   (it "returns player with role ':human' and its marker"
     (should= :human
-             (:role (player/define-player {:marker "x" :role "h"} :green))))
+             (:role (player/define-player {:marker "x" :role "h"} :green :first))))
 
   (it "returns player with role ':easy-computer' and its marker"
     (should= :easy-computer
-             (:role (player/define-player {:marker "o" :role "ec"} :pink))))
+             (:role (player/define-player {:marker "o" :role "ec"} :pink :second))))
 
   (it "returns player with role ':hard-computer' and its marker"
     (should= :hard-computer
-             (:role (player/define-player {:marker "h" :role "hc"} :yellow)))))
+             (:role (player/define-player {:marker "h" :role "hc"} :yellow :first)))))
