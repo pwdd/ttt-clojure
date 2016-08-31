@@ -3,49 +3,52 @@
             [ttt.board :as board]
             [ttt.helpers :as helpers]))
 
-(defn- is-section-empty?
-  [board-section]
-  (and (= (first board-section) board/empty-spot)
-       (apply = board-section)))
+(defn- get-key-by-value
+  [map-collection value]
+  (keep #(when (= (val %) value) (key %)) map-collection))
 
-(defn- find-empty
-  [board section]
-  (loop [sections section]
-    (let [first-part (first sections)
-          board-section (mapv #(nth board %) first-part)]
-      (if-not (nil? first-part)
-        (if (is-section-empty? board-section)
-          first-part
-          (recur (rest sections)))))))
+(defn- correspondent-board-combo
+  [board indexes-combo]
+  (mapv #(nth board %) indexes-combo))
 
-(defn find-empty-row
+(defn- is-combo-empty?
+  [board-combo]
+  (and (= (first board-combo) board/empty-spot)
+       (apply = board-combo)))
+
+(defn find-empty-combos
+  [board indexes-combos]
+  (loop [combos indexes-combos
+         empty-combos []]
+    (let [first-combo (first combos)
+          board-combo (correspondent-board-combo board first-combo)]
+      (cond
+        (nil? first-combo) empty-combos
+        (is-combo-empty? board-combo)
+          (recur (rest combos) (conj empty-combos first-combo))
+        :else
+          (recur (rest combos) empty-combos)))))
+
+(defn- get-an-empty-combo
   [board]
-  (find-empty board (board/board-rows (board/board-size board))))
+  (let [board-size (board/board-size board)
+        winning-positions (board/winning-positions board-size)]
+    (first (find-empty-combos board winning-positions))))
 
-(defn find-empty-column
+(defn- is-there-empty-combos?
   [board]
-  (find-empty board (board/board-columns (board/board-size board))))
+  (not (nil? (get-an-empty-combo board))))
 
-(defn find-empty-diagonal
-  [board]
-  (find-empty board (board/board-diagonals (board/board-size board))))
-
-(defn is-there-empty-section?
-  [board]
-  (or (find-empty-row board) 
-      (find-empty-column board)
-      (find-empty-diagonal board)))
-
-(defn- middle-spot
+(defn- center-spot
   [board-length]
-  (let [middle (int (Math/floor (/ board-length 2)))]
+  (let [center (int (Math/floor (/ board-length 2)))]
     (if (odd? board-length)
-      middle
-      (- middle 2))))
+      center
+      (- center 2))))
 
-(defn place-in-the-middle
+(defn place-in-the-center
   [board]
-  (middle-spot (count board)))
+  (center-spot (count board)))
 
 (defn corners
   [board-size]
@@ -57,43 +60,47 @@
             (first last-row)
             (last last-row))))
 
-(defn place-in-the-corner
-  [board]
-  (let [corners (corners (board/board-size board))]
-    (->> corners
-         (filter #(= (nth board %) board/empty-spot))
-         first)))
-
-(defn is-board-with-one-move?
+(defn- is-board-with-one-move?
   [board]
   (and (= (count (board/available-spots board))
           (dec (count board)))))
 
-(defn is-middle-free?
+(defn- is-center-free?
   [board]
-  (let [middle (middle-spot (count board))]
-    (= (nth board middle) board/empty-spot)))
+  (let [center (center-spot (count board))]
+    (= (nth board center) board/empty-spot)))
 
-(defn is-middle-the-best-move?
+(defn is-center-the-best-move?
   [board]
   (or (board/is-board-empty? board)
        (and (is-board-with-one-move? board)
-            (is-middle-free? board))))
+            (is-center-free? board))))
+
+(defn is-corner-the-best-move?
+  [board]
+ (and (is-board-with-one-move? board)
+      (not (is-center-free? board))))
+
+(defn available-spots-in-combo
+  [board combo]
+  (let [board-combo (correspondent-board-combo board combo)
+        board-map (zipmap combo board-combo)]
+    (get-key-by-value board-map board/empty-spot)))
+
+(defn place-in-a-corner
+  [board]
+  (let [corners (corners (board/board-size board))]
+    (helpers/random-move (available-spots-in-combo board corners))))
 
 (defn markers-frequency
   [board combo]
-  (let [board-combo (mapv #(nth board %) combo)]
+  (let [board-combo (correspondent-board-combo board combo)]
     (set/map-invert (frequencies board-combo))))
-
-(defn- get-key-by-value
-  [map-collection value]
-  (first (keep #(when (= (val %) value) (key %)) 
-               map-collection)))
 
 (defn marker-frequency
   [board combo marker]
   (let [markers-frequency (markers-frequency board combo)
-        marker-count (get-key-by-value markers-frequency marker)]
+        marker-count (first (get-key-by-value markers-frequency marker))]
     (if marker-count
       marker-count
       0)))
@@ -107,59 +114,60 @@
   (= (marker-frequency board combo marker)
      (dec (board/board-size board))))
 
-(defn missing-only-one?
+(defn can-win-in-a-combo?
   [board combo marker]
   (let [emptys (empty-spot-frequency board combo)]
     (and (= emptys 1)
          (missing-one? board combo marker))))
 
-(defn where-can-win
+(defn combo-to-win
   [board marker]
   (let [winning-combos (board/winning-positions (board/board-size board))]
-    (first (filter #(missing-only-one? board % marker) winning-combos))))
+    (first (filter #(can-win-in-a-combo? board % marker) winning-combos))))
+
+(defn can-win?
+  [board marker]
+  (seq (combo-to-win board marker)))
 
 (defn place-in-winning-spot
   [board marker]
-  (let [winning-combo (where-can-win board marker)
-        combo-in-board (mapv #(nth board %) winning-combo)
+  (let [winning-combo (combo-to-win board marker)
+        combo-in-board (correspondent-board-combo board winning-combo)
         indexed (zipmap winning-combo combo-in-board)]
-    (get-key-by-value indexed board/empty-spot)))
+    (first (get-key-by-value indexed board/empty-spot))))
 
 (defn only-same-markers?
   [board combo current-player-marker opponent-marker]
   (and (>= (marker-frequency board combo current-player-marker) 1)
        (zero? (marker-frequency board combo opponent-marker))))
 
-(defn owned-sections
+(defn owned-combos
   [board current-player-marker opponent-marker]
-  (let [sections (board/winning-positions (board/board-size board))]
+  (let [combos (board/winning-positions (board/board-size board))]
     (filterv #(only-same-markers? board % current-player-marker opponent-marker) 
-             sections)))
+             combos)))
 
-(defn most-populated-owned-section
+(defn most-populated-owned-combo
   [board current-player-marker opponent-marker]
   (let [marker-frequencies 
          (mapv #(marker-frequency board % current-player-marker) 
-               (owned-sections board current-player-marker opponent-marker))
+               (owned-combos board current-player-marker opponent-marker))
         highest-rate (apply max marker-frequencies)
         highest-rate-index (.indexOf marker-frequencies highest-rate)]
-    (nth (owned-sections board current-player-marker opponent-marker) 
+    (nth (owned-combos board current-player-marker opponent-marker) 
          highest-rate-index)))
 
-(defn available-spots-in-section
-  [board section]
-  (let [board-section (mapv #(nth board %) section)
-        board-map (zipmap section board-section)]
-    (keep #(when (= (val %) board/empty-spot) (key %)) 
-          board-map)))
-
-(defn- owned
+(defn- has-combos?
   [board current-player-marker opponent-marker]
-  (most-populated-owned-section board current-player-marker opponent-marker))
+  (seq (owned-combos board current-player-marker opponent-marker)))
 
-(defn- empty-section
-  [board]
-  (is-there-empty-section? board))
+(defn- fill-in-a-combo
+  [board current-player-marker opponent-marker]
+  (helpers/random-move 
+    (available-spots-in-combo board
+                              (most-populated-owned-combo board 
+                                                          current-player-marker 
+                                                          opponent-marker))))
 
 (defn play-based-on-rules
   [player params]
@@ -169,25 +177,15 @@
         board-size (board/board-size board)]
 
     (cond
-      (is-middle-the-best-move? board) (place-in-the-middle board)
-      (and (is-board-with-one-move? board)
-           (not (is-middle-free? board)))
-        (helpers/random-move (available-spots-in-section
-                               board 
-                               (corners board-size)))
-      (where-can-win board current-player-marker) 
+      (is-center-the-best-move? board) (place-in-the-center board)
+      (is-corner-the-best-move? board) (place-in-a-corner board)
+      (can-win? board current-player-marker) 
         (place-in-winning-spot board current-player-marker) 
-      (where-can-win board opponent-marker)
+      (can-win? board opponent-marker)
         (place-in-winning-spot board opponent-marker)
-      (not (empty? (owned-sections board 
-                                   current-player-marker 
-                                   opponent-marker)))
-        (helpers/random-move 
-          (available-spots-in-section board 
-                                     (owned board 
-                                            current-player-marker
-                                            opponent-marker)))
-      (is-there-empty-section? board)
-        (helpers/random-move (empty-section board))
+      (has-combos? board current-player-marker opponent-marker)
+        (fill-in-a-combo board current-player-marker opponent-marker)
+      (is-there-empty-combos? board)
+        (helpers/random-move (get-an-empty-combo board))
       :else
         (helpers/random-move (board/available-spots board)))))

@@ -70,7 +70,7 @@
 (defmethod select-spot :hard-computer
   [player params]
   (cond
-    (board/is-board-empty? (:board params)) (rules/place-in-the-middle (:board params)) 
+    (board/is-board-empty? (:board params)) (rules/place-in-the-center (:board params)) 
     (and (alternative-board? (:board params))
          (first-moves-alternative-board? (:board params)))
       (rules/play-based-on-rules player params)
