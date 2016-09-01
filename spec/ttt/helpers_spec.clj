@@ -34,6 +34,18 @@
   (it "returns true if 10 and if limit is 20"
      (should (helpers/in-range? 10 20))))
 
+(describe "get-keys-by-value"
+  (with map-example {:a 1 :b 2 :c 3 "d" :d :e 3})
+  
+  (it "returns an empty collection if there is no key"
+    (should= [] (helpers/get-keys-by-value @map-example "d")))
+  
+  (it "returns a collection with the key of a given value"
+    (should= [:b] (helpers/get-keys-by-value @map-example 2)))
+  
+  (it "returns a collection with multiples keys that have the same given value"
+    (should= [:c :e] (helpers/get-keys-by-value @map-example 3))))
+
 (describe "remove-color"
   (it "returns string if it has not ansi color code"
     (should= "x" (helpers/remove-color "x")))

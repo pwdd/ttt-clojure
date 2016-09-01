@@ -3,10 +3,6 @@
             [ttt.board :as board]
             [ttt.helpers :as helpers]))
 
-(defn- get-key-by-value
-  [map-collection value]
-  (keep #(when (= (val %) value) (key %)) map-collection))
-
 (defn- correspondent-board-combo
   [board indexes-combo]
   (mapv #(nth board %) indexes-combo))
@@ -85,7 +81,7 @@
   [board combo]
   (let [board-combo (correspondent-board-combo board combo)
         board-map (zipmap combo board-combo)]
-    (get-key-by-value board-map board/empty-spot)))
+    (helpers/get-keys-by-value board-map board/empty-spot)))
 
 (defn place-in-a-corner
   [board]
@@ -100,7 +96,7 @@
 (defn marker-frequency
   [board combo marker]
   (let [markers-frequency (markers-frequency board combo)
-        marker-count (first (get-key-by-value markers-frequency marker))]
+        marker-count (first (helpers/get-keys-by-value markers-frequency marker))]
     (if marker-count
       marker-count
       0)))
@@ -134,7 +130,7 @@
   (let [winning-combo (combo-to-win board marker)
         combo-in-board (correspondent-board-combo board winning-combo)
         indexed (zipmap winning-combo combo-in-board)]
-    (first (get-key-by-value indexed board/empty-spot))))
+    (first (helpers/get-keys-by-value indexed board/empty-spot))))
 
 (defn only-same-markers?
   [board combo current-player-marker opponent-marker]

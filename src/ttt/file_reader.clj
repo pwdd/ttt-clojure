@@ -56,7 +56,7 @@
   (let [file-data (read-file filename directory)]
     (zipmap saved-data-keys (mapv #((build-from-file %) (file-data %)) json-file-keys))))
 
-(defn is-json?
+(defn- is-json?
   [filename]
   (re-find #".*\.json" filename))
 

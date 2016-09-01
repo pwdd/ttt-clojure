@@ -16,7 +16,7 @@
       opponent-marker (- depth 10)
       0)))
 
-(defn create-next-boards
+(defn- create-next-boards
   [board available-spots current-player-marker]
   (map #(board/move board % current-player-marker) available-spots))
 

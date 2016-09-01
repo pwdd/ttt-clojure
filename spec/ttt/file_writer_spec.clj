@@ -35,9 +35,9 @@
     (should= (str "{\"board\": [\"_\",\"_\",\"_\",\"_\",\"_\",\"_\",\"_\",\"_\",\"_\"],"
                   "\"current-player\": {\"marker\":{\"token\":\"x\",\"color\":\"green\"},\"role\":\"human\"},"
                   "\"opponent\": {\"marker\":{\"token\":\"o\",\"color\":\"green\"},\"role\":\"easy-computer\"}}")
-             (file-writer/write-json {:board (board/new-board 3)
-                                      :current-player {:marker {:token "x" :color :green} :role "human"}
-                                      :opponent {:marker {:token "o" :color :green} :role "easy-computer"}}))))
+             (file-writer/write-json (board/new-board 3)
+                                     {:marker {:token "x" :color :green} :role "human"}
+                                     {:marker {:token "o" :color :green} :role "easy-computer"}))))
 
 (describe "create-game-file"
 

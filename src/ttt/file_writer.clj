@@ -12,7 +12,7 @@
 
 
 (defn write-json
-  [{:keys [board current-player opponent]}]
+  [board current-player opponent]
   (str "{"
        (write-board board)
        ","
@@ -24,4 +24,4 @@
 (defn create-game-file
   [directory filename {:keys [board current-player opponent]}]
   (spit (str directory "/" filename ".json")
-        (write-json {:board board :current-player current-player :opponent opponent})))
+        (write-json board current-player opponent)))

@@ -35,7 +35,7 @@
         (recur marker)))))
 
 (defn get-player-attributes
-  [{:keys [msg color opponent-token] :or {opponent-marker :0}}]
+  [{:keys [msg color opponent-token] :or {opponent-token :0}}]
   (let [marker (get-marker {:msg msg :color color :opponent-token opponent-token})
         role (get-role marker)]
     {:marker marker :role role}))

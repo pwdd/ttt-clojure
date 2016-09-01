@@ -21,12 +21,16 @@
   [available-spots]
   (rand-nth available-spots))
 
+(defn get-keys-by-value
+  [map-collection value]
+  (keep #(when (= (val %) value) (key %)) map-collection))
+
 (defn remove-color
   [string]
   (let [escape (char 27)
-        re-code #"\[\d?;?\d*m"]
+        re-color-code #"\[\d?;?\d*m"]
     (loop [string string
-           code-list (re-seq re-code string)]
+           code-list (re-seq re-color-code string)]
       (if (empty? code-list)
         string
         (recur (string/replace string (str escape (first code-list)) "")

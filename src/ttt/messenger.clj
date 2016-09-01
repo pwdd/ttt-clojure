@@ -24,9 +24,9 @@
         (colors/colorize board-color))))
 
 (def welcome
-  (str "   |------------------------|\n"
-       "   ---| " (colors/colorize :purple "Welcome to Tic Tac Toe") " |---\n"
-       "   |------------------------|"))
+  (str "|------------------------|\n"
+       "---| " (colors/colorize :purple "Welcome to Tic Tac Toe") " |---\n"
+       "|------------------------|"))
 
 (def instructions "The board is represented like the following:\n")
 
@@ -130,7 +130,7 @@
 
 (def invalid-role-options-msg
   (str default-invalid-input
-       "Only (H) human, (EC) easy computer and (HC) hard computer are available"))
+       "Only H (human), EC (easy computer), MC (medium-computer) and HC (hard computer) are available"))
 
 (defn human-lost
   [board]
