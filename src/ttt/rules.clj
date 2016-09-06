@@ -103,7 +103,7 @@
   (if-not (nil? marker-count)
     marker-count
     0))
-    
+
 (defn- empty-spot-frequency
   [board combo]
   (let [markers-frequency (markers-frequency board combo)
