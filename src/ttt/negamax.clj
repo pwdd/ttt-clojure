@@ -7,6 +7,7 @@
             [ttt.rules :as rules]))
 
 (def start-depth 0)
+(def limit-depth 10)
 
 (defn board-analysis
   [board current-player-marker opponent-marker depth]
@@ -35,7 +36,7 @@
 (defn negamax-score
   [board current-player-marker opponent-marker depth]
   (if (or (evaluate-game/game-over? board)
-          (>= depth 4))
+          (>= depth limit-depth))
     (board-analysis board current-player-marker opponent-marker depth)
     (apply max (scores board
                        current-player-marker

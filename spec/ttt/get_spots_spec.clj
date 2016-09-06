@@ -142,7 +142,9 @@
    (it "picks an empty section"
       (let [solution (spots/select-spot @medium-computer
                                         {:board [@_ @o @_ @_
-                                                 @o @x @_ @_
-                                                 @x @o @_ @_
-                                                 @x @_ @o @_]})]
+                                                 @o @m @_ @_
+                                                 @m @o @_ @_
+                                                 @m @_ @o @_]
+                                        :current-player @medium-computer
+                                        :opponent @easy-computer})]
         (should (some #{solution} [3 7 11 15]))))))

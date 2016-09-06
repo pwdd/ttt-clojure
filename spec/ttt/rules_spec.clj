@@ -103,6 +103,18 @@
                                                       @_ @o @_ @_]
                                                       [8 9 10 11]))))
 
+(describe "markers-frequency"
+  (with _ board/empty-spot)
+  (with x {:token :x :color :green})
+  (with o {:token :o :color :green})
+  
+  (it "returns a map with frequency of :xs, :os and empty spots in a combo"
+    (should= {:x 2 :o 1 :_ 1} (rules/markers-frequency [@x @x @o @_
+                                                        @_ @_ @_ @_
+                                                        @_ @_ @_ @_
+                                                        @_ @_ @_ @_]
+                                                       [0 1 2 3]))))
+
 (describe "marker-frequency"
   (with _ board/empty-spot)
   (with x {:token :x :color :blue})
@@ -197,7 +209,7 @@
   (it "returns an empty collection if there is no current-player marker on board"
     (should= [] (rules/owned-combos (board/move (board/new-board 4) 1 @o) @x @o)))
   
-  (it "returns sections where that is only same player marker if there is one marker"
+  (it "returns combos that have only current player marker, even if only one"
     (should= [[8 9 10 11] [3 6 9 12]] (rules/owned-combos [@o @_ @_ @_
                                                            @_ @_ @_ @_
                                                            @_ @x @_ @_
@@ -205,8 +217,8 @@
                                                            @x
                                                            @o)))
   
-  (it "returns sections where there is more than one same marker"
-    (should= [[8 9 10 11] [2 6 10 14] [0 5 10 15] [3 6 9 12]] 
+  (it "returns combos that have only current player marker"
+    (should= [[8 9 10 11] [2 6 10 14] [3 6 9 12]] 
              (rules/owned-combos [@o @_ @_ @_
                                   @_ @_ @_ @_
                                   @_ @x @x @_

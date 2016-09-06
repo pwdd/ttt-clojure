@@ -1,6 +1,5 @@
 (ns ttt.rules
-  (:require [clojure.set :as set]
-            [ttt.board :as board]
+  (:require [ttt.board :as board]
             [ttt.helpers :as helpers]))
 
 (defn- correspondent-board-combo
@@ -51,7 +50,7 @@
   (let [rows (board/board-rows board-size)
         first-row (first rows)
         last-row (last rows)]
-    (vector (first first-row) 
+    (vector (first first-row)
             (last first-row)
             (first last-row)
             (last last-row))))
@@ -88,22 +87,37 @@
   (let [corners (corners (board/board-size board))]
     (helpers/random-move (available-spots-in-combo board corners))))
 
+(defn- markers-to-token
+  [marker]
+  (if (= marker board/empty-spot)
+    marker
+    (:token marker)))
+
 (defn markers-frequency
   [board combo]
   (let [board-combo (correspondent-board-combo board combo)]
-    (set/map-invert (frequencies board-combo))))
+    (frequencies (map #(markers-to-token %) board-combo))))
+
+(defn- frequency
+  [marker-count]
+  (if-not (nil? marker-count)
+    marker-count
+    0))
+    
+(defn- empty-spot-frequency
+  [board combo]
+  (let [markers-frequency (markers-frequency board combo)
+        empty-spots-count (board/empty-spot markers-frequency)]
+    (frequency empty-spots-count)))
 
 (defn marker-frequency
   [board combo marker]
+  (if (= marker board/empty-spot)
+    (empty-spot-frequency board combo)
   (let [markers-frequency (markers-frequency board combo)
-        marker-count (first (helpers/get-keys-by-value markers-frequency marker))]
-    (if marker-count
-      marker-count
-      0)))
-
-(defn- empty-spot-frequency
-  [board combo]
-  (marker-frequency board combo board/empty-spot))
+        token (:token marker)
+        marker-count (token markers-frequency)]
+    (frequency marker-count))))
 
 (defn- missing-one?
   [board combo marker]
@@ -140,17 +154,17 @@
 (defn owned-combos
   [board current-player-marker opponent-marker]
   (let [combos (board/winning-positions (board/board-size board))]
-    (filterv #(only-same-markers? board % current-player-marker opponent-marker) 
+    (filterv #(only-same-markers? board % current-player-marker opponent-marker)
              combos)))
 
 (defn most-populated-owned-combo
   [board current-player-marker opponent-marker]
-  (let [marker-frequencies 
-         (mapv #(marker-frequency board % current-player-marker) 
+  (let [marker-frequencies
+         (mapv #(marker-frequency board % current-player-marker)
                (owned-combos board current-player-marker opponent-marker))
         highest-rate (apply max marker-frequencies)
         highest-rate-index (.indexOf marker-frequencies highest-rate)]
-    (nth (owned-combos board current-player-marker opponent-marker) 
+    (nth (owned-combos board current-player-marker opponent-marker)
          highest-rate-index)))
 
 (defn- has-combos?
@@ -159,10 +173,10 @@
 
 (defn- fill-in-a-combo
   [board current-player-marker opponent-marker]
-  (helpers/random-move 
+  (helpers/random-move
     (available-spots-in-combo board
-                              (most-populated-owned-combo board 
-                                                          current-player-marker 
+                              (most-populated-owned-combo board
+                                                          current-player-marker
                                                           opponent-marker))))
 
 (defn play-based-on-rules
@@ -175,8 +189,8 @@
     (cond
       (is-center-the-best-move? board) (place-in-the-center board)
       (is-corner-the-best-move? board) (place-in-a-corner board)
-      (can-win? board current-player-marker) 
-        (place-in-winning-spot board current-player-marker) 
+      (can-win? board current-player-marker)
+        (place-in-winning-spot board current-player-marker)
       (can-win? board opponent-marker)
         (place-in-winning-spot board opponent-marker)
       (has-combos? board current-player-marker opponent-marker)
