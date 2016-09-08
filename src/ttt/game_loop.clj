@@ -98,14 +98,15 @@
   (Thread/sleep 700)
   (view/clear-and-quit))
 
-(defn- restart-data
+(defn restart-data
   [params]
   (let [new-board (board/new-board (:board-size params))]
     (if (player/started-game? (get-in params [:current-player :start-game]))
       (assoc params :board new-board)
       {:board new-board 
        :current-player (:opponent params)
-       :opponent (:current-player params)})))
+       :opponent (:current-player params)
+       :board-size (:board-size params)})))
 
 (defn- save-and-exit-data
   [params]

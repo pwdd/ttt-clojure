@@ -96,7 +96,7 @@
 (defn markers-frequency
   [board combo]
   (let [board-combo (correspondent-board-combo board combo)]
-    (frequencies (map #(markers-to-token %) board-combo))))
+    (frequencies (map markers-to-token board-combo))))
 
 (defn- frequency
   [marker-count]

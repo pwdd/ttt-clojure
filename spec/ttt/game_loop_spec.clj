@@ -66,3 +66,4 @@
 
   (it "returns default selection for new game if there is no saved files"
       (should= "2" (game-loop/game-selection (io/file "test-files/empty-dir")))))
+
