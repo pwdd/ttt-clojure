@@ -17,7 +17,10 @@
 
 (defn board-rows
   [board-size]
-  (mapv vec (partition board-size (range (board-length board-size)))))
+  (->> (board-length board-size)
+       range
+       (partition board-size)
+       (mapv vec)))
 
 (defn board-columns
   [board-size]
@@ -69,7 +72,7 @@
 (defn repeated-markers?
   [board combo]
   (let [selected-combo (mapv board combo)]
-    (if-not (= empty-spot (first selected-combo))
+    (if (not= empty-spot (first selected-combo))
       (apply = selected-combo))))
 
 (defn winning-combo
@@ -77,4 +80,4 @@
   (let [board-size (board-size board)]
     (->> (winning-positions board-size)
          (filter #(repeated-markers? board %))
-         (first))))
+         first)))

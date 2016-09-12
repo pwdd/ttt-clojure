@@ -79,20 +79,20 @@
 
 (defmethod select-spot :hard-computer
   [game-params]
-  (let [board (:board game-params)
-        current-player (:current-player game-params)
-        opponent (:opponent game-params)
-        depth (:depth game-params)]
+  (let [{board :board
+         current-player :current-player
+         opponent :opponent
+         depth :depth} game-params]
   (cond
-    (board/is-board-empty? board) (rules/place-in-the-center board) 
+    (board/is-board-empty? board) (rules/place-in-the-center board)
     (starting-game-with-alternative-board? board)
       (rules/play-based-on-rules game-params)
     :else
-    (let [spots (board/available-spots board)
-         scores (scores board
-                        (:marker current-player)
-                        (:marker opponent)
-                        depth)
-         max-value (apply max scores)
-         best (.indexOf scores max-value)]
-      (nth spots best)))))
+      (let [spots (board/available-spots board)
+           scores (scores board
+                          (:marker current-player)
+                          (:marker opponent)
+                          depth)
+           max-value (apply max scores)
+           best (.indexOf scores max-value)]
+        (nth spots best)))))

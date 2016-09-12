@@ -32,7 +32,7 @@
 
 (defn- is-there-empty-combos?
   [board]
-  (not (nil? (get-an-empty-combo board))))
+  (get-an-empty-combo board))
 
 (defn- center-spot
   [board-length]
@@ -100,7 +100,7 @@
 
 (defn- frequency
   [marker-count]
-  (if-not (nil? marker-count)
+  (if marker-count
     marker-count
     0))
 

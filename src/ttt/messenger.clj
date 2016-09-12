@@ -28,8 +28,6 @@
        "---| " (colors/colorize :purple "Welcome to Tic Tac Toe") " |---\n"
        "|------------------------|"))
 
-(def instructions "The board is represented like the following:\n")
-
 (def new-or-saved-msg (str "Would you like to\n"
                            "(1) restart a saved game or\n"
                            "(2) start a new game?\n"
@@ -118,9 +116,14 @@
                                 (map translate-keyword indexed-board))]
     (map join-combo board-string)))
 
+(defn- joined-board
+  [board]
+  (string/join (separator (board/board-size board))
+               (translate-board board)))
+
 (defn stringify-board
   [board]
-  (str (string/join (separator (board/board-size board)) (translate-board board)) "\n"))
+  (str (joined-board board) "\n"))
 
 (defn stringify-combo
   [combo]
@@ -181,13 +184,16 @@
 (defmethod moved-to :computer-x-human
   [game player spot]
   (if (player/is-ai? (:role player))
-    (str (string/capitalize (name (:role player))) " moved to " (inc spot) "\n")
+    (str (string/capitalize (name (:role player)))
+         " moved to "
+         (inc spot)
+         "\n")
     (str "You moved to " (inc spot) "\n")))
 
 (defmethod moved-to :same-roles
   [game player spot]
   (str "Player '"
-      (colorful-marker (:marker player)) 
+      (colorful-marker (:marker player))
        "' moved to "
        (inc spot)
        "\n"))
