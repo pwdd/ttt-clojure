@@ -103,7 +103,7 @@
   (let [new-board (board/new-board (:board-size params))]
     (if (player/started-game? (get-in params [:current-player :start-game]))
       (assoc params :board new-board)
-      {:board new-board 
+      {:board new-board
        :current-player (:opponent params)
        :opponent (:current-player params)
        :board-size (:board-size params)})))
@@ -117,7 +117,7 @@
 (defn- not-spot-input
   [input player params]
   (let [directory file-reader/directory]
-    (cond 
+    (cond
       (input-validation/save? input)
         (save-and-exit directory
                        (prompt/enter-a-file-name (file-reader/list-all-files directory))
@@ -130,12 +130,12 @@
   [player params]
   (let [input (prompt/prompt helpers/clean-string messenger/multiple-choice)
         board (:board params)]
-    (cond 
-      (or (input-validation/save? input) 
+    (cond
+      (or (input-validation/save? input)
           (input-validation/quit? input)
-          (input-validation/restart? input)) 
+          (input-validation/restart? input))
         (not-spot-input input player params)
-      (input-validation/is-valid-move-input? board input) 
+      (input-validation/is-valid-move-input? board input)
         (helpers/input-to-number input)
       :else
       (do

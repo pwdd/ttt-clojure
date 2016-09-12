@@ -8,33 +8,33 @@
   (with x {:symbol :x :color :blue})
   (with o {:symbol :o :color :red})
 
-  (it "returns 10 if current player won and -10 if opponent won"
-    (should= 10 (negamax/board-analysis [@x @x @x
+  (it "returns 100 if current player won and -100 if opponent won"
+    (should= 100 (negamax/board-analysis [@x @x @x
+                                          @o @o @x
+                                          @o @x @o]
+                                          @x
+                                          @o
+                                          negamax/start-depth))
+    (should= -100 (negamax/board-analysis [@x @x @x
+                                           @o @o @x
+                                           @o @x @o]
+                                           @o
+                                           @x
+                                           negamax/start-depth)))
+
+  (it "returns 80 if current-player won and -8 if opponent won"
+    (should= 98 (negamax/board-analysis [@x @x @x
                                          @o @o @x
                                          @o @x @o]
                                          @x
                                          @o
-                                         negamax/start-depth))
-    (should= -10 (negamax/board-analysis [@x @x @x
+                                         2))
+    (should= -98 (negamax/board-analysis [@x @x @x
                                           @o @o @x
                                           @o @x @o]
                                           @o
                                           @x
-                                          negamax/start-depth)))
-
-  (it "returns 8 if current-player won and -8 if opponent won"
-    (should= 8 (negamax/board-analysis [@x @x @x
-                                        @o @o @x
-                                        @o @x @o]
-                                        @x
-                                        @o
-                                        2))
-    (should= -8 (negamax/board-analysis [@x @x @x
-                                         @o @o @x
-                                         @o @x @o]
-                                         @o
-                                         @x
-                                         2)))
+                                          2)))
 
   (it "returns 0 if game ended in a draw"
     (should= 0 (negamax/board-analysis [@x @x @o
@@ -59,7 +59,7 @@
                                        2)))
 
   (it "returns 9 if current player will win the game"
-    (should= 9 (negamax/negamax-score [@x @x @_
+    (should= 99 (negamax/negamax-score [@x @x @_
                                        @o @o @x
                                        @o @x @o]
                                        @x
@@ -67,7 +67,7 @@
                                        negamax/start-depth)))
 
   (it "returns -8 if opponent will win the game"
-    (should= -8 (negamax/negamax-score [@o @x @o
+    (should= -98 (negamax/negamax-score [@o @x @o
                                         @o @o @x
                                         @_ @x @_]
                                         @x

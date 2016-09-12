@@ -7,14 +7,15 @@
             [ttt.rules :as rules]))
 
 (def start-depth 0)
-(def limit-depth 10)
+(def max-depth 10)
+(def limit-depth 100)
 
 (defn board-analysis
   [board current-player-marker opponent-marker depth]
   (let [winner (evaluate-game/winner-marker board)]
     (condp = winner
-      current-player-marker (- 10 depth)
-      opponent-marker (- depth 10)
+      current-player-marker (- limit-depth depth)
+      opponent-marker (- depth limit-depth)
       0)))
 
 (defn- create-next-boards
@@ -36,7 +37,7 @@
 (defn negamax-score
   [board current-player-marker opponent-marker depth]
   (if (or (evaluate-game/game-over? board)
-          (>= depth limit-depth))
+          (>= depth max-depth))
     (board-analysis board current-player-marker opponent-marker depth)
     (apply max (scores board
                        current-player-marker
