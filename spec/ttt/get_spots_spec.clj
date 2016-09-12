@@ -21,24 +21,20 @@
 
   (context ":human"
     (it "returns an integer"
-      (should= 0 (with-in-str "1" (spots/select-spot @human
-                                                     {:board (board/new-board 3)}))))
+      (should= 0 (with-in-str "1" (spots/select-spot {:current-player @human :board (board/new-board 3)}))))
 
     (it "returns an integer that numeric string minus one"
-      (should= 3 (with-in-str "4" (spots/select-spot @human
-                                                     {:board (board/new-board 3)})))))
+      (should= 3 (with-in-str "4" (spots/select-spot {:current-player @human :board (board/new-board 3)})))))
 
   (context ":easy-computer"
     (with spots (board/available-spots [@x @_ @o @_ @o @_ @_ @x @o @o]))
     (it "returns a random index from the available-spots"
-      (should (some #{(spots/select-spot @easy-computer
-                                         {:board [@x @_ @o @_ @o @_ @_ @x @o]})}
+      (should (some #{(spots/select-spot {:current-player @easy-computer :board [@x @_ @o @_ @o @_ @_ @x @o]})}
                     @spots))))
 
   (context ":hard-computer"
     (it "blocks opponent from winning"
-      (should= 2 (spots/select-spot @hard-computer
-                                    {:board [@o @o @_
+      (should= 2 (spots/select-spot {:board [@o @o @_
                                              @x @_ @_
                                              @x @_ @_]
                                      :current-player @hard-computer
@@ -46,8 +42,7 @@
                                      :depth negamax/start-depth})))
 
     (it "wins when it has the chance"
-      (should= 5 (spots/select-spot @hard-computer
-                                    {:board [@o @o @_
+      (should= 5 (spots/select-spot {:board [@o @o @_
                                              @x @x @_
                                              @_ @_ @_]
                                      :current-player @hard-computer
@@ -55,15 +50,13 @@
                                      :depth negamax/start-depth})))
 
     (it "avoids situation in which opponent can win in two positions"
-      (should (or (= 2 (spots/select-spot @hard-computer
-                                          {:board [@x @_ @_
+      (should (or (= 2 (spots/select-spot {:board [@x @_ @_
                                                    @_ @o @_
                                                    @_ @_ @o]
                                            :current-player @hard-computer
                                            :opponent @easy-computer
                                            :depth negamax/start-depth}))
-                  (= 6 (spots/select-spot @hard-computer
-                                          {:board [@x @_ @_
+                  (= 6 (spots/select-spot {:board [@x @_ @_
                                                    @_ @o @_
                                                    @_ @_ @o]
                                            :current-player @hard-computer
@@ -71,8 +64,7 @@
                                            :depth negamax/start-depth })))))
 
     (it "avoids opponent win in a 4x4 board"
-      (should= 3 (spots/select-spot @hard-computer
-                                   {:board [@o @o @o @_
+      (should= 3 (spots/select-spot {:board [@o @o @o @_
                                             @_ @_ @_ @_
                                             @_ @_ @x @_
                                             @x @x @_ @_]
@@ -81,8 +73,7 @@
                                     :depth negamax/start-depth})))
 
     (it "wins when it can in a 4x4 board"
-      (should= 7 (spots/select-spot @hard-computer
-                                    {:board [@o @o @o @_
+      (should= 7 (spots/select-spot {:board [@o @o @o @_
                                              @x @x @x @_
                                              @_ @_ @_ @_
                                              @_ @_ @_ @_]
@@ -91,38 +82,33 @@
                                      :depth negamax/start-depth}))))
   (context ":medium-computer"
     (it "places marker in the middle if board is empty"
-      (should= 6 (spots/select-spot @medium-computer
-                                     {:board (board/new-board 4)
+      (should= 6 (spots/select-spot {:board (board/new-board 4)
                                      :current-player @medium-computer
                                      :opponent @easy-computer})))
 
     (it "places marker in the middle if opponent made only one move"
-      (should= 4 (spots/select-spot @medium-computer
-                                    {:board [@o @_ @_
+      (should= 4 (spots/select-spot {:board [@o @_ @_
                                              @_ @_ @_
                                              @_ @_ @_]
                                      :current-player @medium-computer
                                      :opponent @easy-computer})))
 
     (it "wins when possible"
-      (should= 2 (spots/select-spot @medium-computer
-                                    {:board [@m @m @_
+      (should= 2 (spots/select-spot {:board [@m @m @_
                                              @o @_ @_
                                              @o @_ @_]
                                      :current-player @medium-computer
                                      :opponent @easy-computer})))
 
     (it "blocks opponent from winning"
-      (should= 8 (spots/select-spot @medium-computer
-                                    {:board [@o @m @_
+      (should= 8 (spots/select-spot {:board [@o @m @_
                                              @_ @o @_
                                              @_ @m @_]
                                      :current-player @medium-computer
                                      :opponent @easy-computer})))
 
    (it "fills in a board section if there is no blocking or winning situation"
-      (let [solution (spots/select-spot @medium-computer
-                                        {:board [@o @o @_ @_
+      (let [solution (spots/select-spot {:board [@o @o @_ @_
                                                  @m @_ @_ @_
                                                  @o @_ @_ @_
                                                  @_ @_ @_ @_]
@@ -131,8 +117,7 @@
         (should (some #{solution} [5 6 7]))))
 
    (it "picks a corner"
-     (let [solution (spots/select-spot @medium-computer
-                                       {:board [@_ @_ @_
+     (let [solution (spots/select-spot {:board [@_ @_ @_
                                                 @_ @o @_
                                                 @_ @_ @_]
                                         :current-player @medium-computer
@@ -140,8 +125,7 @@
        (should (some #{solution} (rules/corners 3)))))
 
    (it "picks an empty section"
-      (let [solution (spots/select-spot @medium-computer
-                                        {:board [@_ @o @_ @_
+      (let [solution (spots/select-spot {:board [@_ @o @_ @_
                                                  @o @m @_ @_
                                                  @m @o @o @_
                                                  @m @_ @o @_]

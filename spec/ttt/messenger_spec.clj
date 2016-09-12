@@ -29,7 +29,7 @@
 (describe "translate-keyword"
   (it "returns ' x '"
     (should= " x "
-             (helpers/remove-color (messenger/translate-keyword [1 
+             (helpers/remove-color (messenger/translate-keyword [1
                                                                 {:token :x
                                                                  :color :blue}]))))
 
@@ -41,7 +41,7 @@
 
   (it "returns a number surrounded by whitespaces if index of empty spot is smaller than 9"
     (should= " 2 " (helpers/remove-color (messenger/translate-keyword [1 board/empty-spot]))))
-  
+
   (it "returns whitespace and number if empty spot index is bigger than 9"
     (should= " 10" (helpers/remove-color (messenger/translate-keyword [9 board/empty-spot])))))
 

@@ -40,8 +40,7 @@
 
 (defn animated-board
   [game board current-player opponent]
-  (let [spot (spots/select-spot current-player
-                                {:board board
+  (let [spot (spots/select-spot {:board board
                                  :current-player current-player
                                  :opponent opponent
                                  :depth negamax/start-depth})

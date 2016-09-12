@@ -6,5 +6,5 @@
 
 
 (defmethod select-spot :medium-computer
-  [player params]
-  (rules/play-based-on-rules player params))
+  [game-params]
+  (rules/play-based-on-rules game-params))

@@ -114,37 +114,36 @@
 (declare game-loop)
 
 (defn- not-spot-input
-  [input player params]
+  [input game-params]
   (let [directory file-reader/directory]
     (cond
       (input-validation/save? input)
         (save-and-exit directory
                        (prompt/enter-a-file-name (file-reader/list-all-files directory))
-                       (save-and-exit-data params))
+                       (save-and-exit-data game-params))
       (input-validation/quit? input) (view/clear-and-quit)
       :else
-        (game-loop (restart-data params)))))
+        (game-loop (restart-data game-params)))))
 
 (defmethod select-spot :human
-  [player params]
+  [game-params]
   (let [input (prompt/prompt helpers/clean-string messenger/multiple-choice)
-        board (:board params)]
+        board (:board game-params)]
     (cond
       (or (input-validation/save? input)
           (input-validation/quit? input)
           (input-validation/restart? input))
-        (not-spot-input input player params)
+        (not-spot-input input game-params)
       (input-validation/is-valid-move-input? board input)
         (helpers/input-to-number input)
       :else
       (do
         (view/print-message (messenger/board-after-invalid-input board input))
-        (recur player params)))))
+        (recur game-params)))))
 
 (defn- make-a-move
   [game board current-player opponent saved board-size]
-  (select-spot current-player
-               {:game game
+  (select-spot {:game game
                 :board-size board-size
                 :board board
                 :current-player current-player

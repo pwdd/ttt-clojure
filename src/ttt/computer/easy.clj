@@ -5,5 +5,5 @@
 
 
 (defmethod select-spot :easy-computer
-  [player params]
-  (helpers/random-move (board/available-spots (:board params))))
+  [game-params]
+  (helpers/random-move (board/available-spots (:board game-params))))

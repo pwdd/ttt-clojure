@@ -180,10 +180,10 @@
                                                           opponent-marker))))
 
 (defn play-based-on-rules
-  [player params]
-  (let [board (:board params)
-        current-player-marker (get-in params [:current-player :marker])
-        opponent-marker (get-in params [:opponent :marker])
+  [game-params]
+  (let [board (:board game-params)
+        current-player-marker (get-in game-params [:current-player :marker])
+        opponent-marker (get-in game-params [:opponent :marker])
         board-size (board/board-size board)]
 
     (cond

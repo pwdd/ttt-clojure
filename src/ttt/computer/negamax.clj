@@ -27,7 +27,7 @@
 (defn scores
   [board current-player-marker opponent-marker depth]
   (let [spots (board/available-spots board)
-       new-boards (create-next-boards board spots current-player-marker)]
+        new-boards (create-next-boards board spots current-player-marker)]
     (map #(- (negamax %
                       opponent-marker
                       current-player-marker
@@ -42,7 +42,7 @@
     (apply max (scores board
                        current-player-marker
                        opponent-marker
-                       depth ))))
+                       depth))))
 
 (def negamax (memoize negamax-score))
 
@@ -63,26 +63,30 @@
   [board]
   (or (medium-board? board) (large-board? board)))
 
+(defn- number-of-available-spots
+  [board]
+  (count (board/available-spots board)))
+
 (defn- first-moves-alternative-board?
   [board]
   (if (medium-board? board)
-    (> (count (board/available-spots board)) start-medium-board)
-    (> (count (board/available-spots board)) start-large-board)))
+    (> (number-of-available-spots board) start-medium-board)
+    (> (number-of-available-spots board) start-large-board)))
 
 (defn- starting-game-with-alternative-board?
   [board]
   (and (alternative-board? board) (first-moves-alternative-board? board)))
 
 (defmethod select-spot :hard-computer
-  [player params]
-  (let [board (:board params)
-        current-player (:current-player params)
-        opponent (:opponent params)
-        depth (:depth params)]
+  [game-params]
+  (let [board (:board game-params)
+        current-player (:current-player game-params)
+        opponent (:opponent game-params)
+        depth (:depth game-params)]
   (cond
     (board/is-board-empty? board) (rules/place-in-the-center board) 
     (starting-game-with-alternative-board? board)
-      (rules/play-based-on-rules player params)
+      (rules/play-based-on-rules game-params)
     :else
     (let [spots (board/available-spots board)
          scores (scores board

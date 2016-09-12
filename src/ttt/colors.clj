@@ -6,34 +6,34 @@
     (str escape code-string)))
 
 (def colors-code-list
-  (map color-code ["[31m" 
-                   "[1;31m" 
-                   "[32m" 
-                   "[1;32m" 
+  (map color-code ["[31m"
+                   "[1;31m"
+                   "[32m"
+                   "[1;32m"
                    "[33m"
                    "[1;33m"
                    "[34m"
-                   "[1;34m" 
+                   "[1;34m"
                    "[35m"
                    "[1;35m"
                    "[36m"
-                   "[1;36m" 
-                   "[0;37m" 
+                   "[1;36m"
+                   "[0;37m"
                    "[1;30m"]))
 
-(def colors-key-list [:red 
-                      :bright-red 
-                      :green 
-                      :bright-green 
-                      :yellow 
+(def colors-key-list [:red
+                      :bright-red
+                      :green
+                      :bright-green
+                      :yellow
                       :bright-yellow
-                      :blue 
+                      :blue
                       :bright-blue
-                      :purple 
+                      :purple
                       :bright-purple
-                      :cyan 
+                      :cyan
                       :bright-cyan
-                      :default 
+                      :default
                       :gray])
 
 (def ansi-colors
