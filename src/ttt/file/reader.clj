@@ -1,4 +1,4 @@
-(ns ttt.file-reader
+(ns ttt.file.reader
   (:require [clojure.java.io :as io]
             [clojure.data.json :as json]
             [clojure.string :as string]

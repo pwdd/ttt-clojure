@@ -1,4 +1,4 @@
-(ns ttt.file-writer
+(ns ttt.file.writer
   (:require [clojure.data.json :as json]
             [clojure.java.io :as io]))
 

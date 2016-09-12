@@ -1,4 +1,4 @@
-(ns ttt.negamax
+(ns ttt.computer.negamax
   (:require [ttt.board :as board]
             [ttt.evaluate-game :as evaluate-game]
             [ttt.get-spots :refer [select-spot]]

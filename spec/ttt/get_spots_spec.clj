@@ -2,7 +2,7 @@
   (:require [speclj.core :refer :all]
             [ttt.get-spots :as spots]
             [ttt.board :as board]
-            [ttt.negamax :as negamax]
+            [ttt.computer.negamax :as negamax]
             [ttt.rules :as rules]))
 
 (describe "select-spot"

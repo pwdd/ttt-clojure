@@ -1,19 +1,18 @@
-(ns ttt.game-loop
-  (:require [ttt.game :as game]
+(ns ttt.game.loop
+  (:require [ttt.game.game :as game]
             [ttt.messenger :as messenger]
             [ttt.view :as view]
             [ttt.board :as board]
-            [ttt.negamax :as negamax]
+            [ttt.computer.negamax :as negamax]
             [ttt.get-spots :refer [select-spot]]
             [ttt.player :as player]
             [ttt.evaluate-game :as evaluate-game]
             [ttt.prompt :as prompt]
-            [ttt.file-reader :as reader]
-            [ttt.file-writer :as file-writer]
+            [ttt.file.writer :as file-writer]
             [ttt.input-validation :as input-validation]
-            [ttt.file-reader :as file-reader]
-            [ttt.easy-computer :as easy-computer]
-            [ttt.medium-computer :as medium-computer]
+            [ttt.file.reader :as file-reader]
+            [ttt.computer.easy :as easy-computer]
+            [ttt.computer.medium :as medium-computer]
             [ttt.animated-start :as animate]
             [ttt.helpers :as helpers]))
 
@@ -44,9 +43,9 @@
 
 (defn- setup-resumed-game
   [directory]
-  (let [files (reader/list-all-files directory)
+  (let [files (file-reader/list-all-files directory)
         filename (prompt/choose-a-file files)
-        data (reader/saved-data (str filename file-extension) directory)
+        data (file-reader/saved-data (str filename file-extension) directory)
         current-player (data :current-player-data)
         opponent (data :opponent-data)
         game (game/create-game (:role current-player)
@@ -194,7 +193,7 @@
 
 (defn game-selection
   [directory]
-  (if (reader/is-there-any-file? directory)
+  (if (file-reader/is-there-any-file? directory)
     (prompt/get-new-or-saved)
     input-validation/new-game-option))
 

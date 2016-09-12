@@ -1,4 +1,4 @@
-(ns ttt.easy-computer
+(ns ttt.computer.easy
   (:require [ttt.board :as board]
             [ttt.helpers :as helpers]
             [ttt.get-spots :refer [select-spot]]))

@@ -1,8 +1,8 @@
-(ns ttt.file-writer-spec
+(ns ttt.file.writer-spec
   (:require [speclj.core :refer :all]
-            [ttt.file-writer :as file-writer]
+            [ttt.file.writer :as file-writer]
             [ttt.board :as board]
-            [ttt.file-reader :as file-reader]
+            [ttt.file.reader :as file-reader]
             [clojure.string :as string]
             [clojure.java.io :as io]))
 

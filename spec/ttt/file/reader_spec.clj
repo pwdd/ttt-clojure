@@ -1,7 +1,7 @@
-(ns ttt.file-reader-spec
+(ns ttt.file.reader-spec
   (:require [speclj.core :refer :all]
             [clojure.java.io :as io]
-            [ttt.file-reader :as file-reader]
+            [ttt.file.reader :as file-reader]
             [ttt.board :as board]))
 
 (describe "read-file"

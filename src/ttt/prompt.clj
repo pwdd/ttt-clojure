@@ -4,8 +4,8 @@
             [ttt.view :as view]
             [ttt.input-validation :as input-validation]
             [ttt.messenger :as messenger]
-            [ttt.file-writer :as file-writer]
-            [ttt.file-reader :as file-reader]
+            [ttt.file.writer :as file-writer]
+            [ttt.file.reader :as file-reader]
             [ttt.player :as player]))
 
 (defn prompt

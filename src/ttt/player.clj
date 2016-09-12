@@ -16,8 +16,8 @@
 (defn- make-player
   [marker color role start-game]
   (if (map? marker)
-    (map->Player {:marker (marker/make-marker marker) 
-                  :role role 
+    (map->Player {:marker (marker/make-marker marker)
+                  :role role
                   :start-game start-game})
     (map->Player {:marker (marker/make-marker {:token marker :color color})
                   :role role
@@ -25,12 +25,13 @@
 
 (defn define-player
   [attributes player-color start-game]
-  (cond
-    (input-validation/is-acceptable-as-human-player? (:role attributes))
-      (make-player (:marker attributes) player-color :human start-game)
-    (input-validation/is-acceptable-as-easy-computer? (:role attributes))
-      (make-player (:marker attributes) player-color :easy-computer start-game)
-    (input-validation/is-acceptable-as-medium-computer? (:role attributes))
-      (make-player (:marker attributes) player-color :medium-computer start-game)
-    :else
-      (make-player (:marker attributes) player-color :hard-computer start-game)))
+  (let [{marker :marker role :role} attributes]
+    (cond
+      (input-validation/is-acceptable-as-human-player? role)
+        (make-player marker player-color :human start-game)
+      (input-validation/is-acceptable-as-easy-computer? role)
+        (make-player marker player-color :easy-computer start-game)
+      (input-validation/is-acceptable-as-medium-computer? role)
+        (make-player marker player-color :medium-computer start-game)
+      :else
+        (make-player marker player-color :hard-computer start-game))))

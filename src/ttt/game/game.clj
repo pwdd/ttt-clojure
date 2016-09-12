@@ -1,4 +1,4 @@
-(ns ttt.game)
+(ns ttt.game.game)
 
 (defrecord Game [player-roles])
 

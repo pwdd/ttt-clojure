@@ -1,9 +1,9 @@
-(ns ttt.game-loop-spec
+(ns ttt.game.loop-spec
   (:require [speclj.core :refer :all]
-            [ttt.game-loop :as game-loop]
+            [ttt.game.loop :as game-loop]
             [ttt.player :as player]
             [clojure.java.io :as io]
-            [ttt.file-reader :as file-reader]
+            [ttt.file.reader :as file-reader]
             [ttt.input-validation :as input-validation]))
 
 (describe "game-setup"

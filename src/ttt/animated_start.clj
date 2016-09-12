@@ -3,7 +3,7 @@
             [ttt.colors :as colors]
             [ttt.view :as view]
             [ttt.get-spots :as spots]
-            [ttt.negamax :as negamax]
+            [ttt.computer.negamax :as negamax]
             [ttt.board :as board]
             [ttt.messenger :as messenger]
             [ttt.evaluate-game :as evaluate-game]))

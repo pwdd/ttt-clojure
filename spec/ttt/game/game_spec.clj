@@ -1,9 +1,9 @@
-(ns ttt.game-spec
+(ns ttt.game.game-spec
   (:require [speclj.core :refer :all]
-            [ttt.game :as game]
+            [ttt.game.game :as game]
             [clojure.java.io :as io]
-            [ttt.file-reader :as file-reader])
-  (:import [ttt.game Game]))
+            [ttt.file.reader :as file-reader])
+  (:import [ttt.game.game Game]))
 
 (describe "game-players-roles"
   (it "returns :same-player-roles if players are both :human"

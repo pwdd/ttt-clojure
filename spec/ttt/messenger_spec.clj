@@ -2,7 +2,7 @@
   (:require [speclj.core :refer :all]
             [ttt.messenger :as messenger]
             [ttt.player :as player]
-            [ttt.game :as game]
+            [ttt.game.game :as game]
             [ttt.board :as board]
             [ttt.helpers :as helpers]))
 

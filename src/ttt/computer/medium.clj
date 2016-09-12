@@ -1,4 +1,4 @@
-(ns ttt.medium-computer
+(ns ttt.computer.medium
   (:require [ttt.get-spots :refer [select-spot]]
             [ttt.rules :as rules]
             [ttt.board :as board]
