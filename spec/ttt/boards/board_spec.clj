@@ -1,7 +1,7 @@
-(ns ttt.board-spec
+(ns ttt.boards.board-spec
   (:require [speclj.core :refer :all]
             [clojure.set :as set]
-            [ttt.board :as board]))
+            [ttt.boards.board :as board]))
 
 (describe "new-board"
   (it "returns a collection of empty spots"

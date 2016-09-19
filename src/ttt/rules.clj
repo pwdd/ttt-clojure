@@ -1,5 +1,5 @@
 (ns ttt.rules
-  (:require [ttt.board :as board]
+  (:require [ttt.boards.board :as board]
             [ttt.helpers :as helpers]))
 
 (defn- correspondent-board-combo

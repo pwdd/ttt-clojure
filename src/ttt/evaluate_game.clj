@@ -1,6 +1,6 @@
 (ns ttt.evaluate-game
   (:require [ttt.player :as player]
-            [ttt.board :as board]))
+            [ttt.boards.board :as board]))
 
 (defn winner-marker
   [board]
@@ -30,4 +30,4 @@
 (defn game-over?
   [board]
   (or (draw? board)
-      (not (nil? (board/winning-combo board)))))
+      (board/winning-combo board)))

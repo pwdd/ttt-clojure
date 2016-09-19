@@ -1,6 +1,6 @@
 (ns ttt.messenger
   (:require [clojure.string :as string]
-            [ttt.board :as board]
+            [ttt.boards.board :as board]
             [ttt.player :as player]
             [ttt.helpers :as helpers]
             [ttt.evaluate-game :as evaluate-game]

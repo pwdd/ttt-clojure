@@ -1,4 +1,4 @@
-(ns ttt.board
+(ns ttt.boards.board
   (:require [ttt.helpers :as helpers]))
 
 (def empty-spot :_)

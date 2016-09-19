@@ -1,7 +1,7 @@
 (ns ttt.file.writer-spec
   (:require [speclj.core :refer :all]
             [ttt.file.writer :as file-writer]
-            [ttt.board :as board]
+            [ttt.boards.board :as board]
             [ttt.file.reader :as file-reader]
             [clojure.string :as string]
             [clojure.java.io :as io]))

@@ -1,7 +1,7 @@
 (ns ttt.evaluate-game-spec
   (:require [speclj.core :refer :all]
             [ttt.evaluate-game :as evaluate-game]
-            [ttt.board :as board]
+            [ttt.boards.board :as board]
             [ttt.player :as player]))
 
 (describe "winner-marker"

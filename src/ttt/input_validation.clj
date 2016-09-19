@@ -1,6 +1,6 @@
 (ns ttt.input-validation
   (:require [ttt.helpers :as helpers]
-            [ttt.board :as board]))
+            [ttt.boards.board :as board]))
 
 (def acceptable-human-player
   #{"h" "human" "hum"})

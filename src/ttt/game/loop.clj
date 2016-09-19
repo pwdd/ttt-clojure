@@ -2,7 +2,7 @@
   (:require [ttt.game.game :as game]
             [ttt.messenger :as messenger]
             [ttt.view :as view]
-            [ttt.board :as board]
+            [ttt.boards.board :as board]
             [ttt.computer.negamax :as negamax]
             [ttt.get-spots :refer [select-spot]]
             [ttt.player :as player]

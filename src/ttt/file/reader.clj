@@ -2,7 +2,7 @@
   (:require [clojure.java.io :as io]
             [clojure.data.json :as json]
             [clojure.string :as string]
-            [ttt.board :as board]))
+            [ttt.boards.board :as board]))
 
 (def directory (io/file "saved"))
 (def json-file-keys ["current-player" "opponent" "board"])

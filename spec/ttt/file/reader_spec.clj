@@ -2,7 +2,7 @@
   (:require [speclj.core :refer :all]
             [clojure.java.io :as io]
             [ttt.file.reader :as file-reader]
-            [ttt.board :as board]))
+            [ttt.boards.board :as board]))
 
 (describe "read-file"
 

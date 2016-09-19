@@ -1,7 +1,7 @@
 (ns ttt.player-spec
   (:require [speclj.core :refer :all]
             [ttt.player :as player]
-            [ttt.board :as board])
+            [ttt.boards.board :as board])
   (:import [ttt.player Player]))
 
 (describe "is-ai?"

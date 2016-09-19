@@ -4,7 +4,7 @@
             [ttt.view :as view]
             [ttt.get-spots :as spots]
             [ttt.computer.negamax :as negamax]
-            [ttt.board :as board]
+            [ttt.boards.board :as board]
             [ttt.messenger :as messenger]
             [ttt.evaluate-game :as evaluate-game]))
 
