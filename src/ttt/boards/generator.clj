@@ -2,13 +2,20 @@
   (:require [ttt.boards.board :as board]
             [ttt.evaluate-game :as evaluate-game]))
 
-(def empty-spot :_)
-(def current-player :x)
-(def opponent :o)
+(def empty-spot board/empty-spot)
+(def current-player {:role :hard-computer :marker {:token :x}})
+(def opponent {:role :easy-computer :marker {:token :o}})
 
-(defn- count-markers
+(defn- markers-to-token
+  [marker]
+  (if (= marker board/empty-spot)
+    marker
+    (:token marker)))
+
+(defn count-markers
   [board first-marker second-marker]
-  (let [markers-frequency (frequencies board)]
+  (let [new-board (mapv markers-to-token board)
+        markers-frequency (frequencies new-board)]
     (cond
       (nil? (first-marker markers-frequency))
         (assoc markers-frequency first-marker 0)
@@ -17,34 +24,38 @@
       :else
         markers-frequency)))
 
-(defn- get-current-player
-  [board first-marker second-marker]
-  (let [markers-frequency (count-markers board first-marker second-marker)]
+(defn get-current-player
+  [board first-token second-token]
+  (let [markers-frequency (count-markers board first-token second-token)]
     (cond
-      (board/is-board-empty? board) first-marker
-      (= (first-marker markers-frequency)
-         (second-marker markers-frequency))
-        first-marker
-      (> (first-marker markers-frequency)
-         (second-marker markers-frequency))
-        second-marker
+      (board/is-board-empty? board) first-token
+      (= (first-token markers-frequency)
+         (second-token markers-frequency))
+        first-token
+      (> (first-token markers-frequency)
+         (second-token markers-frequency))
+        second-token
       :else
-        first-marker)))
+        first-token)))
 
 (defn possible-moves
-  [board marker]
-  (->> (board/available-spots board)
-       (map #(board/move board % marker))))
+  [board token]
+  (let [spots (board/available-spots board)]
+    (if (map? token)
+      (map #(board/move board % token) spots)
+      (map #(board/move board % {:token token}) spots))))
 
 (defn- initial-boards
   [empty-board]
   (concat [empty-board]
-          (possible-moves empty-board current-player)
-          (possible-moves empty-board opponent)))
+          (possible-moves empty-board (:marker current-player))
+          (possible-moves empty-board (:marker opponent))))
 
-(defn- generate-next-boards
+(defn generate-next-boards
   [boards]
-  (mapcat #(possible-moves % (get-current-player % current-player opponent))
+  (mapcat #(possible-moves % (get-current-player %
+                                                 (get-in current-player [:marker :token])
+                                                 (get-in opponent [:marker :token])))
           boards))
 
 (defn all-boards
@@ -60,7 +71,7 @@
                  (last new-boards)
                  (board/available-spots (last new-boards))))))))
 
-(defn filter-out-win-board
+(defn filter-game-over
   [all-boards]
   (filter #(not (evaluate-game/game-over? %)) all-boards))
 
