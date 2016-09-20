@@ -1,7 +1,8 @@
 (ns ttt.helpers-spec
   (:require [speclj.core :refer :all]
             [ttt.helpers :as helpers]
-            [ttt.colors :as colors]))
+            [ttt.colors :as colors]
+            [ttt.board :as board]))
 
 (describe "clean-string"
 
@@ -36,13 +37,13 @@
 
 (describe "get-keys-by-value"
   (with map-example {:a 1 :b 2 :c 3 "d" :d :e 3})
-  
+
   (it "returns an empty collection if there is no key"
     (should= [] (helpers/get-keys-by-value @map-example "d")))
-  
+
   (it "returns a collection with the key of a given value"
     (should= [:b] (helpers/get-keys-by-value @map-example 2)))
-  
+
   (it "returns a collection with multiples keys that have the same given value"
     (should= [:c :e] (helpers/get-keys-by-value @map-example 3))))
 
@@ -57,5 +58,13 @@
     (should= "xoy"
              (helpers/remove-color (str (colors/colorize :blue "x")
                                          "o"
-                                         (colors/colorize :red "y")))))
-)
+                                         (colors/colorize :red "y"))))))
+
+(describe "marker-to-token"
+  (with _ board/empty-spot)
+
+  (it "returns the value associated with the key :token"
+    (should= :x (helpers/marker-to-token {:token :x :color :blue})))
+  
+  (it "returns the empty-spot if the passed value is empty-spot"
+    (should= @_ (helpers/marker-to-token @_))))

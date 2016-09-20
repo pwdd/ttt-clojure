@@ -1,7 +1,7 @@
 (ns ttt.computer.negamax-spec
   (:require [speclj.core :refer :all]
             [ttt.computer.negamax :as negamax]
-            [ttt.boards.board :as board]))
+            [ttt.board :as board]))
 
 (describe "board-analysis"
 

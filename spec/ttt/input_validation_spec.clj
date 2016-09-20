@@ -1,7 +1,7 @@
 (ns ttt.input-validation-spec
   (:require [speclj.core :refer :all]
             [ttt.input-validation :as input-validation]
-            [ttt.boards.board :as board]
+            [ttt.board :as board]
             [clojure.set :as set]))
 
 (describe "is-acceptable-as-human-player?"

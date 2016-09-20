@@ -1,5 +1,5 @@
 (ns ttt.rules
-  (:require [ttt.boards.board :as board]
+  (:require [ttt.board :as board]
             [ttt.helpers :as helpers]))
 
 (defn- correspondent-board-combo
@@ -87,16 +87,10 @@
   (let [corners (corners (board/board-size board))]
     (helpers/random-move (available-spots-in-combo board corners))))
 
-(defn- markers-to-token
-  [marker]
-  (if (= marker board/empty-spot)
-    marker
-    (:token marker)))
-
 (defn markers-frequency
   [board combo]
   (let [board-combo (correspondent-board-combo board combo)]
-    (frequencies (map markers-to-token board-combo))))
+    (frequencies (map helpers/marker-to-token board-combo))))
 
 (defn- frequency
   [marker-count]
@@ -167,7 +161,7 @@
     (nth (owned-combos board current-player-marker opponent-marker)
          highest-rate-index)))
 
-(defn- has-combos?
+(defn- owns-combos?
   [board current-player-marker opponent-marker]
   (seq (owned-combos board current-player-marker opponent-marker)))
 
@@ -193,7 +187,7 @@
         (place-in-winning-spot board current-player-marker)
       (can-win? board opponent-marker)
         (place-in-winning-spot board opponent-marker)
-      (has-combos? board current-player-marker opponent-marker)
+      (owns-combos? board current-player-marker opponent-marker)
         (fill-in-a-combo board current-player-marker opponent-marker)
       (is-there-empty-combos? board)
         (helpers/random-move (get-an-empty-combo board))

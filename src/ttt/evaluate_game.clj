@@ -1,6 +1,6 @@
 (ns ttt.evaluate-game
   (:require [ttt.player :as player]
-            [ttt.boards.board :as board]))
+            [ttt.board :as board]))
 
 (defn winner-marker
   [board]

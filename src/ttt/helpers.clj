@@ -35,3 +35,10 @@
         string
         (recur (string/replace string (str escape (first code-list)) "")
                (rest code-list))))))
+
+(defn marker-to-token
+  [marker]
+  (if (map? marker)
+    (:token marker)
+    marker))
+

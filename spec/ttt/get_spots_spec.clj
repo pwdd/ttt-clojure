@@ -1,7 +1,7 @@
 (ns ttt.get-spots-spec
   (:require [speclj.core :refer :all]
             [ttt.get-spots :as spots]
-            [ttt.boards.board :as board]
+            [ttt.board :as board]
             [ttt.computer.negamax :as negamax]
             [ttt.rules :as rules]))
 

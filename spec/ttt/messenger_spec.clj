@@ -3,7 +3,7 @@
             [ttt.messenger :as messenger]
             [ttt.player :as player]
             [ttt.game.game :as game]
-            [ttt.boards.board :as board]
+            [ttt.board :as board]
             [ttt.helpers :as helpers]))
 
 (describe "separator"

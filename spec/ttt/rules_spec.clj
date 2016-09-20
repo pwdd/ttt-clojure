@@ -1,7 +1,7 @@
 (ns ttt.rules-spec
   (:require [speclj.core :refer :all]
             [ttt.rules :as rules]
-            [ttt.boards.board :as board]
+            [ttt.board :as board]
             [clojure.set :as set]))
 
 (describe "find-empty-combos"
