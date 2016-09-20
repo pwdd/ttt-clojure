@@ -1,20 +1,15 @@
 (ns ttt.boards.generator
   (:require [ttt.boards.board :as board]
-            [ttt.evaluate-game :as evaluate-game]))
+            [ttt.evaluate-game :as evaluate-game]
+            [ttt.helpers :as helpers]))
 
 (def empty-spot board/empty-spot)
 (def current-player {:role :hard-computer :marker {:token :x}})
 (def opponent {:role :easy-computer :marker {:token :o}})
 
-(defn- markers-to-token
-  [marker]
-  (if (= marker board/empty-spot)
-    marker
-    (:token marker)))
-
 (defn count-markers
   [board first-marker second-marker]
-  (let [new-board (mapv markers-to-token board)
+  (let [new-board (mapv helpers/marker-to-token board)
         markers-frequency (frequencies new-board)]
     (cond
       (nil? (first-marker markers-frequency))

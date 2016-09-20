@@ -11,3 +11,9 @@
                             :opponent board-generator/opponent
                             :depth negamax/start-depth})})
 
+(defn map-all-boards
+  [all-boards]
+  (into {} (map-indexed vector (map board-unit all-boards))))
+
+
+

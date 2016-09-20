@@ -5,13 +5,9 @@
 
 (def directory (io/file "boards"))
 
-(defn generate-boards
-  [all-boards]
-  (into {} (map-indexed vector (map boards-structure/board-unit all-boards))))
-
 (defn write-boards
   [all-boards]
-  (json/write-str (generate-boards all-boards)))
+  (json/write-str (boards-structure/map-all-boards all-boards)))
 
 (defn create-boards-file
   [directory filename all-boards]

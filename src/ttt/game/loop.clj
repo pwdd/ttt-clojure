@@ -23,29 +23,43 @@
 (def o {:token :o :color second-player-color})
 (def animation-starting-board [o o :_ :_ x :_ :_ :_ x])
 
+(defn- current-player-data
+  [msg-first-attr]
+  (-> (prompt/get-player-attributes {:msg msg-first-attr :color first-player-color})
+      (player/define-player first-player-color :first)))
+
+(defn- opponent-data
+  [msg-second-attr current-player-marker]
+  (-> (prompt/get-player-attributes {:msg msg-second-attr
+                                     :color second-player-color
+                                     :opponent-marker current-player-marker})
+      (player/define-player second-player-color :second)))
+
 (defn- setup-regular-game
   [msg-first-attr msg-second-attr]
   (let [board-size (Integer/parseInt (prompt/get-board-size))
-        current-player-attr (prompt/get-player-attributes {:msg msg-first-attr
-                                                           :color first-player-color})
-        opponent-attr
-          (prompt/get-player-attributes {:msg msg-second-attr
-                                         :color second-player-color
-                                         :opponent-marker (:marker current-player-attr)})
-        current-player (player/define-player current-player-attr first-player-color :first)
-        opponent (player/define-player opponent-attr second-player-color :second)
-        game (game/create-game (:role current-player) (:role opponent))]
-    {:current-player current-player
+        current-player (current-player-data msg-first-attr)
+        opponent (opponent-data msg-second-attr (:marker current-player))]
+    {:board-size board-size
+     :current-player current-player
      :opponent opponent
-     :game game
-     :board-size board-size
+     :game (game/create-game (:role current-player) (:role opponent))
      :saved false}))
+
+(defn- saved-game-filename
+  [directory]
+  (-> directory
+      file-reader/list-all-files
+      prompt/choose-a-file))
+
+(defn- get-saved-game-data
+  [directory]
+  (-> (str (saved-game-filename directory) file-extension)
+      (file-reader/saved-data directory)))
 
 (defn- setup-resumed-game
   [directory]
-  (let [files (file-reader/list-all-files directory)
-        filename (prompt/choose-a-file files)
-        data (file-reader/saved-data (str filename file-extension) directory)
+  (let [data (get-saved-game-data directory)
         current-player (data :current-player-data)
         opponent (data :opponent-data)
         game (game/create-game (:role current-player)
@@ -54,7 +68,7 @@
     {:current-player current-player
      :opponent opponent
      :game game
-     :board board
+     :board (data :board-data)
      :saved true
      :board-size (board/board-size board)}))
 
