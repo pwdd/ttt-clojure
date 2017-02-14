@@ -15,7 +15,9 @@
     40
     (quot (Integer/parseInt (get-console-width)) 2)))
 
-(def half-screen-width (get-half-screen-width))
+; (def half-screen-width (get-half-screen-width))
+(def half-screen-width 120)
+
 (def center-of-screen "[4;0H")
 (def height 24)
 (def final-msg-lines 9)
